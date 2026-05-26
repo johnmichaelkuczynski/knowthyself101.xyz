@@ -18,540 +18,790 @@ type SeedTopic = {
 };
 
 const TOPICS: SeedTopic[] = [
-  // Week 1 — Foundations
+  // ───────────────────────────────────────────────────────────────
+  // Week 1 — Foundations of mathematical notation
+  // ───────────────────────────────────────────────────────────────
   {
-    slug: "number-sense",
-    title: "Number sense",
+    slug: "equality-family",
+    title: "Equality and its relatives: =, ≠, ≈, ≡",
     weekNumber: 1,
-    blurb: "Whole numbers, integers, rationals, irrationals; magnitude.",
-    lectureTitle: "1.1 Number sense and the real line",
-    body: `# Number sense
+    blurb: "The four shades of 'the same'.",
+    lectureTitle: "1.1 The equality family: =, ≠, ≈, ≡",
+    body: `# Equality and its relatives
 
-Quantitative reasoning starts with a clear sense of *what numbers mean*. Before any formula, we ask: what kind of number is this, how big is it, and is it plausible?
+Mathematics has *four* different signs for "is the same as," and they do not mean the same thing.
 
-## The number line
+- $=$ — **equal**. Both sides denote the exact same value. $2 + 2 = 4$.
+- $\\neq$ — **not equal**. $3 \\neq 4$.
+- $\\approx$ — **approximately equal**. The two sides are close, usually after rounding. $\\pi \\approx 3.14$.
+- $\\equiv$ — **identically equal** or **congruent**. Either "equal for all values of the variable" (an identity), or "equal modulo something." $\\sin^2 x + \\cos^2 x \\equiv 1$.
 
-Every real number sits somewhere on a single number line. **Natural numbers** ($1, 2, 3, \\dots$) count things. **Integers** ($\\dots, -2, -1, 0, 1, 2, \\dots$) add zero and negatives. **Rationals** ($\\mathbb{Q}$) are ratios of integers — $\\tfrac{3}{4}$, $-\\tfrac{7}{2}$, $0.25$. **Irrationals** like $\\sqrt{2}$, $\\pi$, and $e$ fill the gaps.
+## A science example
 
-## Magnitude estimation
+In physics, the relativistic energy of a particle is *exactly* $E = \\sqrt{(mc^2)^2 + (pc)^2}$. For a particle at rest ($p = 0$), this collapses to the famous **identity** $E \\equiv mc^2$ — true for every rest mass, not just one. When physicists report a measurement, however, they write $E \\approx 938\\ \\text{MeV}$ for the proton's rest energy, because the measured value is an approximation, not the exact theoretical value.
 
-A college graduate should be able to answer "is the U.S. federal budget closer to \\$5 million, \\$5 billion, or \\$5 trillion?" without a calculator. We do this with **orders of magnitude** — powers of ten. Roughly:
+## Why the distinction matters
 
-- $10^3$ = thousand
-- $10^6$ = million
-- $10^9$ = billion
-- $10^{12}$ = trillion
-
-## Why it matters
-
-A sense of plausible magnitude is the single best defense against arithmetic mistakes. If a calculator says a person's annual salary is \\$3.2 billion, you should immediately suspect a unit error.`,
+Writing $\\pi = 3.14$ on a homework is a small lie. Writing $\\pi \\approx 3.14$ is the truth. The notation tells the reader what kind of claim you are making.`,
   },
   {
-    slug: "fractions-decimals-percents",
-    title: "Fractions, decimals, and percents",
+    slug: "inequalities-notation",
+    title: "Inequalities: <, >, ≤, ≥",
     weekNumber: 1,
-    blurb: "Three notations for the same numbers; converting fluently.",
-    lectureTitle: "1.2 Fractions, decimals, and percents",
-    body: `# Fractions, decimals, and percents
-
-These are three notations for the **same** numbers. Fluency means converting effortlessly.
-
-## Conversions
-
-- Fraction $\\to$ decimal: divide. $\\tfrac{3}{8} = 0.375$.
-- Decimal $\\to$ percent: multiply by 100. $0.375 = 37.5\\%$.
-- Percent $\\to$ fraction: write over 100 and simplify. $24\\% = \\tfrac{24}{100} = \\tfrac{6}{25}$.
-
-## Percent change
-
-$$\\text{percent change} = \\frac{\\text{new} - \\text{old}}{\\text{old}} \\times 100\\%$$
-
-A price moving from \\$80 to \\$92 is a $\\tfrac{12}{80} = 15\\%$ increase.
-
-## The compounding trap
-
-A 20% loss followed by a 20% gain does *not* return you to even. $\\$100 \\to \\$80 \\to \\$96$. Percent changes compound multiplicatively, not additively.`,
-  },
-  {
-    slug: "ratios-proportions",
-    title: "Ratios and proportions",
-    weekNumber: 1,
-    blurb: "Comparing quantities; scaling; the cross-multiplication test.",
-    lectureTitle: "1.3 Ratios and proportions",
-    body: `# Ratios and proportions
-
-A **ratio** compares two quantities of the same kind: 3 cups flour to 2 cups water is $3{:}2$. A **proportion** says two ratios are equal: $\\tfrac{a}{b} = \\tfrac{c}{d}$.
-
-## Cross-multiplication
-
-If $\\tfrac{a}{b} = \\tfrac{c}{d}$ and $b, d \\neq 0$, then $ad = bc$. This lets us solve for an unknown: $\\tfrac{x}{15} = \\tfrac{4}{6}$ gives $6x = 60$, so $x = 10$.
-
-## Scaling recipes and maps
-
-A 1:50,000 map means 1 cm on the map represents 50,000 cm = 500 m in reality. To scale a recipe from 4 to 10 servings, multiply every quantity by $\\tfrac{10}{4} = 2.5$.`,
-  },
-  {
-    slug: "unit-conversions",
-    title: "Unit conversions",
-    weekNumber: 1,
-    blurb: "Dimensional analysis; chaining conversion factors.",
-    lectureTitle: "1.4 Units and dimensional analysis",
-    body: `# Units and dimensional analysis
-
-**Treat units as algebraic objects.** Multiply by conversion factors written as fractions equal to 1.
-
-## A worked example
-
-How many seconds in a (non-leap) year?
-
-$$365 \\text{ days} \\times \\frac{24 \\text{ hours}}{1 \\text{ day}} \\times \\frac{60 \\text{ minutes}}{1 \\text{ hour}} \\times \\frac{60 \\text{ seconds}}{1 \\text{ minute}} = 31{,}536{,}000 \\text{ seconds}$$
-
-Notice how *days, hours, minutes* cancel out and only *seconds* remains. If the units of your answer aren't right, the number isn't either.`,
-  },
-  {
-    slug: "order-of-operations",
-    title: "Order of operations",
-    weekNumber: 1,
-    blurb: "PEMDAS, the role of parentheses, and ambiguous notation.",
-    lectureTitle: "1.5 Order of operations",
-    body: `# Order of operations
-
-The convention: **P**arentheses, **E**xponents, **M**ultiplication and **D**ivision (left to right), **A**ddition and **S**ubtraction (left to right).
-
-## Worked example
-
-$$3 + 4 \\times 2^2 - (6 - 2) = 3 + 4 \\times 4 - 4 = 3 + 16 - 4 = 15$$
-
-## A pragmatic note
-
-Real mathematicians use parentheses liberally to avoid all ambiguity. If you find yourself relying on PEMDAS to disambiguate $6 \\div 2(1+2)$, rewrite it.`,
-  },
-  {
-    slug: "algebraic-expressions",
-    title: "Algebraic expressions",
-    weekNumber: 1,
-    blurb: "Variables, terms, simplifying, evaluating.",
-    lectureTitle: "1.6 Algebraic expressions",
-    body: `# Algebraic expressions
-
-A **variable** is a placeholder for an unknown. An **expression** combines variables, numbers, and operations: $3x + 2y - 5$.
-
-## Combining like terms
-
-Only terms with the same variable parts can be combined: $3x + 2x = 5x$, but $3x + 2y$ does not simplify further.
-
-## Evaluating
-
-To evaluate $2x^2 - 3x + 1$ at $x = 4$: $2(16) - 3(4) + 1 = 32 - 12 + 1 = 21$.`,
-  },
-  {
-    slug: "linear-equations",
-    title: "Linear equations",
-    weekNumber: 1,
-    blurb: "Solving for an unknown in one variable.",
-    lectureTitle: "1.7 Linear equations",
-    body: `# Linear equations in one variable
-
-A **linear equation** has the form $ax + b = c$. We isolate $x$ by performing the same operation on both sides.
-
-## Worked example
-
-Solve $5x - 7 = 18$. Add 7 to both sides: $5x = 25$. Divide by 5: $x = 5$.
-
-## With variables on both sides
-
-$3(x + 4) = 2x - 1$. Distribute: $3x + 12 = 2x - 1$. Subtract $2x$: $x + 12 = -1$. Subtract 12: $x = -13$.`,
-  },
-
-  // Week 2 — Functions and models
-  {
-    slug: "linear-functions",
-    title: "Linear functions",
-    weekNumber: 2,
-    blurb: "Slope, intercept, modeling constant rates of change.",
-    lectureTitle: "2.1 Linear functions",
-    body: `# Linear functions
-
-A **linear function** has the form $f(x) = mx + b$ where $m$ is the slope and $b$ is the $y$-intercept.
-
-## Slope as a rate of change
-
-If $y$ is meters traveled and $x$ is seconds, the slope is meters per second — a velocity. Slope is "rise over run":
-
-$$m = \\frac{y_2 - y_1}{x_2 - x_1}$$
-
-## Modeling
-
-A taxi charges \\$3 to start the meter plus \\$2 per mile. The cost is $C(x) = 2x + 3$ — slope 2 dollars/mile, intercept 3 dollars.`,
-  },
-  {
-    slug: "systems-of-equations",
-    title: "Systems of equations",
-    weekNumber: 2,
-    blurb: "Two unknowns, two equations; substitution and elimination.",
-    lectureTitle: "2.2 Systems of equations",
-    body: `# Systems of equations
-
-When two relationships hold simultaneously, we have a **system**. Geometrically: where do two lines cross?
-
-## Substitution
-
-$y = 2x + 1$ and $3x + y = 16$. Substitute: $3x + (2x + 1) = 16$, so $5x = 15$, $x = 3$, $y = 7$.
-
-## Elimination
-
-Add or subtract equations to eliminate one variable. The right tool depends on the form of the system.`,
-  },
-  {
-    slug: "quadratics",
-    title: "Quadratics",
-    weekNumber: 2,
-    blurb: "Parabolas, the quadratic formula, factoring.",
-    lectureTitle: "2.3 Quadratic functions",
-    body: `# Quadratic functions
-
-$f(x) = ax^2 + bx + c$, with $a \\neq 0$. The graph is a **parabola**.
-
-## The quadratic formula
-
-$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
-
-The **discriminant** $b^2 - 4ac$ tells you how many real solutions exist: positive $\\to$ two, zero $\\to$ one, negative $\\to$ none.`,
-  },
-  {
-    slug: "exponentials-logs",
-    title: "Exponentials and logarithms",
-    weekNumber: 2,
-    blurb: "Multiplicative growth, decay, and inverse functions.",
-    lectureTitle: "2.4 Exponentials and logs",
-    body: `# Exponentials and logarithms
-
-**Exponential** functions $f(x) = a \\cdot b^x$ model multiplicative growth (or decay if $0 < b < 1$).
-
-## Logarithms
-
-A **logarithm** asks "what power?". $\\log_{10}(1000) = 3$ because $10^3 = 1000$. Logs convert multiplication to addition: $\\log(ab) = \\log a + \\log b$.
-
-## Why both?
-
-Together they let us solve $2^x = 10$: take $\\log_2$ of both sides to get $x = \\log_2 10 \\approx 3.32$.`,
-  },
-  {
-    slug: "function-modeling",
-    title: "Function modeling",
-    weekNumber: 2,
-    blurb: "Choosing the right family of function for real data.",
-    lectureTitle: "2.5 Function modeling",
-    body: `# Choosing a model
-
-Given a phenomenon, the first question is: **what family of function fits?**
-
-- Constant rate of change $\\to$ linear.
-- Constant percent change per unit time $\\to$ exponential.
-- Rises and falls, single peak $\\to$ quadratic.
-- Periodic behavior $\\to$ trigonometric.
-
-Pick poorly and no amount of fitting will save you.`,
-  },
-  {
-    slug: "inequalities",
-    title: "Inequalities",
-    weekNumber: 2,
-    blurb: "Solving and interpreting strict and non-strict inequalities.",
-    lectureTitle: "2.6 Inequalities",
+    blurb: "Strict and non-strict ordering.",
+    lectureTitle: "1.2 Inequality symbols: <, >, ≤, ≥",
     body: `# Inequalities
 
-An inequality like $3x - 2 < 7$ is solved much like an equation, with one twist: **multiplying or dividing both sides by a negative number reverses the inequality.**
+Where $=$ pins a value, **inequalities** describe a range.
 
-## Worked example
+- $a < b$ — $a$ is **strictly less than** $b$. $3 < 5$.
+- $a > b$ — $a$ is **strictly greater than** $b$.
+- $a \\le b$ — $a$ is **less than or equal to** $b$. The equality case is *included*.
+- $a \\ge b$ — $a$ is **greater than or equal to** $b$.
 
-$-2x + 4 \\ge 10$. Subtract 4: $-2x \\ge 6$. Divide by $-2$ and flip: $x \\le -3$.`,
+The open mouth always faces the larger number.
+
+## A science example
+
+In thermodynamics, the **second law** states that for an isolated system the entropy change satisfies
+
+$$\\Delta S \\ge 0.$$
+
+The $\\ge$ matters. A *reversible* process saturates the bound ($\\Delta S = 0$); every real-world process is irreversible and yields $\\Delta S > 0$. Replacing $\\ge$ with $>$ would falsely outlaw the idealized reversible case that the whole theory is built on.
+
+## Strict vs. non-strict
+
+In an interval like $[2, 5)$, the square bracket means $\\ge 2$ (included), the round bracket means $< 5$ (excluded). Same idea, different notation.`,
+  },
+  {
+    slug: "plus-minus-proportional",
+    title: "Plus-minus and proportional: ±, ∝",
+    weekNumber: 1,
+    blurb: "Two values in one symbol; 'scales with'.",
+    lectureTitle: "1.3 ± and ∝",
+    body: `# Plus-minus and proportional
+
+Two compact symbols that pack a lot of meaning.
+
+## $\\pm$ — plus or minus
+
+$\\pm$ means "either of two values." It appears in:
+
+- **Solutions**: $x = \\pm 3$ means $x = 3$ or $x = -3$.
+- **The quadratic formula**: $x = \\dfrac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ — *both* roots in one expression.
+- **Measurement uncertainty**: $g = 9.81 \\pm 0.02 \\ \\text{m/s}^2$ — the true value lies (with stated confidence) in the interval.
+
+## $\\propto$ — proportional to
+
+$y \\propto x$ means $y = kx$ for some constant $k$. The constant is hidden; the *shape* of the relationship is what matters.
+
+## A science example
+
+**Newton's law of gravitation** is most cleanly stated proportionally:
+
+$$F \\propto \\frac{m_1 m_2}{r^2}.$$
+
+Inserting the constant gives $F = G\\,\\dfrac{m_1 m_2}{r^2}$. The $\\propto$ form says the *physics* — force grows with the product of masses and falls as the square of distance — without committing to a unit system. When Newton wrote it down, $G$ had not yet been measured. The proportionality was the discovery; the constant was just bookkeeping.`,
+  },
+  {
+    slug: "exponents-notation",
+    title: "Exponents and powers: x², xⁿ",
+    weekNumber: 1,
+    blurb: "Superscripts as repeated multiplication.",
+    lectureTitle: "1.4 Exponents: x², xⁿ",
+    body: `# Exponents
+
+A small number written above the line — a **superscript** — means repeated multiplication.
+
+$$x^n = \\underbrace{x \\cdot x \\cdots x}_{n \\text{ times}}$$
+
+Special cases everyone needs by reflex:
+
+- $x^2$ — "$x$ squared."
+- $x^3$ — "$x$ cubed."
+- $x^0 = 1$ (for $x \\neq 0$).
+- $x^{-n} = 1/x^n$.
+- $x^{1/2} = \\sqrt{x}$.
+
+## A science example
+
+The **kinetic energy** of a moving object is
+
+$$\\text{KE} = \\tfrac{1}{2} m v^2.$$
+
+Doubling the speed *quadruples* the kinetic energy — that's the $v^2$ at work. This is why a car crash at 60 mph is four times as destructive as one at 30 mph, not two. The exponent isn't decoration; it dictates the physics.
+
+## A common pitfall
+
+$-3^2 = -9$, but $(-3)^2 = 9$. The exponent binds tighter than the unary minus, so parentheses change the answer.`,
+  },
+  {
+    slug: "roots-notation",
+    title: "Roots: √, ³√",
+    weekNumber: 1,
+    blurb: "The inverse of raising to a power.",
+    lectureTitle: "1.5 Roots: √, ³√, ⁿ√",
+    body: `# Roots
+
+The **radical sign** $\\sqrt{\\phantom{x}}$ undoes a power.
+
+- $\\sqrt{x}$ — the (positive) **square root** of $x$. $\\sqrt{25} = 5$.
+- $\\sqrt[3]{x}$ — the **cube root**. $\\sqrt[3]{27} = 3$, $\\sqrt[3]{-8} = -2$.
+- $\\sqrt[n]{x} = x^{1/n}$ in general.
+
+By convention, $\\sqrt{x}$ denotes only the non-negative root. The equation $x^2 = 25$ has *two* solutions, $x = \\pm 5$, and we usually write the $\\pm$ explicitly.
+
+## A science example
+
+The **period** of a simple pendulum of length $L$ is
+
+$$T = 2\\pi \\sqrt{\\frac{L}{g}}.$$
+
+To double the period, you must *quadruple* the length — because the square root halves any factor you put under it. This is why grandfather clocks are tall: a one-second tick needs roughly a one-meter pendulum, and you cannot shrink it without paying the price under the root.
+
+## Notation note
+
+A cube root has a small "3" tucked into the crook of the radical: $\\sqrt[3]{x}$. The keyboard's $\\sqrt[3]{\\;}$ key inserts exactly this.`,
+  },
+  {
+    slug: "abs-factorial-notation",
+    title: "Absolute value and factorial: |x|, n!",
+    weekNumber: 1,
+    blurb: "Magnitude bars and the multiplicative '!'.",
+    lectureTitle: "1.6 |x| and n!",
+    body: `# Absolute value and factorial
+
+Two symbols that look like punctuation but are really operators.
+
+## $|x|$ — absolute value
+
+$|x|$ is the **distance from zero**, always non-negative.
+
+$$|x| = \\begin{cases} x & x \\ge 0 \\\\ -x & x < 0 \\end{cases}$$
+
+So $|3| = 3$ and $|-3| = 3$. The bars also denote magnitude of a vector ($|\\vec v|$) or modulus of a complex number ($|z|$).
+
+## $n!$ — factorial
+
+$n!$ is the product of every positive integer from $1$ up to $n$.
+
+$$n! = n \\cdot (n-1) \\cdot (n-2) \\cdots 2 \\cdot 1$$
+
+So $5! = 5 \\cdot 4 \\cdot 3 \\cdot 2 \\cdot 1 = 120$. By convention $0! = 1$.
+
+## A science example
+
+In **statistical mechanics**, the number of ways to arrange $N$ distinguishable particles among themselves is exactly $N!$. For a mole of gas, $N \\approx 6 \\times 10^{23}$, and $N!$ is so astronomical that Boltzmann's entropy formula $S = k_B \\ln(N!)$ requires **Stirling's approximation** $\\ln(N!) \\approx N \\ln N - N$ just to be computable.
+
+Meanwhile $|x|$ shows up whenever a physical quantity is signed but the magnitude is what matters: an electric field's strength is $|\\vec E|$, regardless of which direction the arrow points.`,
+  },
+  {
+    slug: "subscripts-indexing",
+    title: "Subscripts: x₀, xᵢ, vₜ",
+    weekNumber: 1,
+    blurb: "Naming members of a family of related quantities.",
+    lectureTitle: "1.7 Subscripts: x₀, xᵢ, vₜ",
+    body: `# Subscripts
+
+A **subscript** — a small symbol *below* the line — turns one variable into a whole family.
+
+Common roles:
+
+- **Indices**: $x_1, x_2, x_3, \\dots, x_n$ — the entries of a list.
+- **Initial values**: $v_0$ ("vee-nought") — the value of $v$ at time zero.
+- **Labels**: $F_{\\text{net}}$ — the net force, as opposed to any particular component.
+- **Coordinates**: $v_x, v_y, v_z$ — the $x$-, $y$-, $z$-components of $\\vec v$.
+- **Time steps**: $x_t, x_{t-1}, x_{t+1}$ — values at successive moments.
+
+## A science example
+
+**Kinematics** uses subscripts everywhere:
+
+$$v_f = v_0 + a t.$$
+
+Here $v_0$ is the velocity at the start of the motion and $v_f$ is the velocity at the end. Without the subscripts, "$v$" would be ambiguous — *which* velocity? Subscripts let one Greek letter or Latin variable do the work of a whole vocabulary.
+
+In economics, $Y_t$ vs. $Y_{t-1}$ distinguishes this year's GDP from last year's, and the difference $Y_t - Y_{t-1}$ *is* economic growth.`,
   },
 
-  // Week 3 — Stats & probability
+  // ───────────────────────────────────────────────────────────────
+  // Week 2 — Calculus, change, and accumulation
+  // ───────────────────────────────────────────────────────────────
   {
-    slug: "descriptive-statistics",
-    title: "Descriptive statistics",
+    slug: "sigma-summation",
+    title: "Sigma summation: Σ",
+    weekNumber: 2,
+    blurb: "A compact way to add many terms.",
+    lectureTitle: "2.1 Σ — summation notation",
+    body: `# Sigma summation
+
+$\\Sigma$ (capital Greek sigma) is the **summation** symbol. It says "add everything you get by stepping the index through this range."
+
+$$\\sum_{i=1}^{n} a_i \\;=\\; a_1 + a_2 + \\cdots + a_n$$
+
+The bottom tells you the **index** and its starting value; the top tells you where to stop. The expression to the right is what gets summed.
+
+## A science example
+
+The **mean** of a dataset of $n$ measurements is
+
+$$\\bar x = \\frac{1}{n}\\sum_{i=1}^{n} x_i.$$
+
+In an experiment with 1000 trials, you do not want to write $x_1 + x_2 + \\cdots + x_{1000}$. The $\\sum$ packages the whole sum into four characters.
+
+Sigma also runs every dot product, every Fourier coefficient, every partition function in thermodynamics — anywhere science adds many small contributions to get one big number, you will find a $\\Sigma$.`,
+  },
+  {
+    slug: "pi-product",
+    title: "Product notation: Π",
+    weekNumber: 2,
+    blurb: "Σ's multiplicative cousin.",
+    lectureTitle: "2.2 Π — product notation",
+    body: `# Product notation
+
+$\\Pi$ (capital Greek pi) is to multiplication what $\\Sigma$ is to addition.
+
+$$\\prod_{i=1}^{n} a_i \\;=\\; a_1 \\cdot a_2 \\cdots a_n$$
+
+Note: this is **not** the same $\\pi$ as $3.14159\\dots$ Capital $\\Pi$ in product context, lowercase $\\pi$ for the circle constant.
+
+## A science example
+
+In probability, the likelihood of $n$ **independent** observations $x_1, \\dots, x_n$ from a distribution with density $f$ is
+
+$$L(\\theta) = \\prod_{i=1}^{n} f(x_i \\mid \\theta).$$
+
+This is the foundation of **maximum likelihood estimation** — the workhorse of modern statistics and machine learning. Every parameter fit in your favorite stats package is, under the hood, finding the $\\theta$ that maximizes one of these $\\prod$ expressions (or, equivalently, the $\\sum$ of its logarithm).
+
+A second example: $n! = \\prod_{k=1}^{n} k$ — factorial is just a special product.`,
+  },
+  {
+    slug: "delta-change",
+    title: "Delta: Δ and δ",
+    weekNumber: 2,
+    blurb: "Capital Δ for finite change, lowercase δ for an infinitesimal nudge.",
+    lectureTitle: "2.3 Δ and δ — change",
+    body: `# Delta — the change operator
+
+The Greek letter delta is the universal symbol for *change*.
+
+- $\\Delta x$ (capital) — a **finite, measurable change** in $x$: $\\Delta x = x_2 - x_1$.
+- $\\delta x$ (lowercase) — an **infinitesimal** or **virtual** change. Used in calculus of variations, physics, and informal calculus.
+- $\\partial x$ — a **partial** change (we will meet $\\partial$ properly soon).
+
+By convention, $\\Delta$ is always read "*change in*" or "*difference of*."
+
+## A science example
+
+**Average velocity** is just the ratio of two deltas:
+
+$$\\bar v = \\frac{\\Delta x}{\\Delta t} = \\frac{x_2 - x_1}{t_2 - t_1}.$$
+
+Shrink $\\Delta t$ all the way down and you get the instantaneous velocity $\\mathrm{d}x/\\mathrm{d}t$ — the derivative. So $\\Delta$ is calculus' starting point: every derivative is a limit of a $\\Delta$.
+
+In chemistry, $\\Delta H$ is the enthalpy change of a reaction, $\\Delta G$ is the change in Gibbs free energy, and the sign of $\\Delta G$ tells you whether the reaction proceeds spontaneously.`,
+  },
+  {
+    slug: "limits-infinity",
+    title: "Limits and infinity: lim, →, ∞",
+    weekNumber: 2,
+    blurb: "Approaching, but not necessarily reaching.",
+    lectureTitle: "2.4 lim, →, ∞",
+    body: `# Limits and infinity
+
+Three notations conspire to express the central idea of calculus: getting arbitrarily close.
+
+- $\\to$ — "approaches" or "tends to." Read $x \\to 3$ as "$x$ goes to 3."
+- $\\lim$ — the **limit** operator. $\\lim_{x \\to a} f(x)$ is the value $f(x)$ approaches as $x$ approaches $a$.
+- $\\infty$ — **infinity**. Not a number you can plug in; a shorthand for "grows without bound."
+
+Together:
+
+$$\\lim_{x \\to \\infty} \\frac{1}{x} = 0 \\qquad \\lim_{x \\to 0^+} \\frac{1}{x} = +\\infty.$$
+
+## A science example
+
+The **terminal velocity** of a falling object with linear drag is reached only in the limit:
+
+$$v_{\\text{terminal}} = \\lim_{t \\to \\infty} v(t) = \\frac{mg}{b}.$$
+
+A skydiver never *quite* hits terminal velocity in finite time — they get exponentially close to it. The $\\lim$ is the only honest way to write the asymptote.
+
+Limits also define the derivative ($\\lim_{h \\to 0}$) and the definite integral (a limit of Riemann sums). The arrow is calculus' most-used punctuation mark.`,
+  },
+  {
+    slug: "derivative-notation",
+    title: "Derivative notation: d/dx, ∂/∂x",
+    weekNumber: 2,
+    blurb: "Two different 'd's for two different jobs.",
+    lectureTitle: "2.5 d/dx and ∂/∂x",
+    body: `# Derivative notation
+
+The derivative — instantaneous rate of change — has two spelling families.
+
+## $\\dfrac{\\mathrm{d}}{\\mathrm{d}x}$ — ordinary derivative
+
+Used when $f$ is a function of **one** variable. Equivalent notations:
+
+$$\\frac{\\mathrm{d}f}{\\mathrm{d}x} \\;\\equiv\\; f'(x) \\;\\equiv\\; \\dot f \\;\\text{(when the variable is time)}.$$
+
+The dot $\\dot f$ is Newton's notation, still used in physics for time derivatives. The fraction $\\mathrm{d}f/\\mathrm{d}x$ is Leibniz's, still used by everyone.
+
+## $\\dfrac{\\partial}{\\partial x}$ — partial derivative
+
+Used when $f$ depends on **several** variables and you want the rate of change holding the others fixed. The "curly d" $\\partial$ is read "del" or "partial."
+
+$$\\frac{\\partial f}{\\partial x}\\bigg|_{y \\text{ fixed}}$$
+
+## A science example
+
+The **heat equation** governs how temperature spreads through a material:
+
+$$\\frac{\\partial T}{\\partial t} = \\alpha \\, \\frac{\\partial^2 T}{\\partial x^2}.$$
+
+$T$ depends on **both** position $x$ and time $t$, so both derivatives are partial. Using a straight $\\mathrm{d}/\\mathrm{d}t$ would be a notational lie — it would claim $T$ has no spatial dependence, gutting the entire equation.`,
+  },
+  {
+    slug: "integral-notation",
+    title: "Integrals: ∫, ∫∫, ∮",
+    weekNumber: 2,
+    blurb: "The 'long S' that adds up infinitely many infinitesimal pieces.",
+    lectureTitle: "2.6 Integral signs: ∫, ∫∫, ∮",
+    body: `# Integral notation
+
+The integral sign $\\int$ is a stretched **S** — for *sum*. It is the continuous limit of $\\sum$.
+
+- $\\displaystyle\\int_a^b f(x)\\,\\mathrm{d}x$ — **definite integral**: the signed area under $f$ from $a$ to $b$.
+- $\\displaystyle\\int f(x)\\,\\mathrm{d}x$ — **indefinite integral**: an antiderivative.
+- $\\displaystyle\\iint_D f\\,\\mathrm{d}A$ — **double integral** over a region $D$ in the plane.
+- $\\displaystyle\\oint_C \\vec F \\cdot \\mathrm{d}\\vec r$ — **contour integral**: the little circle means "around a closed loop."
+
+The $\\mathrm{d}x$ at the end is **not** decorative — it tells the reader *which variable* is being integrated.
+
+## A science example
+
+**Faraday's law** of electromagnetic induction, in integral form, uses a contour integral:
+
+$$\\oint_C \\vec E \\cdot \\mathrm{d}\\vec\\ell \\;=\\; -\\frac{\\mathrm{d}\\Phi_B}{\\mathrm{d}t}.$$
+
+The $\\oint$ insists the loop be closed: you walk all the way around a wire loop and sum the electric field along the way. Replacing it with a plain $\\int$ would be physically wrong — the law is about *circulation*, which only makes sense around a loop.`,
+  },
+  {
+    slug: "e-ln-log",
+    title: "e, ln, and log",
+    weekNumber: 2,
+    blurb: "Euler's number and its two favorite inverses.",
+    lectureTitle: "2.7 e, ln, log",
+    body: `# e, natural log, and log
+
+Three of the most-used symbols in all of science.
+
+- $e \\approx 2.71828\\dots$ — **Euler's number**, the natural base. Defined by $\\lim_{n \\to \\infty}(1 + 1/n)^n$, and uniquely characterized by $\\dfrac{\\mathrm{d}}{\\mathrm{d}x} e^x = e^x$.
+- $\\ln x$ — the **natural logarithm**, $\\log$ base $e$. By definition $\\ln(e^x) = x$.
+- $\\log x$ — context-dependent! In math: usually $\\log_{10}$. In computer science: $\\log_2$. In statistics and most of physics: $\\ln$. Read carefully.
+
+Key identities:
+
+$$\\ln(ab) = \\ln a + \\ln b, \\qquad e^{\\ln x} = x, \\qquad \\log_b x = \\frac{\\ln x}{\\ln b}.$$
+
+## A science example
+
+**Radioactive decay** follows
+
+$$N(t) = N_0\\, e^{-\\lambda t}.$$
+
+Solving for the half-life ($N = N_0/2$) requires the natural log:
+
+$$t_{1/2} = \\frac{\\ln 2}{\\lambda}.$$
+
+Carbon-14 dating ($t_{1/2} \\approx 5{,}730$ years) inverts this equation every time an archaeologist puts a sample in the spectrometer. Without $e$ and $\\ln$, you cannot even write down the model, let alone solve it.`,
+  },
+
+  // ───────────────────────────────────────────────────────────────
+  // Week 3 — Probability and statistics notation
+  // ───────────────────────────────────────────────────────────────
+  {
+    slug: "greek-parameters",
+    title: "Greek parameters: μ, σ, σ²",
     weekNumber: 3,
-    blurb: "Mean, median, mode, range, variance, standard deviation.",
-    lectureTitle: "3.1 Descriptive statistics",
-    body: `# Descriptive statistics
+    blurb: "Population mean, standard deviation, and variance.",
+    lectureTitle: "3.1 μ, σ, σ² — population parameters",
+    body: `# Greek letters for population parameters
 
-We summarize a dataset with **center** and **spread**.
+Statistics reserves **Greek letters for unknown population parameters** and Roman letters for the sample quantities used to estimate them.
 
-## Center
+- $\\mu$ — **mu**, the population mean (expected value).
+- $\\sigma$ — **sigma**, the population standard deviation.
+- $\\sigma^2$ — the population variance.
 
-- **Mean** $\\bar x = \\tfrac{1}{n}\\sum x_i$.
-- **Median**: the middle value (or average of two middles).
-- **Mode**: the most common value.
+By convention:
 
-## Spread
+$$\\mu = E[X], \\qquad \\sigma^2 = E[(X - \\mu)^2], \\qquad \\sigma = \\sqrt{\\sigma^2}.$$
 
-- **Range** = max - min.
-- **Variance** $\\sigma^2 = \\tfrac{1}{n}\\sum (x_i - \\bar x)^2$.
-- **Standard deviation** $\\sigma = \\sqrt{\\sigma^2}$ — same units as the data.
+Variance is in squared units; standard deviation has the same units as the data, which is why it is more often reported.
 
-The median resists outliers; the mean does not.`,
+## A science example
+
+In **quality control**, a manufacturing process produces parts whose diameters are modeled as drawn from a population with mean $\\mu = 10.00$ mm and standard deviation $\\sigma = 0.05$ mm. A "six-sigma" process keeps the spec limits at least $6\\sigma$ from $\\mu$ — here, $\\pm 0.30$ mm. The Greek letters are not just symbols; the entire industrial vocabulary ("six sigma") is built on naming $\\sigma$.
+
+## Common confusion
+
+$\\sigma$ is also the symbol for surface charge density (physics), electrical conductivity (engineering), and the Stefan–Boltzmann constant (thermodynamics). Context decides; the keyboard key is the same.`,
   },
   {
-    slug: "data-visualization",
-    title: "Data visualization",
+    slug: "sample-stats-hats",
+    title: "Sample statistics: x̄, p̂, s",
     weekNumber: 3,
-    blurb: "Histograms, box plots, scatter plots — and when each lies.",
-    lectureTitle: "3.2 Data visualization",
-    body: `# Visualization
+    blurb: "Bars for averages, hats for estimators.",
+    lectureTitle: "3.2 x̄, p̂, s — sample statistics",
+    body: `# Sample statistics: bars and hats
 
-The right chart reveals; the wrong chart deceives.
+The diacritics on these letters carry as much meaning as the letters themselves.
 
-- **Histogram**: distribution of a single variable.
-- **Box plot**: five-number summary, quick outlier spotting.
-- **Scatter plot**: relationship between two variables.
-- **Bar chart**: comparing categories — not for trends over time, that's a line chart.
+- $\\bar x$ — read "**x-bar**." The **sample mean**: $\\bar x = \\tfrac{1}{n}\\sum x_i$. Estimates $\\mu$.
+- $\\hat p$ — read "**p-hat**." A **sample proportion** or, more generally, an **estimator** of an unknown parameter.
+- $s$ — the **sample standard deviation**. Estimates $\\sigma$. (And $s^2$ is the sample variance.)
 
-Beware truncated y-axes, dual axes, and 3D pies. Most "interesting" data visualizations are interesting because of distortion.`,
+The general rule:
+
+> **Bars** denote averages of a sample. **Hats** denote estimators (educated guesses) of an unknown parameter.
+
+## A science example
+
+In a **clinical trial**, the true effectiveness $p$ of a vaccine in the entire population is unknown — it cannot be measured directly. We can only run the trial on a sample of $n$ volunteers, count the number protected, and report
+
+$$\\hat p = \\frac{\\text{number protected}}{n}.$$
+
+A vaccine reported as "95% effective" is really reporting $\\hat p = 0.95$ for some particular trial. The true $p$ is what we want; $\\hat p$ is the best guess we have. Confidence intervals (next week's territory) quantify how close they are likely to be.`,
   },
   {
-    slug: "probability-basics",
-    title: "Probability basics",
+    slug: "probability-notation",
+    title: "Probability: P(A), P(A|B)",
     weekNumber: 3,
-    blurb: "Sample spaces, events, and the basic rules.",
-    lectureTitle: "3.3 Probability basics",
-    body: `# Probability basics
+    blurb: "Probabilities and conditional probabilities.",
+    lectureTitle: "3.3 P(A) and P(A|B)",
+    body: `# Probability notation
 
-A **probability** is a number in $[0, 1]$ measuring how likely an event is.
+- $P(A)$ — the **probability** of event $A$. A number in $[0, 1]$.
+- $P(A \\cap B)$ — probability that **both** $A$ and $B$ happen.
+- $P(A \\cup B)$ — probability that **either** happens (or both).
+- $P(A \\mid B)$ — read "the probability of $A$ **given** $B$." The vertical bar means "conditional on."
 
-## Rules
+The conditional is defined by
 
-- $P(\\text{not } A) = 1 - P(A)$.
-- For mutually exclusive $A$ and $B$: $P(A \\cup B) = P(A) + P(B)$.
-- For independent $A$ and $B$: $P(A \\cap B) = P(A) \\cdot P(B)$.
+$$P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}, \\qquad P(B) > 0,$$
 
-A fair die has $P(\\text{roll } 6) = \\tfrac{1}{6}$. Rolling two dice and getting *two* sixes? $\\tfrac{1}{6} \\cdot \\tfrac{1}{6} = \\tfrac{1}{36}$.`,
+and is the engine behind **Bayes' theorem**:
+
+$$P(A \\mid B) = \\frac{P(B \\mid A)\\, P(A)}{P(B)}.$$
+
+## A science example
+
+In **epidemiology**, the **positive predictive value** of a test is exactly a conditional probability:
+
+$$P(\\text{disease} \\mid \\text{positive test}).$$
+
+This is *not* the same as the test's **sensitivity**, which is $P(\\text{positive test} \\mid \\text{disease})$ — and confusing the two is the single most common error in interpreting medical results. The vertical bar is doing decisive work here: swap what's left and right of it, and you have answered a completely different question.`,
   },
   {
-    slug: "conditional-probability",
-    title: "Conditional probability",
+    slug: "expectation-variance",
+    title: "Expectation and variance: E(X), Var(X)",
     weekNumber: 3,
-    blurb: "P(A|B), independence, and Bayes' theorem.",
-    lectureTitle: "3.4 Conditional probability and Bayes",
-    body: `# Conditional probability
+    blurb: "Operators that take a random variable and return a number.",
+    lectureTitle: "3.4 E(X) and Var(X)",
+    body: `# Expectation and variance
 
-$P(A \\mid B)$ — the probability of $A$ given that $B$ happened — equals $\\tfrac{P(A \\cap B)}{P(B)}$.
+$X$ (capital, italic) denotes a **random variable**. Two operators act on it:
 
-## Bayes' theorem
+- $E[X]$ — the **expected value**, or long-run average, of $X$. Also written $\\mathbb{E}[X]$ or $\\mu_X$.
+- $\\mathrm{Var}(X)$ — the **variance**, equal to $E[(X - E[X])^2]$. Also written $\\sigma_X^2$.
 
-$$P(A \\mid B) = \\frac{P(B \\mid A) \\cdot P(A)}{P(B)}$$
+Both are *numbers*, not random variables. Useful rules (for constants $a, b$):
 
-This is the engine of medical testing, spam filtering, and most modern AI. The classic warning: a test that's "99% accurate" for a 1-in-10,000 disease has a *terrible* positive predictive value.`,
+$$E[aX + b] = aE[X] + b, \\qquad \\mathrm{Var}(aX + b) = a^2 \\mathrm{Var}(X).$$
+
+Notice variance is unaffected by the shift $b$ — it measures spread, not location — and squares the scaling $a$.
+
+## A science example
+
+In **quantum mechanics**, every observable corresponds to an operator, and the *expected* outcome of a measurement on a state $\\psi$ is written
+
+$$\\langle X \\rangle_\\psi = E[X].$$
+
+The bra-ket $\\langle \\cdot \\rangle$ is just the physicist's spelling of $E[\\cdot]$. The **uncertainty** $\\Delta X$ from Heisenberg's principle is the standard deviation $\\sqrt{\\mathrm{Var}(X)}$. The Greek $\\Delta$ and the statistical $\\sigma$ are, in this context, the same quantity dressed in two notations.`,
   },
   {
-    slug: "distributions",
-    title: "Distributions",
+    slug: "distribution-notation",
+    title: "Distributions: N(μ,σ²), ~",
     weekNumber: 3,
-    blurb: "Normal, binomial, and the central limit theorem.",
-    lectureTitle: "3.5 Distributions",
-    body: `# Distributions
+    blurb: "Saying 'X is distributed as ...' in symbols.",
+    lectureTitle: "3.5 X ~ N(μ, σ²)",
+    body: `# Distribution notation
 
-A **distribution** describes how a random quantity is spread over its possible values.
+The squiggle $\\sim$ in statistics is read "**is distributed as**." It connects a random variable to its distribution.
 
-## The normal distribution
+$$X \\sim N(\\mu, \\sigma^2)$$
 
-The bell curve. Parametrized by mean $\\mu$ and standard deviation $\\sigma$. Roughly 68% of mass within $\\pm \\sigma$, 95% within $\\pm 2\\sigma$, 99.7% within $\\pm 3\\sigma$.
+means "$X$ is a normal random variable with mean $\\mu$ and variance $\\sigma^2$."
 
-## Why it's everywhere
+Other common families:
 
-The **central limit theorem**: averages of many independent samples are approximately normal, regardless of the underlying distribution. This is why so much of statistics works.`,
+- $X \\sim \\text{Bernoulli}(p)$ — coin flip with success probability $p$.
+- $X \\sim \\text{Binomial}(n, p)$ — number of successes in $n$ flips.
+- $X \\sim \\text{Poisson}(\\lambda)$ — rare-event counts with rate $\\lambda$.
+- $X \\sim \\text{Exp}(\\lambda)$ — waiting time between Poisson events.
+
+The parameters in parentheses uniquely determine the distribution.
+
+## A science example
+
+**Measurement error** in a well-calibrated instrument is typically modeled as
+
+$$\\varepsilon \\sim N(0, \\sigma^2),$$
+
+with mean zero (no bias) and variance $\\sigma^2$ (the instrument's precision). When a physicist reports $g = 9.812 \\pm 0.003 \\ \\text{m/s}^2$, the implicit model is $\\text{measured } g = \\text{true } g + \\varepsilon$ with $\\varepsilon \\sim N(0, 0.003^2)$. The $\\sim$ does a lot of compact work: distribution family, location, spread — all in five characters.`,
   },
   {
-    slug: "sampling-confidence",
-    title: "Sampling and confidence intervals",
+    slug: "test-statistics",
+    title: "Test statistics: z, t, χ²",
     weekNumber: 3,
-    blurb: "Estimating populations from samples; margin of error.",
-    lectureTitle: "3.6 Sampling and confidence intervals",
-    body: `# Sampling
+    blurb: "The standardized scores that drive hypothesis tests.",
+    lectureTitle: "3.6 z, t, χ² — test statistics",
+    body: `# Test statistics
 
-We rarely measure a whole population. We **sample** and infer.
+Hypothesis testing standardizes a sample result into a single number whose distribution under the null hypothesis is known.
 
-## Margin of error
+- $z$ — the **z-score**, $z = \\dfrac{\\bar x - \\mu_0}{\\sigma/\\sqrt{n}}$. Used when $\\sigma$ is known. Under the null, $z \\sim N(0, 1)$.
+- $t$ — **Student's t-statistic**, $t = \\dfrac{\\bar x - \\mu_0}{s/\\sqrt n}$. Used when $\\sigma$ is estimated by $s$. Heavier tails than $z$ for small $n$.
+- $\\chi^2$ — **chi-squared statistic**, used for goodness-of-fit and independence tests. The Greek letter is "chi," pronounced "kai."
 
-For a proportion estimated from a random sample of size $n$, a 95% confidence interval has roughly margin of error $\\tfrac{1}{\\sqrt{n}}$. A poll of 1000 has margin around $\\pm 3.2\\%$.
+Each comes with its own table (or computer routine) that turns the statistic into a **p-value**.
 
-## What it means
+## A science example
 
-A 95% confidence interval means: if we repeated this sampling procedure many times, about 95% of the intervals we computed would contain the true value. It does *not* mean "95% chance the truth is in this interval."`,
+A **chi-squared goodness-of-fit test** is how geneticists check whether observed offspring ratios match a Mendelian prediction. Mendel's classic 9:3:3:1 ratio for two traits would predict, in 160 offspring, counts of 90:30:30:10. The actual experiment might yield 88:31:32:9. The statistic
+
+$$\\chi^2 = \\sum \\frac{(\\text{observed} - \\text{expected})^2}{\\text{expected}}$$
+
+quantifies the disagreement, and the $\\chi^2$ distribution turns it into a probability. The Greek letter is, in effect, the verdict.`,
   },
   {
-    slug: "correlation-regression",
-    title: "Correlation and regression",
+    slug: "alpha-beta-stats",
+    title: "Significance and power: α, β",
     weekNumber: 3,
-    blurb: "Lines of best fit; correlation vs causation.",
-    lectureTitle: "3.7 Correlation and regression",
-    body: `# Correlation and regression
+    blurb: "The two error rates of a hypothesis test.",
+    lectureTitle: "3.7 α, β — the two error rates",
+    body: `# α and β: the two error rates
 
-The **correlation coefficient** $r$ measures linear association, $-1 \\le r \\le 1$.
+Every hypothesis test has two ways to be wrong, each named with a Greek letter.
 
-**Linear regression** fits a line $y = mx + b$ minimizing the squared residuals.
+- $\\alpha$ — **alpha**, the **significance level** or Type I error rate. Probability of rejecting the null hypothesis when it is true. Conventionally $\\alpha = 0.05$.
+- $\\beta$ — **beta**, the Type II error rate. Probability of *failing* to reject the null when it is false.
+- $1 - \\beta$ — the **power** of the test.
 
-## The cardinal warning
+By choice, $\\alpha$ is fixed before looking at the data. $\\beta$ depends on the true effect size, the sample size, and the variability — and you only get to make it small by collecting enough data.
 
-*Correlation does not imply causation.* Ice-cream sales and drownings are correlated, but neither causes the other — both are driven by summer weather. Any regression result must be interpreted with a model of *what could plausibly cause what*.`,
+## A science example
+
+A **drug trial** with $\\alpha = 0.05$ accepts a 5% risk of "discovering" that an inert pill works. If $\\beta = 0.20$, the trial has only $1 - \\beta = 80\\%$ power to detect a real effect of the assumed size. Underpowered trials are *the* reason so much biomedical research fails to replicate.
+
+In other branches of science:
+- $\\alpha$ also denotes the fine-structure constant ($\\approx 1/137$) and angular acceleration.
+- $\\beta$ denotes velocity as a fraction of $c$ in relativity, or a regression coefficient.
+
+Same keys; different meanings. The reader decides from context.`,
   },
 
-  // Week 4 — Reasoning & capstone
+  // ───────────────────────────────────────────────────────────────
+  // Week 4 — Logic, sets, and the foundations
+  // ───────────────────────────────────────────────────────────────
   {
-    slug: "set-theory",
-    title: "Set theory",
+    slug: "set-membership",
+    title: "Set membership: ∈, ∉",
     weekNumber: 4,
-    blurb: "Sets, unions, intersections, complements, Venn diagrams.",
-    lectureTitle: "4.1 Set theory",
-    body: `# Set theory
+    blurb: "Is this thing in that set?",
+    lectureTitle: "4.1 ∈ and ∉",
+    body: `# Set membership
 
-A **set** is a collection of distinct elements: $A = \\{1, 2, 3\\}$.
+$\\in$ is the most-used symbol in all of higher mathematics. It means "**is an element of**."
 
-## Operations
+- $x \\in A$ — $x$ is in the set $A$.
+- $x \\notin A$ — $x$ is **not** in the set $A$.
 
-- **Union** $A \\cup B$: in either.
-- **Intersection** $A \\cap B$: in both.
-- **Complement** $A^c$: not in $A$.
-- **Difference** $A \\setminus B$: in $A$ but not $B$.
+Examples: $3 \\in \\{1, 2, 3\\}$, $\\pi \\notin \\mathbb{Z}$, $0.5 \\in [0, 1]$.
 
-## Inclusion-exclusion
+The symbol is a stylized lowercase Greek $\\varepsilon$ (epsilon, for "element"), introduced by Peano in 1889.
 
-$|A \\cup B| = |A| + |B| - |A \\cap B|$ — the count of each thing, minus double-counting.`,
+## A science example
+
+In **machine learning**, a classification problem is stated by saying the label $y$ belongs to a finite set of classes:
+
+$$y \\in \\{\\text{cat, dog, bird}\\}.$$
+
+In particle physics, a particle's quantum state lives in a Hilbert space $\\mathcal{H}$:
+
+$$|\\psi\\rangle \\in \\mathcal{H}.$$
+
+Both sentences read "the thing on the left lives in the world on the right." That world might be finite or infinite-dimensional, but $\\in$ doesn't care — it asserts membership, full stop.`,
   },
   {
-    slug: "propositional-logic",
-    title: "Propositional logic",
+    slug: "subset-superset",
+    title: "Subsets: ⊂, ⊆, ⊄",
     weekNumber: 4,
-    blurb: "AND, OR, NOT, IF; truth tables; common fallacies.",
-    lectureTitle: "4.2 Propositional logic",
-    body: `# Propositional logic
+    blurb: "When one set sits inside another.",
+    lectureTitle: "4.2 ⊂, ⊆, ⊄",
+    body: `# Subsets
 
-A **proposition** is a statement that is either true or false. Connectives: $\\neg$ (not), $\\wedge$ (and), $\\vee$ (or), $\\to$ (if-then), $\\leftrightarrow$ (iff).
+- $A \\subseteq B$ — $A$ is a **subset** of $B$: every element of $A$ is also in $B$. Equality $A = B$ is *allowed*.
+- $A \\subset B$ — depending on author, either the same as $\\subseteq$ or the strictly **proper** subset (i.e., $A \\subseteq B$ and $A \\neq B$). When in doubt, write $\\subsetneq$ for "proper" or $\\subseteq$ for "possibly equal."
+- $A \\not\\subset B$ — there exists at least one element of $A$ that is not in $B$.
 
-## Truth tables
+Don't confuse $\\in$ (single element of) with $\\subseteq$ (whole set inside another). $\\{1\\} \\subseteq \\{1, 2\\}$ but $\\{1\\} \\notin \\{1, 2\\}$.
 
-$P \\to Q$ is false only when $P$ is true and $Q$ is false. ("If you mow the lawn, I'll pay you \\$20" is only broken if you mow and I don't pay.)
+## A science example
 
-## Fallacies
+In biology, taxonomic ranks are nested subsets:
+
+$$\\text{species} \\subsetneq \\text{genus} \\subsetneq \\text{family} \\subsetneq \\text{order}.$$
+
+Every species belongs to exactly one genus, every genus to exactly one family, and the $\\subsetneq$ at each level reminds you the larger rank strictly contains more.
+
+In linear algebra, the column space of a matrix $A$ is a subspace of the whole space: $\\text{Col}(A) \\subseteq \\mathbb{R}^m$. Whether the inclusion is proper tells you whether $A$ is surjective.`,
+  },
+  {
+    slug: "set-operations",
+    title: "Set operations: ∪, ∩, ∅, Aᶜ",
+    weekNumber: 4,
+    blurb: "Building new sets from old ones.",
+    lectureTitle: "4.3 ∪, ∩, ∅, Aᶜ",
+    body: `# Set operations
+
+Four symbols, four ways to combine or modify a set.
+
+- $A \\cup B$ — **union**, "$A$ or $B$" (inclusive). $\\{1,2\\} \\cup \\{2,3\\} = \\{1,2,3\\}$.
+- $A \\cap B$ — **intersection**, "$A$ and $B$." $\\{1,2\\} \\cap \\{2,3\\} = \\{2\\}$.
+- $\\emptyset$ (or $\\{\\}$) — the **empty set**, with no elements.
+- $A^c$ — the **complement** of $A$, everything in the universe *not* in $A$. Sometimes written $\\bar A$.
+
+Two sets are **disjoint** when $A \\cap B = \\emptyset$. **De Morgan's laws** are notational gems:
+
+$$(A \\cup B)^c = A^c \\cap B^c, \\qquad (A \\cap B)^c = A^c \\cup B^c.$$
+
+## A science example
+
+In **probability**, set notation *is* event notation. For independent events $A$ and $B$:
+
+$$P(A \\cap B) = P(A) \\cdot P(B), \\qquad P(A \\cup B) = P(A) + P(B) - P(A \\cap B).$$
+
+A genetic risk study asking "what fraction of patients have *both* mutation X *and* environmental exposure Y?" is computing $P(X \\cap Y)$. "*Either*" is $P(X \\cup Y)$. The wrong symbol gives the wrong answer — and, in a clinical setting, the wrong recommendation.`,
+  },
+  {
+    slug: "quantifiers",
+    title: "Quantifiers: ∀, ∃, ∄",
+    weekNumber: 4,
+    blurb: "'For all', 'there exists', 'there does not exist'.",
+    lectureTitle: "4.4 ∀, ∃, ∄",
+    body: `# Quantifiers
+
+These symbols turn a *property* into a *claim about a whole set*.
+
+- $\\forall$ — **for all** (an upside-down A, for "All").
+- $\\exists$ — **there exists** (a backward E, for "Exists").
+- $\\exists !$ — there exists a **unique**.
+- $\\nexists$ — there does **not** exist.
+
+Read $\\forall x \\in \\mathbb{R},\\ x^2 \\ge 0$ as: "for every real $x$, $x^2$ is non-negative." Read $\\exists x \\in \\mathbb{Z}\\ \\text{such that}\\ x^2 = 4$ as: "there is at least one integer whose square is 4."
+
+**Order matters.** $\\forall x \\exists y$ (for each $x$ a possibly different $y$) is a completely different statement from $\\exists y \\forall x$ (one $y$ that works for every $x$).
+
+## A science example
+
+The **definition of a limit** uses both quantifiers and is the gateway statement of analysis:
+
+$$\\lim_{x \\to a} f(x) = L \\iff \\forall \\varepsilon > 0,\\ \\exists \\delta > 0 : |x - a| < \\delta \\Rightarrow |f(x) - L| < \\varepsilon.$$
+
+Reading aloud: "for every error tolerance $\\varepsilon$ you demand, there exists a closeness $\\delta$ that guarantees it." Swap the quantifiers and you get a stronger, false claim. The two upside-down letters are doing more conceptual work here than the entire English language could do in a paragraph.`,
+  },
+  {
+    slug: "logical-connectives",
+    title: "Logical connectives: ∧, ∨, ¬",
+    weekNumber: 4,
+    blurb: "AND, OR, NOT — the three building blocks of logic.",
+    lectureTitle: "4.5 ∧, ∨, ¬",
+    body: `# Logical connectives
+
+Three symbols build every truth-functional sentence.
+
+- $\\wedge$ — **AND** (conjunction). $P \\wedge Q$ is true only when both $P$ and $Q$ are true.
+- $\\vee$ — **OR** (inclusive disjunction). $P \\vee Q$ is true when at least one is.
+- $\\neg$ — **NOT** (negation). $\\neg P$ is true exactly when $P$ is false.
+
+Visually, $\\wedge$ looks like an "A" (for "And"); $\\vee$ is its mirror image.
+
+**De Morgan's laws** in logic (same shape as for sets):
+
+$$\\neg(P \\wedge Q) \\equiv \\neg P \\vee \\neg Q, \\qquad \\neg(P \\vee Q) \\equiv \\neg P \\wedge \\neg Q.$$
+
+## A science example
+
+**Digital electronics** is literal propositional logic baked into silicon: an AND gate computes $\\wedge$, an OR gate computes $\\vee$, an inverter computes $\\neg$. Any circuit you can describe with these three can be built from NAND gates alone, because $P \\wedge Q$, $P \\vee Q$, and $\\neg P$ are all expressible in NAND. The whole edifice of computing rests on these three symbols and the truth tables behind them.
+
+In databases, the SQL clause "WHERE age >= 18 AND country = 'US'" is the SQL spelling of $(\\text{age} \\ge 18) \\wedge (\\text{country} = \\text{US})$.`,
+  },
+  {
+    slug: "implication",
+    title: "Implication: →, ↔",
+    weekNumber: 4,
+    blurb: "If-then and if-and-only-if.",
+    lectureTitle: "4.6 → and ↔",
+    body: `# Implication
+
+- $P \\to Q$ — **implication**, read "if $P$ then $Q$" or "$P$ implies $Q$." Equivalent to $\\neg P \\vee Q$.
+- $P \\leftrightarrow Q$ — **biconditional**, read "$P$ if and only if $Q$" (often abbreviated **iff**). True when $P$ and $Q$ have the same truth value.
+- $P \\Rightarrow Q$ — usually identical to $\\to$, sometimes reserved for "$P$ logically entails $Q$."
+
+The truth table of $P \\to Q$ has one surprising row: when $P$ is **false**, $P \\to Q$ is **true** regardless of $Q$ (a vacuous truth). "If the moon is made of cheese, then $2 + 2 = 5$" is, formally, a true sentence.
+
+## Two notorious fallacies
 
 - **Affirming the consequent**: from $P \\to Q$ and $Q$, you cannot conclude $P$.
-- **Denying the antecedent**: from $P \\to Q$ and $\\neg P$, you cannot conclude $\\neg Q$.`,
+- **Denying the antecedent**: from $P \\to Q$ and $\\neg P$, you cannot conclude $\\neg Q$.
+
+The only valid moves are **modus ponens** ($P \\to Q$, $P$, therefore $Q$) and **modus tollens** ($P \\to Q$, $\\neg Q$, therefore $\\neg P$).
+
+## A science example
+
+A **scientific hypothesis** is a conditional: "$H \\to D$" — if hypothesis $H$ is true, we should observe data $D$. Observing $D$ does **not** prove $H$ (affirming the consequent); but observing $\\neg D$ refutes $H$ by modus tollens. This is exactly the **asymmetry** that Popper called *falsifiability*. The whole philosophy of science can be read off the truth table of $\\to$.`,
   },
   {
-    slug: "combinatorics",
-    title: "Combinatorics",
+    slug: "number-sets",
+    title: "Number sets: ℕ, ℤ, ℚ, ℝ, ℂ",
     weekNumber: 4,
-    blurb: "Counting arrangements; permutations and combinations.",
-    lectureTitle: "4.3 Combinatorics",
-    body: `# Combinatorics
+    blurb: "The five most-named sets in mathematics.",
+    lectureTitle: "4.7 ℕ, ℤ, ℚ, ℝ, ℂ",
+    body: `# The blackboard-bold number sets
 
-How many ways can things happen?
+These five double-struck letters name the most-used number systems.
 
-## Permutations and combinations
+- $\\mathbb{N}$ — **natural numbers**: $\\{1, 2, 3, \\dots\\}$ (or $\\{0, 1, 2, \\dots\\}$, depending on convention).
+- $\\mathbb{Z}$ — **integers**: $\\{\\dots, -2, -1, 0, 1, 2, \\dots\\}$. From German *Zahlen* ("numbers").
+- $\\mathbb{Q}$ — **rationals**: ratios $p/q$ with $p, q \\in \\mathbb{Z}$, $q \\neq 0$. From *Quotient*.
+- $\\mathbb{R}$ — **real numbers**: every point on the number line.
+- $\\mathbb{C}$ — **complex numbers**: $a + bi$ with $a, b \\in \\mathbb{R}$ and $i^2 = -1$.
 
-- Permutations (order matters): $P(n, k) = \\tfrac{n!}{(n-k)!}$.
-- Combinations (order doesn't): $C(n, k) = \\binom{n}{k} = \\tfrac{n!}{k!(n-k)!}$.
+They nest:
 
-How many 5-card poker hands? $\\binom{52}{5} = 2{,}598{,}960$.`,
-  },
-  {
-    slug: "geometry-trig",
-    title: "Geometry and trigonometry",
-    weekNumber: 4,
-    blurb: "Areas, volumes, right-triangle trig.",
-    lectureTitle: "4.4 Geometry and trigonometry",
-    body: `# Geometry and trigonometry
+$$\\mathbb{N} \\subsetneq \\mathbb{Z} \\subsetneq \\mathbb{Q} \\subsetneq \\mathbb{R} \\subsetneq \\mathbb{C}.$$
 
-## Areas and volumes
+Each enlargement was historically driven by an equation the previous system couldn't solve: $x + 1 = 0$ (need $\\mathbb{Z}$), $2x = 1$ (need $\\mathbb{Q}$), $x^2 = 2$ (need $\\mathbb{R}$), $x^2 = -1$ (need $\\mathbb{C}$).
 
-- Rectangle: $A = lw$.
-- Triangle: $A = \\tfrac{1}{2}bh$.
-- Circle: $A = \\pi r^2$, $C = 2\\pi r$.
-- Box: $V = lwh$.
-- Sphere: $V = \\tfrac{4}{3}\\pi r^3$.
+## A science example
 
-## Right-triangle trig
+A **quantum wavefunction** maps spacetime to the complex numbers:
 
-For a right triangle with angle $\\theta$:
+$$\\psi: \\mathbb{R}^4 \\to \\mathbb{C}.$$
 
-$$\\sin\\theta = \\frac{\\text{opposite}}{\\text{hypotenuse}}, \\quad \\cos\\theta = \\frac{\\text{adjacent}}{\\text{hypotenuse}}, \\quad \\tan\\theta = \\frac{\\sin\\theta}{\\cos\\theta}$$
-
-And the Pythagorean theorem: $a^2 + b^2 = c^2$.`,
-  },
-  {
-    slug: "rates-of-change",
-    title: "Rates of change",
-    weekNumber: 4,
-    blurb: "Average and instantaneous rates; a gentle intro to derivatives.",
-    lectureTitle: "4.5 Rates of change",
-    body: `# Rates of change
-
-The **average rate of change** of $f$ over $[a, b]$ is $\\tfrac{f(b) - f(a)}{b - a}$ — the slope of the secant line.
-
-## Instantaneous rate
-
-Let $b$ approach $a$. The limit, when it exists, is the **derivative** $f'(a)$ — the slope of the tangent line at $a$.
-
-You don't need to compute derivatives in this course, but you should be able to interpret one. A derivative is "how fast is this changing, right now, per unit input."`,
-  },
-  {
-    slug: "financial-math",
-    title: "Financial math",
-    weekNumber: 4,
-    blurb: "Compound interest, APR vs APY, present and future value.",
-    lectureTitle: "4.6 Financial mathematics",
-    body: `# Financial mathematics
-
-## Compound interest
-
-Principal $P$ at annual rate $r$ compounded $n$ times per year for $t$ years grows to:
-
-$$A = P \\left(1 + \\frac{r}{n}\\right)^{nt}$$
-
-## APR vs APY
-
-**APR** (annual percentage rate) is the stated nominal rate. **APY** (annual percentage yield) accounts for compounding. \\$1000 at 6% APR compounded monthly has APY $= (1 + 0.06/12)^{12} - 1 \\approx 6.17\\%$.
-
-## The Rule of 72
-
-Money compounding at rate $r\\%$ per year roughly doubles in $72/r$ years.`,
-  },
-  {
-    slug: "quantitative-arguments",
-    title: "Quantitative arguments",
-    weekNumber: 4,
-    blurb: "Reading, writing, and evaluating numerical claims in prose.",
-    lectureTitle: "4.7 Quantitative arguments",
-    body: `# Quantitative arguments
-
-The capstone skill: take a quantitative claim from the wild and evaluate it.
-
-## A checklist
-
-1. **What is the population?** "Most Americans" — how many is that?
-2. **What is the source?** Self-report, observation, experiment?
-3. **What are the units?** Per capita? Per dollar? Per year?
-4. **Compared to what?** A number without a comparison is rarely meaningful.
-5. **Is the magnitude plausible?** Run a back-of-envelope check.
-
-## Writing your own
-
-Use precise numbers with explicit units. State your assumptions. Distinguish what you measured from what you inferred. Cite.`,
-  },
-  {
-    slug: "capstone-synthesis",
-    title: "Capstone synthesis",
-    weekNumber: 4,
-    blurb: "Putting it all together on a real-world problem.",
-    lectureTitle: "4.8 Capstone synthesis",
-    body: `# Capstone synthesis
-
-The final week ties together everything from the course. A capstone problem might ask:
-
-> A city of 200,000 is considering a \\$40M investment in a new bus line. The current ridership is 12,000 trips/day at \\$2/trip. The new line is projected to increase ridership by 35% and reduce car commutes by an estimated 4%. Evaluate.
-
-Solving this requires *units* (trips, dollars, years), *percentages*, *modeling* (linear vs nonlinear effects), *probability* (uncertainty in the projections), and *quantitative argument* (what would change your mind?). That is quantitative reasoning.`,
+The reals model space and time; the codomain $\\mathbb{C}$ is where the wavefunction's amplitude and phase both live. Squaring the modulus, $|\\psi|^2 \\in \\mathbb{R}_{\\ge 0}$, recovers a probability density on $\\mathbb{R}^3$. Quantum mechanics is essentially a sentence whose subject is in $\\mathbb{C}$ and whose verb projects back to $\\mathbb{R}$.`,
   },
 ];
 
@@ -572,76 +822,205 @@ type SeedAssignment = {
 };
 
 const ASSIGNMENTS: SeedAssignment[] = [
-  // Week 1
+  // ───────────── Week 1 ─────────────
   {
     kind: "homework",
-    title: "Homework 1.1 — Number, fractions, ratios",
+    title: "Homework 1.1 — Equality, inequality, ±, ∝",
     weekNumber: 1,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice. Show your work in the answer box.",
+    instructions:
+      "Use the math keyboard to type the requested symbols. Each answer should be written in proper mathematical notation, not English.",
     problems: [
-      { topicSlug: "number-sense", prompt: "Is 5 billion closer to $5 \\times 10^6$ or $5 \\times 10^9$? Write the order of magnitude.", correctAnswer: "10^9", explanation: "Billion is $10^9$." },
-      { topicSlug: "fractions-decimals-percents", prompt: "A jacket costs $\\$80$. It is discounted by 25%. What is the sale price in dollars?", correctAnswer: "60", explanation: "$80 \\times 0.75 = 60$." },
-      { topicSlug: "ratios-proportions", prompt: "If 3 cups of flour make 12 cookies, how many cups make 40 cookies?", correctAnswer: "10", explanation: "$\\tfrac{3}{12} = \\tfrac{x}{40}$, so $x = 10$." },
+      {
+        topicSlug: "equality-family",
+        prompt:
+          "Using the correct symbol from {=, ≠, ≈, ≡}, write a true statement comparing π and 22/7. Then write a second statement comparing the values $2 + 2$ and $4$ using the correct symbol.",
+        correctAnswer: "π ≈ 22/7 and 2 + 2 = 4",
+        explanation:
+          "$\\pi$ and $22/7$ are not exactly equal but are close, so $\\pi \\approx 22/7$. The two sides of $2 + 2$ and $4$ name the same value, so $=$ is correct.",
+      },
+      {
+        topicSlug: "inequalities-notation",
+        prompt:
+          "Write a single inequality (using <, >, ≤, or ≥) expressing the condition that a temperature T in Celsius is at or below freezing.",
+        correctAnswer: "T ≤ 0",
+        explanation: "At-or-below freezing means $T \\le 0\\,°\\text{C}$. The non-strict $\\le$ includes the exact freezing point.",
+      },
+      {
+        topicSlug: "plus-minus-proportional",
+        prompt:
+          "Using ± and √, write both solutions of $x^2 = 49$ in a single expression.",
+        correctAnswer: "x = ±√49 = ±7",
+        explanation: "$x^2 = 49 \\Rightarrow x = \\pm\\sqrt{49} = \\pm 7$. The $\\pm$ captures both roots.",
+      },
+      {
+        topicSlug: "plus-minus-proportional",
+        prompt:
+          "Using the ∝ symbol, write the statement: 'The area A of a circle is proportional to the square of its radius r.'",
+        correctAnswer: "A ∝ r²",
+        explanation:
+          "$A \\propto r^2$. The constant of proportionality is $\\pi$ (so $A = \\pi r^2$), but $\\propto$ states only the shape of the relationship.",
+      },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 1.2 — Units, expressions, equations",
+    title: "Homework 1.2 — Powers, roots, |x|, subscripts",
     weekNumber: 1,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use the math keyboard for every symbol.",
     problems: [
-      { topicSlug: "unit-conversions", prompt: "How many minutes in 3 days?", correctAnswer: "4320", explanation: "$3 \\times 24 \\times 60 = 4320$." },
-      { topicSlug: "order-of-operations", prompt: "Evaluate: $2 + 3 \\times 4^2 - 5$.", correctAnswer: "45", explanation: "$2 + 3 \\times 16 - 5 = 2 + 48 - 5 = 45$." },
-      { topicSlug: "algebraic-expressions", prompt: "Evaluate $3x^2 - 2x + 1$ at $x = -2$.", correctAnswer: "17", explanation: "$3(4) - 2(-2) + 1 = 12 + 4 + 1 = 17$." },
-      { topicSlug: "linear-equations", prompt: "Solve for $x$: $4x - 9 = 23$.", correctAnswer: "8", explanation: "$4x = 32 \\Rightarrow x = 8$." },
+      {
+        topicSlug: "exponents-notation",
+        prompt:
+          "Using exponent notation, write the formula for kinetic energy of a mass m moving at speed v.",
+        correctAnswer: "KE = (1/2) m v²",
+        explanation:
+          "$\\text{KE} = \\tfrac{1}{2} m v^2$. The exponent on $v$ is what makes a doubling of speed quadruple the energy.",
+      },
+      {
+        topicSlug: "roots-notation",
+        prompt:
+          "Using √, write the formula for the period T of a pendulum of length L (assume g is the gravitational acceleration).",
+        correctAnswer: "T = 2π √(L/g)",
+        explanation: "$T = 2\\pi \\sqrt{L/g}$.",
+      },
+      {
+        topicSlug: "abs-factorial-notation",
+        prompt:
+          "Using |·|, write the statement that x is within 2 units of 5 (i.e., the distance from x to 5 is at most 2). Then, using factorial notation, write the number of ways to order 6 distinct books on a shelf.",
+        correctAnswer: "|x − 5| ≤ 2 and 6! = 720",
+        explanation:
+          "Distance from $x$ to $5$ is $|x - 5|$, so $|x-5| \\le 2$. Orderings of 6 distinct items: $6! = 720$.",
+      },
+      {
+        topicSlug: "subscripts-indexing",
+        prompt:
+          "Using subscripts, write the kinematic formula for the final velocity of an object with initial velocity v₀ under constant acceleration a after time t.",
+        correctAnswer: "v_f = v_0 + a t",
+        explanation:
+          "$v_f = v_0 + a t$. The subscripts distinguish the initial ($v_0$) and final ($v_f$) velocities.",
+      },
     ],
   },
   {
     kind: "test",
-    title: "Week 1 Test",
+    title: "Week 1 Test — Foundational notation",
     weekNumber: 1,
     isTimed: true,
     timeLimitMinutes: 30,
-    instructions: "Timed. 30 minutes. Math keyboard available; pasting is disabled.",
+    instructions:
+      "Timed. 30 minutes. Math keyboard available; pasting is disabled. Every answer must use the relevant symbol explicitly.",
     problems: [
-      { topicSlug: "fractions-decimals-percents", prompt: "Convert $\\tfrac{7}{8}$ to a percent.", correctAnswer: "87.5%", explanation: "$7 \\div 8 = 0.875 = 87.5\\%$." },
-      { topicSlug: "ratios-proportions", prompt: "A map uses scale 1:25000. A road is 6 cm long on the map. How many meters long is the road in reality?", correctAnswer: "1500", explanation: "$6 \\text{ cm} \\times 25000 = 150000 \\text{ cm} = 1500 \\text{ m}$." },
-      { topicSlug: "linear-equations", prompt: "Solve: $3(x + 4) = 2x + 21$.", correctAnswer: "9", explanation: "$3x + 12 = 2x + 21 \\Rightarrow x = 9$." },
-      { topicSlug: "unit-conversions", prompt: "Convert 90 km/h to m/s. Round to two decimals.", correctAnswer: "25", explanation: "$90 \\times \\tfrac{1000}{3600} = 25$ m/s." },
-      { topicSlug: "number-sense", prompt: "Which is largest: $\\sqrt{2}$, $\\pi/2$, or $1.5$?", correctAnswer: "pi/2", explanation: "$\\sqrt{2} \\approx 1.414$, $\\pi/2 \\approx 1.571$, so $\\pi/2$ is largest." },
+      {
+        topicSlug: "equality-family",
+        prompt:
+          "Using one of {=, ≠, ≈, ≡}, write a true statement of the form '$\\sin^2\\theta + \\cos^2\\theta \\,?\\, 1$'. Pick the symbol that says 'true for every θ.'",
+        correctAnswer: "sin²θ + cos²θ ≡ 1",
+        explanation: "$\\sin^2\\theta + \\cos^2\\theta \\equiv 1$ — a Pythagorean identity, true for all $\\theta$.",
+      },
+      {
+        topicSlug: "inequalities-notation",
+        prompt:
+          "State the second law of thermodynamics for an isolated system using ΔS and the correct inequality symbol.",
+        correctAnswer: "ΔS ≥ 0",
+        explanation: "$\\Delta S \\ge 0$, with equality for reversible processes only.",
+      },
+      {
+        topicSlug: "exponents-notation",
+        prompt:
+          "Using exponent notation, write the surface area S of a sphere of radius r.",
+        correctAnswer: "S = 4π r²",
+        explanation: "$S = 4\\pi r^2$.",
+      },
+      {
+        topicSlug: "roots-notation",
+        prompt:
+          "Using √, write the Pythagorean expression for the hypotenuse c of a right triangle with legs a and b.",
+        correctAnswer: "c = √(a² + b²)",
+        explanation: "$c = \\sqrt{a^2 + b^2}$.",
+      },
+      {
+        topicSlug: "subscripts-indexing",
+        prompt:
+          "Using subscripts to denote time steps, write the difference equation that expresses 'this year's GDP equals last year's GDP plus growth G.'",
+        correctAnswer: "Y_t = Y_{t-1} + G",
+        explanation: "$Y_t = Y_{t-1} + G$. Subscripts distinguish the time periods.",
+      },
     ],
   },
 
-  // Week 2
+  // ───────────── Week 2 ─────────────
   {
     kind: "homework",
-    title: "Homework 2.1 — Lines and systems",
+    title: "Homework 2.1 — Σ, Π, Δ",
     weekNumber: 2,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use Σ and Π keys from the math keyboard.",
     problems: [
-      { topicSlug: "linear-functions", prompt: "Find the slope of the line through $(2, 5)$ and $(6, 13)$.", correctAnswer: "2", explanation: "$(13 - 5) / (6 - 2) = 8/4 = 2$." },
-      { topicSlug: "linear-functions", prompt: "Write $y$ as a linear function of $x$ if it costs \\$5 plus \\$2 per item, where $x$ is items.", correctAnswer: "y = 2x + 5", explanation: "Slope 2, intercept 5." },
-      { topicSlug: "systems-of-equations", prompt: "Solve the system: $x + y = 10$ and $x - y = 4$. Give $x$.", correctAnswer: "7", explanation: "Add: $2x = 14$, $x = 7$." },
+      {
+        topicSlug: "sigma-summation",
+        prompt:
+          "Using Σ, write the formula for the sample mean x̄ of n data points x₁, …, xₙ.",
+        correctAnswer: "x̄ = (1/n) Σ_{i=1}^{n} x_i",
+        explanation: "$\\bar x = \\tfrac{1}{n} \\sum_{i=1}^{n} x_i$.",
+      },
+      {
+        topicSlug: "pi-product",
+        prompt:
+          "Using Π, write the definition of n! as a product over an index.",
+        correctAnswer: "n! = Π_{k=1}^{n} k",
+        explanation: "$n! = \\prod_{k=1}^{n} k$.",
+      },
+      {
+        topicSlug: "delta-change",
+        prompt:
+          "Using Δ, write the formula for average velocity over an interval [t₁, t₂] given positions x₁ and x₂ at those times.",
+        correctAnswer: "v̄ = Δx / Δt = (x₂ − x₁)/(t₂ − t₁)",
+        explanation: "$\\bar v = \\tfrac{\\Delta x}{\\Delta t} = \\tfrac{x_2 - x_1}{t_2 - t_1}$.",
+      },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 2.2 — Quadratics, exponentials, inequalities",
+    title: "Homework 2.2 — lim, →, ∞, d/dx, ∂, ∫, e, ln",
     weekNumber: 2,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use the Calculus tab of the math keyboard.",
     problems: [
-      { topicSlug: "quadratics", prompt: "Solve: $x^2 - 5x + 6 = 0$. Give the larger root.", correctAnswer: "3", explanation: "$(x-2)(x-3) = 0$, roots 2 and 3." },
-      { topicSlug: "exponentials-logs", prompt: "Solve for $x$: $2^x = 32$.", correctAnswer: "5", explanation: "$2^5 = 32$." },
-      { topicSlug: "inequalities", prompt: "Solve: $-3x + 5 \\ge 11$. Give the boundary value of $x$.", correctAnswer: "-2", explanation: "$-3x \\ge 6 \\Rightarrow x \\le -2$. Boundary: $-2$." },
-      { topicSlug: "function-modeling", prompt: "A population doubles every 4 years. After 12 years, by what factor has it grown?", correctAnswer: "8", explanation: "$2^{12/4} = 2^3 = 8$." },
+      {
+        topicSlug: "limits-infinity",
+        prompt:
+          "Using lim, →, and ∞, write the statement that 1/x approaches 0 as x grows without bound.",
+        correctAnswer: "lim_{x → ∞} 1/x = 0",
+        explanation: "$\\lim_{x \\to \\infty} \\tfrac{1}{x} = 0$.",
+      },
+      {
+        topicSlug: "derivative-notation",
+        prompt:
+          "Using ∂, write the heat equation for temperature T(x, t) with diffusivity α (one-dimensional case).",
+        correctAnswer: "∂T/∂t = α ∂²T/∂x²",
+        explanation: "$\\partial T/\\partial t = \\alpha\\, \\partial^2 T/\\partial x^2$.",
+      },
+      {
+        topicSlug: "integral-notation",
+        prompt:
+          "Using ∫, write the definite integral that gives the area under f(x) from a to b. Include the dx.",
+        correctAnswer: "∫_a^b f(x) dx",
+        explanation: "$\\int_a^b f(x)\\,\\mathrm{d}x$. The $\\mathrm{d}x$ is required.",
+      },
+      {
+        topicSlug: "e-ln-log",
+        prompt:
+          "Using e and ln, write (a) the formula for radioactive decay starting from N₀ with decay constant λ, and (b) the resulting expression for the half-life t_{1/2}.",
+        correctAnswer: "N(t) = N₀ e^{−λt}, t_{1/2} = ln(2)/λ",
+        explanation:
+          "$N(t) = N_0 e^{-\\lambda t}$. Setting $N = N_0/2$ gives $t_{1/2} = \\ln 2/\\lambda$.",
+      },
     ],
   },
   {
@@ -650,120 +1029,379 @@ const ASSIGNMENTS: SeedAssignment[] = [
     weekNumber: 2,
     isTimed: true,
     timeLimitMinutes: 60,
-    instructions: "Cumulative midterm. 60 minutes. Math keyboard available; pasting disabled.",
+    instructions:
+      "Cumulative midterm covering basic notation and calculus symbols. 60 minutes. Math keyboard available; pasting disabled.",
     problems: [
-      { topicSlug: "fractions-decimals-percents", prompt: "A stock loses 20% then gains 25%. Net percent change?", correctAnswer: "0%", explanation: "$1 \\times 0.8 \\times 1.25 = 1$ — no change." },
-      { topicSlug: "ratios-proportions", prompt: "If 4 workers paint 5 fences in 3 days, how many fences will 6 workers paint in 3 days (same rate)?", correctAnswer: "7.5", explanation: "Workers scale linearly: $\\tfrac{6}{4} \\times 5 = 7.5$." },
-      { topicSlug: "unit-conversions", prompt: "A car travels 60 mph. How many feet per second is that? (1 mile = 5280 ft.) Round to whole.", correctAnswer: "88", explanation: "$60 \\times 5280 / 3600 = 88$ ft/s." },
-      { topicSlug: "linear-equations", prompt: "Solve: $\\tfrac{x}{3} + 4 = 10$.", correctAnswer: "18", explanation: "$\\tfrac{x}{3} = 6 \\Rightarrow x = 18$." },
-      { topicSlug: "linear-functions", prompt: "Line through $(0, 4)$ with slope $-3$. What is $y$ at $x = 5$?", correctAnswer: "-11", explanation: "$y = -3x + 4 = -15 + 4 = -11$." },
-      { topicSlug: "systems-of-equations", prompt: "Solve: $2x + y = 9$, $x - y = 0$. Give $y$.", correctAnswer: "3", explanation: "$x = y$, so $3x = 9$, $x = y = 3$." },
-      { topicSlug: "quadratics", prompt: "How many real solutions does $x^2 + 2x + 5 = 0$ have?", correctAnswer: "0", explanation: "Discriminant $= 4 - 20 = -16 < 0$." },
-      { topicSlug: "exponentials-logs", prompt: "Evaluate $\\log_{10}(10000)$.", correctAnswer: "4", explanation: "$10^4 = 10000$." },
+      {
+        topicSlug: "equality-family",
+        prompt:
+          "Write a true statement using ≈ that gives e to four decimal places.",
+        correctAnswer: "e ≈ 2.7183",
+        explanation: "$e \\approx 2.7183$. (Exact value is irrational.)",
+      },
+      {
+        topicSlug: "inequalities-notation",
+        prompt:
+          "Write a single inequality saying 'the probability p is between 0 and 1, inclusive.'",
+        correctAnswer: "0 ≤ p ≤ 1",
+        explanation: "$0 \\le p \\le 1$. Both endpoints are allowed for a probability.",
+      },
+      {
+        topicSlug: "exponents-notation",
+        prompt:
+          "Using exponent notation, write Einstein's rest-energy equation for a particle of mass m.",
+        correctAnswer: "E = m c²",
+        explanation: "$E = mc^2$.",
+      },
+      {
+        topicSlug: "subscripts-indexing",
+        prompt:
+          "Using subscripts, write the second component of a 3-vector v in coordinate form. (Use v_x, v_y, v_z notation.)",
+        correctAnswer: "v_y",
+        explanation: "$v_y$ — the $y$-component of $\\vec v = (v_x, v_y, v_z)$.",
+      },
+      {
+        topicSlug: "sigma-summation",
+        prompt:
+          "Using Σ, write the sum of the first 100 positive integers in compact form.",
+        correctAnswer: "Σ_{i=1}^{100} i",
+        explanation: "$\\sum_{i=1}^{100} i$. (Its value is $5050$.)",
+      },
+      {
+        topicSlug: "delta-change",
+        prompt:
+          "Using Δ, write the chemistry expression for the enthalpy change of a reaction.",
+        correctAnswer: "ΔH",
+        explanation: "$\\Delta H$ — change in enthalpy.",
+      },
+      {
+        topicSlug: "derivative-notation",
+        prompt:
+          "Using d/dx, write the derivative of x³ with respect to x as an equation.",
+        correctAnswer: "d/dx (x³) = 3x²",
+        explanation: "$\\dfrac{\\mathrm{d}}{\\mathrm{d}x}(x^3) = 3x^2$.",
+      },
+      {
+        topicSlug: "e-ln-log",
+        prompt:
+          "Using ln, solve the equation e^x = 7 for x.",
+        correctAnswer: "x = ln(7)",
+        explanation: "$x = \\ln 7 \\approx 1.9459$.",
+      },
     ],
   },
 
-  // Week 3
+  // ───────────── Week 3 ─────────────
   {
     kind: "homework",
-    title: "Homework 3.1 — Stats and probability",
+    title: "Homework 3.1 — μ, σ, x̄, p̂",
     weekNumber: 3,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use the Statistics tab of the math keyboard.",
     problems: [
-      { topicSlug: "descriptive-statistics", prompt: "Find the median of: 2, 4, 4, 6, 9, 12, 15.", correctAnswer: "6", explanation: "Middle value of 7 sorted numbers is the 4th: 6." },
-      { topicSlug: "descriptive-statistics", prompt: "Find the mean of: 5, 7, 9, 11, 13.", correctAnswer: "9", explanation: "$(5+7+9+11+13)/5 = 45/5 = 9$." },
-      { topicSlug: "probability-basics", prompt: "A fair coin is flipped 3 times. What is the probability of all heads?", correctAnswer: "1/8", explanation: "$(1/2)^3 = 1/8$." },
+      {
+        topicSlug: "greek-parameters",
+        prompt:
+          "Using μ and σ, write the formula that says 'about 95% of values from a normal distribution lie within two standard deviations of the mean,' as an interval.",
+        correctAnswer: "[μ − 2σ, μ + 2σ]",
+        explanation: "$[\\mu - 2\\sigma,\\ \\mu + 2\\sigma]$ — the 95% interval under the empirical rule.",
+      },
+      {
+        topicSlug: "sample-stats-hats",
+        prompt:
+          "A clinical trial of 200 patients records 190 successes. Using p̂, write the sample proportion and give its decimal value.",
+        correctAnswer: "p̂ = 190/200 = 0.95",
+        explanation: "$\\hat p = 190/200 = 0.95$.",
+      },
+      {
+        topicSlug: "probability-notation",
+        prompt:
+          "Using P(·) and P(·|·), write the definition of conditional probability for P(A | B).",
+        correctAnswer: "P(A | B) = P(A ∩ B) / P(B)",
+        explanation: "$P(A \\mid B) = \\dfrac{P(A \\cap B)}{P(B)}$.",
+      },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 3.2 — Distributions and inference",
+    title: "Homework 3.2 — E(X), Var(X), N(μ,σ²), z, t, χ², α, β",
     weekNumber: 3,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use the Statistics tab freely.",
     problems: [
-      { topicSlug: "conditional-probability", prompt: "P(A) = 0.4, P(B|A) = 0.5. What is P(A and B)?", correctAnswer: "0.2", explanation: "$P(A \\cap B) = P(A) \\cdot P(B|A) = 0.4 \\cdot 0.5 = 0.2$." },
-      { topicSlug: "distributions", prompt: "In a normal distribution, approximately what percent of values fall within one standard deviation of the mean?", correctAnswer: "68%", explanation: "Empirical rule: 68-95-99.7." },
-      { topicSlug: "sampling-confidence", prompt: "A poll of $n = 400$ has approximate margin of error $1/\\sqrt{n}$. What is the margin as a percent? Round to whole.", correctAnswer: "5%", explanation: "$1/\\sqrt{400} = 1/20 = 0.05$." },
-      { topicSlug: "correlation-regression", prompt: "If $r = -0.9$ between $X$ and $Y$, the relationship is best described as: positive, negative, or none?", correctAnswer: "negative", explanation: "Sign of $r$ gives direction." },
+      {
+        topicSlug: "expectation-variance",
+        prompt:
+          "Using E(·) and Var(·), write the linearity rule: for constants a and b, what are E(aX + b) and Var(aX + b)?",
+        correctAnswer: "E(aX + b) = a E(X) + b; Var(aX + b) = a² Var(X)",
+        explanation:
+          "$E[aX + b] = aE[X] + b$; $\\mathrm{Var}(aX + b) = a^2 \\mathrm{Var}(X)$. The shift drops out of variance; the scaling squares.",
+      },
+      {
+        topicSlug: "distribution-notation",
+        prompt:
+          "Using ~ and N(μ, σ²), write the statement that measurement error ε is normally distributed with mean 0 and variance 0.04.",
+        correctAnswer: "ε ~ N(0, 0.04)",
+        explanation: "$\\varepsilon \\sim N(0,\\, 0.04)$.",
+      },
+      {
+        topicSlug: "test-statistics",
+        prompt:
+          "Using x̄, μ₀, σ, and n, write the formula for the z-statistic used to test H₀: μ = μ₀ when σ is known.",
+        correctAnswer: "z = (x̄ − μ₀) / (σ / √n)",
+        explanation: "$z = \\dfrac{\\bar x - \\mu_0}{\\sigma/\\sqrt n}$.",
+      },
+      {
+        topicSlug: "alpha-beta-stats",
+        prompt:
+          "Using α and β, define (a) the Type I error rate and (b) the power of a hypothesis test.",
+        correctAnswer: "α = P(reject H₀ | H₀ true); power = 1 − β",
+        explanation:
+          "$\\alpha$ is the Type I error rate, $\\beta$ is the Type II rate, and the power is $1 - \\beta$.",
+      },
     ],
   },
   {
     kind: "test",
-    title: "Week 3 Test",
+    title: "Week 3 Test — Statistics notation",
     weekNumber: 3,
     isTimed: true,
     timeLimitMinutes: 40,
     instructions: "Timed. 40 minutes. Math keyboard available; pasting disabled.",
     problems: [
-      { topicSlug: "descriptive-statistics", prompt: "Standard deviation of {2, 2, 2, 2}?", correctAnswer: "0", explanation: "No spread — all values equal." },
-      { topicSlug: "data-visualization", prompt: "A box plot shows median, quartiles, and what else (one word)?", correctAnswer: "outliers", explanation: "Whiskers and outliers." },
-      { topicSlug: "probability-basics", prompt: "Two fair dice are rolled. Probability the sum is 7?", correctAnswer: "1/6", explanation: "6 of 36 outcomes sum to 7." },
-      { topicSlug: "conditional-probability", prompt: "A test is 99% accurate for a disease present in 1% of people. Given a positive test, probability of disease? (Use Bayes.) Round to two decimals.", correctAnswer: "0.5", explanation: "$\\tfrac{0.99 \\times 0.01}{0.99 \\times 0.01 + 0.01 \\times 0.99} = 0.5$." },
-      { topicSlug: "sampling-confidence", prompt: "To halve the margin of error of a poll, by what factor must sample size grow?", correctAnswer: "4", explanation: "Margin scales as $1/\\sqrt{n}$." },
+      {
+        topicSlug: "greek-parameters",
+        prompt:
+          "Using μ and σ, write the formula for the standardized z-score of a data value x drawn from a population.",
+        correctAnswer: "z = (x − μ) / σ",
+        explanation: "$z = \\dfrac{x - \\mu}{\\sigma}$.",
+      },
+      {
+        topicSlug: "probability-notation",
+        prompt:
+          "Using P(·), P(·|·), and ∩, write Bayes' theorem.",
+        correctAnswer: "P(A | B) = P(B | A) P(A) / P(B)",
+        explanation: "$P(A \\mid B) = \\dfrac{P(B \\mid A) P(A)}{P(B)}$.",
+      },
+      {
+        topicSlug: "expectation-variance",
+        prompt:
+          "Using E(·), write the definition of Var(X) (in terms of expectations).",
+        correctAnswer: "Var(X) = E[(X − E(X))²]",
+        explanation: "$\\mathrm{Var}(X) = E[(X - E[X])^2]$.",
+      },
+      {
+        topicSlug: "distribution-notation",
+        prompt:
+          "Using ~, write a sentence in symbols asserting that a Bernoulli random variable Y has success probability p.",
+        correctAnswer: "Y ~ Bernoulli(p)",
+        explanation: "$Y \\sim \\text{Bernoulli}(p)$.",
+      },
+      {
+        topicSlug: "test-statistics",
+        prompt:
+          "Using χ², write the goodness-of-fit statistic in terms of observed (O) and expected (E) cell counts.",
+        correctAnswer: "χ² = Σ (O − E)² / E",
+        explanation: "$\\chi^2 = \\sum \\dfrac{(O - E)^2}{E}$.",
+      },
     ],
   },
 
-  // Week 4
+  // ───────────── Week 4 ─────────────
   {
     kind: "homework",
-    title: "Homework 4.1 — Sets, logic, combinatorics",
+    title: "Homework 4.1 — ∈, ⊆, ∪, ∩, ∅",
     weekNumber: 4,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use the Logic & Sets tab of the math keyboard.",
     problems: [
-      { topicSlug: "set-theory", prompt: "$A = \\{1,2,3,4\\}$, $B = \\{3,4,5,6\\}$. $|A \\cup B| = ?$", correctAnswer: "6", explanation: "Union is {1,2,3,4,5,6}, size 6." },
-      { topicSlug: "propositional-logic", prompt: "If $P \\to Q$ is true and $Q$ is false, what must $P$ be?", correctAnswer: "false", explanation: "Contrapositive: $\\neg Q \\to \\neg P$." },
-      { topicSlug: "combinatorics", prompt: "How many ways to choose 3 books from 10?", correctAnswer: "120", explanation: "$\\binom{10}{3} = 120$." },
+      {
+        topicSlug: "set-membership",
+        prompt:
+          "Using ∈ and ∉, write two true statements: one about 3 and the set {1, 2, 3, 4}, and one about π and the set ℤ of integers.",
+        correctAnswer: "3 ∈ {1,2,3,4} and π ∉ ℤ",
+        explanation: "$3 \\in \\{1,2,3,4\\}$ (3 is in the set); $\\pi \\notin \\mathbb{Z}$ (π is irrational).",
+      },
+      {
+        topicSlug: "subset-superset",
+        prompt:
+          "Using ⊆, write the nested chain of inclusions from the integers up through the complex numbers (use the standard blackboard-bold letters).",
+        correctAnswer: "ℤ ⊆ ℚ ⊆ ℝ ⊆ ℂ",
+        explanation: "$\\mathbb{Z} \\subseteq \\mathbb{Q} \\subseteq \\mathbb{R} \\subseteq \\mathbb{C}$.",
+      },
+      {
+        topicSlug: "set-operations",
+        prompt:
+          "Using ∪, ∩, and either Aᶜ or A\\B notation, write De Morgan's law for the complement of a union.",
+        correctAnswer: "(A ∪ B)ᶜ = Aᶜ ∩ Bᶜ",
+        explanation: "$(A \\cup B)^c = A^c \\cap B^c$.",
+      },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 4.2 — Geometry, rates, finance",
+    title: "Homework 4.2 — ∀, ∃, ∧, ∨, ¬, →, ↔",
     weekNumber: 4,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Untimed practice.",
+    instructions: "Use the Logic & Sets tab.",
     problems: [
-      { topicSlug: "geometry-trig", prompt: "Area of a circle with radius 5? Use $\\pi$.", correctAnswer: "25π", explanation: "$\\pi r^2 = 25\\pi$." },
-      { topicSlug: "geometry-trig", prompt: "Right triangle with legs 3 and 4. Hypotenuse?", correctAnswer: "5", explanation: "$\\sqrt{9 + 16} = 5$." },
-      { topicSlug: "rates-of-change", prompt: "$f(x) = x^2$. Average rate of change on $[1, 3]$?", correctAnswer: "4", explanation: "$(9 - 1)/(3 - 1) = 4$." },
-      { topicSlug: "financial-math", prompt: "Using the Rule of 72: at 6% annual return, about how many years to double?", correctAnswer: "12", explanation: "$72/6 = 12$." },
+      {
+        topicSlug: "quantifiers",
+        prompt:
+          "Using ∀ and ∈, write the universal statement: 'For every real x, x² is at least 0.'",
+        correctAnswer: "∀ x ∈ ℝ, x² ≥ 0",
+        explanation: "$\\forall x \\in \\mathbb{R},\\ x^2 \\ge 0$.",
+      },
+      {
+        topicSlug: "logical-connectives",
+        prompt:
+          "Using ∧, ∨, and ¬, write De Morgan's logical law for the negation of (P ∧ Q).",
+        correctAnswer: "¬(P ∧ Q) ≡ ¬P ∨ ¬Q",
+        explanation: "$\\neg(P \\wedge Q) \\equiv \\neg P \\vee \\neg Q$.",
+      },
+      {
+        topicSlug: "implication",
+        prompt:
+          "Using →, write modus tollens as an inference: from P → Q and ¬Q, what can be concluded?",
+        correctAnswer: "From (P → Q) and ¬Q, conclude ¬P",
+        explanation: "Modus tollens: $(P \\to Q) \\wedge \\neg Q \\Rightarrow \\neg P$.",
+      },
+      {
+        topicSlug: "number-sets",
+        prompt:
+          "Using ∈ and the blackboard-bold number sets, write a single sentence asserting that i (the imaginary unit) is in ℂ but not in ℝ.",
+        correctAnswer: "i ∈ ℂ and i ∉ ℝ",
+        explanation: "$i \\in \\mathbb{C}$ and $i \\notin \\mathbb{R}$, since $i^2 = -1$ has no real solution.",
+      },
     ],
   },
   {
     kind: "final",
-    title: "Final Exam — All weeks",
+    title: "Final Exam — All notation",
     weekNumber: 4,
     isTimed: true,
     timeLimitMinutes: 90,
-    instructions: "Cumulative final. 90 minutes. Math keyboard available; pasting disabled.",
+    instructions:
+      "Cumulative final covering every symbol family. 90 minutes. Math keyboard available; pasting disabled.",
     problems: [
-      { topicSlug: "fractions-decimals-percents", prompt: "If a price rises 10% then falls 10%, what is the net percent change? Use a negative sign if decrease.", correctAnswer: "-1%", explanation: "$1.1 \\times 0.9 = 0.99 = -1\\%$." },
-      { topicSlug: "linear-equations", prompt: "Solve: $5(x - 2) = 3x + 4$.", correctAnswer: "7", explanation: "$5x - 10 = 3x + 4 \\Rightarrow 2x = 14 \\Rightarrow x = 7$." },
-      { topicSlug: "quadratics", prompt: "Solve: $x^2 = 49$. Give the positive root.", correctAnswer: "7", explanation: "$x = \\pm 7$." },
-      { topicSlug: "exponentials-logs", prompt: "Solve: $\\log_2(x) = 5$.", correctAnswer: "32", explanation: "$x = 2^5 = 32$." },
-      { topicSlug: "descriptive-statistics", prompt: "Mean of: 10, 20, 30, 40, 100?", correctAnswer: "40", explanation: "$200/5 = 40$." },
-      { topicSlug: "conditional-probability", prompt: "$P(A) = 0.3$, $P(B) = 0.5$, $A$ and $B$ independent. $P(A \\cap B) = ?$", correctAnswer: "0.15", explanation: "$0.3 \\times 0.5 = 0.15$." },
-      { topicSlug: "set-theory", prompt: "$|A| = 10$, $|B| = 15$, $|A \\cap B| = 4$. $|A \\cup B| = ?$", correctAnswer: "21", explanation: "$10 + 15 - 4 = 21$." },
-      { topicSlug: "combinatorics", prompt: "How many 4-letter arrangements of A, B, C, D, E (no repeats)?", correctAnswer: "120", explanation: "$5 \\times 4 \\times 3 \\times 2 = 120$." },
-      { topicSlug: "geometry-trig", prompt: "$\\sin(30°) = ?$ Give a fraction.", correctAnswer: "1/2", explanation: "Standard value." },
-      { topicSlug: "financial-math", prompt: "\\$1000 at 5% APR compounded annually for 2 years. Value? (No dollar sign.)", correctAnswer: "1102.50", explanation: "$1000 \\times 1.05^2 = 1102.50$." },
+      {
+        topicSlug: "equality-family",
+        prompt:
+          "Pick the right symbol from {=, ≠, ≈, ≡} and write a true statement about $\\sin(\\pi)$ and $0$, and another about $1/3$ and $0.333$.",
+        correctAnswer: "sin(π) = 0 and 1/3 ≈ 0.333",
+        explanation: "$\\sin(\\pi) = 0$ exactly; $1/3 \\approx 0.333$ (the decimal is rounded).",
+      },
+      {
+        topicSlug: "exponents-notation",
+        prompt:
+          "Using exponent notation, write Newton's law of gravitation with constant G, masses m₁ and m₂, and distance r.",
+        correctAnswer: "F = G m₁ m₂ / r²",
+        explanation: "$F = G\\dfrac{m_1 m_2}{r^2}$.",
+      },
+      {
+        topicSlug: "sigma-summation",
+        prompt:
+          "Using Σ, write the formula for the dot product of two n-vectors a and b.",
+        correctAnswer: "a · b = Σ_{i=1}^{n} a_i b_i",
+        explanation: "$\\vec a \\cdot \\vec b = \\sum_{i=1}^{n} a_i b_i$.",
+      },
+      {
+        topicSlug: "integral-notation",
+        prompt:
+          "Using ∫, write the integral form of work done by a force F(x) moving an object from x = a to x = b along the x-axis.",
+        correctAnswer: "W = ∫_a^b F(x) dx",
+        explanation: "$W = \\int_a^b F(x)\\,\\mathrm{d}x$.",
+      },
+      {
+        topicSlug: "e-ln-log",
+        prompt:
+          "Using e, write the compound-interest formula in its continuous-compounding form for principal P, annual rate r, after t years.",
+        correctAnswer: "A = P e^{rt}",
+        explanation: "$A = P e^{rt}$.",
+      },
+      {
+        topicSlug: "distribution-notation",
+        prompt:
+          "Using ~ and N(·,·), write that IQ scores X are normally distributed with mean 100 and standard deviation 15.",
+        correctAnswer: "X ~ N(100, 15²)",
+        explanation: "$X \\sim N(100,\\,15^2)$ — the second slot is the variance, $\\sigma^2 = 225$.",
+      },
+      {
+        topicSlug: "probability-notation",
+        prompt:
+          "Using P(·|·), write the conditional probability that a randomly tested patient has a disease (D) given a positive test result (T).",
+        correctAnswer: "P(D | T)",
+        explanation:
+          "$P(D \\mid T)$ — the positive predictive value of the test.",
+      },
+      {
+        topicSlug: "quantifiers",
+        prompt:
+          "Using ∀, ∃, and >, write the ε–δ definition of $\\lim_{x \\to a} f(x) = L$.",
+        correctAnswer:
+          "∀ ε > 0, ∃ δ > 0 : |x − a| < δ ⇒ |f(x) − L| < ε",
+        explanation:
+          "$\\forall \\varepsilon > 0,\\ \\exists \\delta > 0$ such that $|x - a| < \\delta \\Rightarrow |f(x) - L| < \\varepsilon$.",
+      },
+      {
+        topicSlug: "set-operations",
+        prompt:
+          "For independent events A and B with P(A)=0.4 and P(B)=0.5, write the equation for P(A ∩ B) using ∩, and compute the value.",
+        correctAnswer: "P(A ∩ B) = P(A) · P(B) = 0.20",
+        explanation: "Independence: $P(A \\cap B) = P(A) P(B) = 0.4 \\times 0.5 = 0.20$.",
+      },
+      {
+        topicSlug: "number-sets",
+        prompt:
+          "Using ∈ and the blackboard-bold sets, classify each of $-7$, $2/3$, $\\sqrt{2}$, and $3 + 4i$ by writing four membership statements that place each number in its smallest standard set.",
+        correctAnswer:
+          "-7 ∈ ℤ, 2/3 ∈ ℚ, √2 ∈ ℝ, 3+4i ∈ ℂ",
+        explanation:
+          "$-7 \\in \\mathbb{Z}$ (integer), $2/3 \\in \\mathbb{Q}$ (rational, not integer), $\\sqrt 2 \\in \\mathbb{R}$ (irrational), $3 + 4i \\in \\mathbb{C}$ (non-real complex).",
+      },
     ],
   },
 ];
 
+// A stable fingerprint of the seed content. If the database holds topics that
+// don't match this set, we wipe and re-seed instead of leaving stale content
+// from a previous version of the course.
+const EXPECTED_TOPIC_SLUGS = TOPICS.map((t) => t.slug).sort().join(",");
+
 export async function seedIfEmpty(): Promise<void> {
   const existing = await db.execute(sql`select count(*)::int as n from topics`);
   const row = (existing.rows[0] ?? {}) as { n?: number };
-  if ((row.n ?? 0) > 0) {
-    logger.info("Seed: already populated, skipping");
-    return;
+  const count = row.n ?? 0;
+
+  if (count > 0) {
+    const rows = await db.execute(sql`select slug from topics order by slug`);
+    const actualSlugs = (rows.rows as Array<{ slug: string }>)
+      .map((r) => r.slug)
+      .sort()
+      .join(",");
+    if (actualSlugs === EXPECTED_TOPIC_SLUGS) {
+      logger.info("Seed: already populated with current content, skipping");
+      return;
+    }
+    logger.info(
+      "Seed: topic slugs differ from expected course content — wiping and re-seeding",
+    );
+    // Order matters: child tables first.
+    await db.execute(sql`delete from practice_attempts`);
+    await db.execute(sql`delete from practice_problems`);
+    await db.execute(sql`delete from practice_sessions`);
+    await db.execute(sql`delete from answers`);
+    await db.execute(sql`delete from attempts`);
+    await db.execute(sql`delete from problems`);
+    await db.execute(sql`delete from assignments`);
+    await db.execute(sql`delete from lectures`);
+    await db.execute(sql`delete from topics`);
   }
+
   logger.info("Seed: populating course content");
 
   // Topics + lectures

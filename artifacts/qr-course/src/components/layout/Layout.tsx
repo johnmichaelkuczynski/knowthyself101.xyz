@@ -18,9 +18,9 @@ export function Sidebar() {
         <Link href="/">
           <div className="flex items-center gap-3 cursor-pointer">
             <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-serif font-bold text-lg">
-              QR
+              ∑
             </div>
-            <span className="font-serif font-semibold text-lg tracking-tight">QuantReason</span>
+            <span className="font-serif font-semibold text-lg tracking-tight">MathNotation</span>
           </div>
         </Link>
       </div>
@@ -46,7 +46,7 @@ export function Sidebar() {
       </div>
 
       <div className="p-4 border-t border-border text-xs text-muted-foreground text-center">
-        Quantitative Reasoning MVP
+        Teach Yourself Mathematical Notation
       </div>
     </div>
   );

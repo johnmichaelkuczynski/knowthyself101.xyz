@@ -110,7 +110,7 @@ export function Scene5({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
         <div className="text-xs font-bold text-muted-foreground tracking-widest uppercase mb-4">Topic Practice</div>
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h1 className="text-4xl font-serif text-primary mb-2">Ratios and proportions</h1>
+            <h1 className="text-4xl font-serif text-primary mb-2">The equality family: =, ≠, ≈, ≡</h1>
             <div className="text-sm text-muted-foreground">Week 1 · 1 prior attempt · 1% accuracy · <span className="text-emerald-600 font-semibold">STRONG</span></div>
           </div>
           <div className="text-sm font-medium border border-border px-3 py-1 rounded-md bg-white">
@@ -129,7 +129,7 @@ export function Scene5({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
               <StreamingText text="A recipe uses 3 cups of flour for every 2 cups of sugar. If you use 9 cups of flour, how many cups of sugar do you need?" delay={0} />
             )}
             {phase >= 4 && (
-              <StreamingText text="If 4 pencils cost $1.20, how much do 10 pencils cost?" delay={0} />
+              <StreamingText text="Which symbol belongs in:  π ___ 3.14 ?  Type one of  = ≠ ≈ ≡  and explain why." delay={0} />
             )}
           </div>
           
@@ -159,7 +159,7 @@ export function Scene5({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                     <span>Not quite</span>
                   </div>
                   <div className="text-sm text-red-900 leading-relaxed">
-                    <StreamingText text="The ratio 3:2 means for every 3 of flour, there are 2 of sugar. With 9 cups flour (3×3), you need 2×3 = 6 cups of sugar." delay={0} />
+                    <StreamingText text="Wrong — π is irrational so its decimal never ends. 3.14 is a truncation, not the exact value. The right symbol is ≈ (approximately equal), not =." delay={0} />
                   </div>
                 </motion.div>
               )}
@@ -174,7 +174,7 @@ export function Scene5({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                     <span>Correct!</span>
                   </div>
                   <div className="text-sm text-emerald-900 leading-relaxed">
-                    <StreamingText text="4 pencils = $1.20, so 1 pencil = $0.30. 10 × $0.30 = $3.00." delay={0} />
+                    <StreamingText text="π ≈ 3.14 — the value is approximately, not exactly, 3.14, because π is irrational and its digits never terminate." delay={0} />
                   </div>
                 </motion.div>
               )}

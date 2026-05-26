@@ -146,7 +146,7 @@ export function Scene1({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-medium">1</div>
-                    <span className="font-medium">1.1 Number sense and the real line</span>
+                    <span className="font-medium">1.1 The equality family: =, ≠, ≈, ≡</span>
                   </div>
                   <span className="text-xs text-muted-foreground">12 min</span>
                 </motion.div>
@@ -154,7 +154,7 @@ export function Scene1({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                 <div className="px-6 py-4 flex items-center justify-between opacity-80">
                   <div className="flex items-center space-x-4">
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">2</div>
-                    <span>1.2 Fractions, decimals, and percents</span>
+                    <span>1.2 Inequality symbols: &lt;, &gt;, ≤, ≥</span>
                   </div>
                   <span className="text-xs text-muted-foreground">15 min</span>
                 </div>
@@ -162,7 +162,7 @@ export function Scene1({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                 <div className="px-6 py-4 flex items-center justify-between opacity-80">
                   <div className="flex items-center space-x-4">
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">3</div>
-                    <span>1.3 Ratios and proportions</span>
+                    <span>1.3 ± and ∝</span>
                   </div>
                   <span className="text-xs text-muted-foreground">18 min</span>
                 </div>
@@ -170,14 +170,14 @@ export function Scene1({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                 <div className="px-6 py-4 flex items-center justify-between opacity-80">
                   <div className="flex items-center space-x-4">
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">4</div>
-                    <span>1.4 Unit conversions</span>
+                    <span>1.4 Exponents: x², xⁿ</span>
                   </div>
                   <span className="text-xs text-muted-foreground">14 min</span>
                 </div>
                 <div className="px-6 py-4 flex items-center justify-between opacity-80">
                   <div className="flex items-center space-x-4">
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">5</div>
-                    <span>1.5 Order of operations</span>
+                    <span>1.5 Roots: √, ³√</span>
                   </div>
                   <span className="text-xs text-muted-foreground">10 min</span>
                 </div>

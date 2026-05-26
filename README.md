@@ -1,58 +1,67 @@
-# 🎓 QuantReason
+# 🔣 Teach Yourself Mathematical Notation
 
-**The Quantitative Reasoning Studio — Executable College Coursework**
+**A Four-Week Course on the Symbols of Mathematics, Science, and Engineering — Built to Beta-Test the Math-Notation Stack of QuantReason and Its Clones**
 
 ---
 
 ## 🧩 Overview
 
-QuantReason is a full-service self-paced learning platform that delivers a complete four-week college-freshman Quantitative Reasoning course — taught, tutored, drilled, graded, and integrity-checked entirely by AI.
+Teach Yourself Mathematical Notation is a self-paced, single-user web course whose subject *is* the symbols themselves: =, ≠, ≈, ≡, ±, ∝, Σ, Π, Δ, ∂, ∫, μ, σ, P(A ∣ B), ∀, ∃, ∈, ⊆, ℕ, ℝ, ℂ, and the rest.
 
-It performs end-to-end coursework: depth-adjustable lectures, section-scoped Socratic tutoring, adaptive problem generation, and rubric-faithful AI grading — from a 90-second concept skim all the way to a full midterm and final with per-problem rationales.
+It is a content reskin of the **QuantReason** Quantitative Reasoning app. The full QuantReason runtime — lectures with Short / Medium / Long depth, section-scoped AI tutor, adaptive practice, AI-graded homework / tests / midterm / final, two-layer AI-authorship detection, and one-click diagnostics — is preserved unchanged. The **purpose** of this build is to put the on-screen math keyboard through its paces: every micro-lecture targets one symbol or symbol-subset and every assignment problem requires the student to type that symbol into their answer.
 
-Designed for **students, instructors evaluating AI-taught coursework, and academic-integrity researchers**, it merges a real 28-topic QR syllabus with two layers of AI-authorship detection — producing a course that students can trust to be fair and that instructors can trust to be honest.
+If a symbol on the keyboard cannot be inserted, rendered, graded, or detected cleanly, this course will surface it.
 
 ---
 
 ## 🧠 What It Does
 
-- **Four-Week Structured Curriculum** — A complete QR syllabus across 28 topics: proportional reasoning, descriptive statistics, probability, exponential and linear models, financial math, data interpretation, and inference. Each week ships with lectures, homework, and a test; week four adds a midterm and a final.
-- **Three-Depth Lectures** — Every lecture is available at **Short / Medium / Long** length, AI-rewritten while preserving the same worked examples and learning objectives. Skim the concept, expand it on demand, or read the textbook-style deep cut.
-- **Section-Scoped AI Tutor** — Ask a question about the paragraph you're reading and the answer streams back token-by-token, grounded in that exact lecture section. Suggested starter questions are pre-generated per lecture.
-- **Adaptive Topic Practice** — Generated problem sets that move difficulty up after a streak and down after a miss, with worked explanations on every answer. Per-session difficulty persists, so each drill picks up where the last one left off.
-- **AI-Graded Assignments** — Homework, tests, midterm, and final are scored by an LLM grader that returns per-problem correctness *plus* a written rationale, then rolls up to a percent score on the attempt.
-- **Two-Layer AI-Authorship Detection** — Each submitted answer is screened by both a static text classifier (GPTZero) and a diachronic keystroke-pattern detector. Each verdict ships with a human-readable rationale.
-- **Live Analytics** — Dashboard KPIs (attempts, accuracy, streak), per-topic mastery percentages, and a recent-activity feed — so progress, weak spots, and momentum are all visible at a glance.
-- **Operator Diagnostics** — Two one-click self-tests verify the entire stack — database, OpenAI, GPTZero, detection pipeline, and the practice/grade loop — before you trust a session.
+- **Four-Week Curriculum of 28 Micro-Lectures** — One symbol family per lecture, organized by week:
+  - **Week 1 — Foundations.** Equality family (=, ≠, ≈, ≡); inequalities (<, >, ≤, ≥); ± and ∝; exponents (xⁿ); roots (√, ³√); |x| and n!; subscripts (x₀, xₜ, vᵧ).
+  - **Week 2 — Calculus and change.** Σ; Π; Δ and δ; lim, →, ∞; d/dx and ∂/∂x; ∫, ∬, ∮; e, ln, log.
+  - **Week 3 — Probability and statistics.** μ, σ, σ²; x̄, p̂, s; P(A), P(A∣B); E(X), Var(X); X ∼ N(μ, σ²); z, t, χ²; α, β.
+  - **Week 4 — Logic, sets, and foundations.** ∈, ∉; ⊂, ⊆; ∪, ∩, ∅, Aᶜ; ∀, ∃, ∄; ∧, ∨, ¬; →, ↔; ℕ, ℤ, ℚ, ℝ, ℂ.
+- **One Real Science Example per Lecture** — Every micro-lecture grounds its symbol in an actual scientific equation: ΔS ≥ 0 for the second law, N(t) = N₀e^(−λt) for radioactive decay, χ² for Mendelian goodness-of-fit, p̂ for clinical-trial efficacy, ψ : ℝ⁴ → ℂ for the quantum wavefunction.
+- **One Symbol-Use Question per Lecture** — Every homework / test / midterm / final problem demands the student *write the symbol* in their answer, not just describe it in English. The math keyboard is the only practical way to do this.
+- **Three-Depth Lectures, Section-Scoped Tutor, Adaptive Practice, AI Grading, Two-Layer Detection, Operator Diagnostics** — All inherited unchanged from the QuantReason runtime.
+- **Built-In Product Demo Video** — The companion `qr-course-demo` artifact still ships as a ~62-second screencast of the live UI.
 
 ---
 
 ## ⚙️ Technical Features
 
-- **Static Text Detection (GPTZero):** Every submitted answer is sent to GPTZero's `predict/text` endpoint; the per-document AI probability is blended `0.85 × GPTZero + 0.15 × structural-heuristic` for the final score. If GPTZero is unavailable, the system silently falls back to an LLM scorer plus heuristic — submissions never block.
-- **Diachronic Keystroke Detection:** The student textarea captures keystroke count, erase count, bulk-insert events, longest bulk insert, rewrite segments, and total duration. A scorer penalizes paste-then-reword behavior, low keystroke-to-output ratios, and impossibly sustained typing speeds — catching AI use even when the final text is reworded enough to pass GPTZero.
-- **System Diagnostic (`/diagnostics/system`):** Eight ordered checks — environment, database round-trip, course-seed integrity, OpenAI chat completion, OpenAI JSON mode, detection pipeline, AI-positive control sample, and GPTZero connectivity. Each step returns pass/fail, timing, and a raw error string.
-- **Synthetic-Student Diagnostic (`/diagnostics/synthetic-run`):** Spins up a fake student, runs a practice session (wrong → adjust ↓ → right → adjust ↑), takes a full assignment attempt, submits it, and verifies grading + detection + analytics all reflect the run. End-to-end stack proof in one click.
-- **Contract-First API:** A single OpenAPI document is the source of truth; React Query hooks for the UI and Zod validators for the server are generated from it. Request and response shapes can't drift between client and server because both come from the same spec.
-- **Streaming AI Tutor:** Token-by-token Server-Sent-Event streaming for tutor answers, with a section-scoped system prompt so responses stay grounded in the lecture the student is reading.
-- **Adaptive Practice Engine:** Per-session difficulty (1–4 continuous) adjusts after each attempt; the next-problem generator takes the current difficulty and the topic as input, so the question pool is generated on demand instead of pre-baked.
-- **Real-React Demo Video:** The 62-second product walkthrough is a real React app, not a slideshow: persistent sidebar, animated SVG cursor, character-by-character typing, word-by-word streaming responses, and scene-synced background audio — all exported as MP4 from a single browser tab.
+- **Math Keyboard Beta Harness** — Every problem prompt is structured so that the *only* way to type the model answer is with the keys on the floating math keyboard (`MathKeyboard.tsx`). This makes the course a stress test of: tab discoverability, symbol insertion at the cursor, keystroke / paste detection on submitted answers, LaTeX-aware grading, and the renderer (KaTeX) for both the lecture and the student's answer.
+- **Static AI Detection (GPTZero):** Every submitted answer is sent to GPTZero's `predict/text` endpoint; the per-document AI probability is blended `0.85 × GPTZero + 0.15 × structural-heuristic` for the final score. If GPTZero is unavailable, the system silently falls back to an LLM scorer plus heuristic — submissions never block.
+- **Diachronic Keystroke Detection:** The student textarea captures keystroke count, erase count, bulk-insert events, longest bulk insert, rewrite segments, and total duration. A scorer penalizes paste-then-reword behavior, low keystroke-to-output ratios, and impossibly sustained typing speeds.
+- **System Diagnostic (`/diagnostics/system`):** Environment, database round-trip, course-seed integrity (≥28 topics), OpenAI chat completion, OpenAI JSON mode, detection pipeline, AI-positive control sample, and GPTZero connectivity. Each step returns pass/fail, timing, and a raw error string.
+- **Synthetic-Student Diagnostic (`/diagnostics/synthetic-run`):** End-to-end stack proof — a fake student takes a practice session, takes a full assignment attempt, submits, and verifies grading + detection + analytics all reflect the run.
+- **Auto-Reseed on Curriculum Change** — `seedIfEmpty` compares the set of topic slugs in the database to the expected curriculum. If they differ, it wipes and re-seeds in dependency order. A single content swap propagates cleanly when the seed file changes.
+- **Contract-First API** — Single OpenAPI document; React Query hooks for the UI and Zod validators for the server are generated from it.
+- **Streaming AI Tutor** — Token-by-token Server-Sent-Event streaming with a section-scoped system prompt grounded in the active lecture.
+- **Adaptive Practice Engine** — Per-session difficulty (1–4) adjusts after each attempt; problems are generated on demand.
+
+---
+
+## 🔐 Required Secrets
+
+- `DATABASE_URL` — Postgres connection string for the external database.
+- `OPENAI_API_KEY` — required at boot. Powers the tutor, practice generator, AI graders, and lecture-expansion job.
+- `GPTZERO_API_KEY` — required for the GPTZero leg of the static-AI-detection layer. Without it, the system falls back to the LLM scorer + heuristic but loses the primary detection signal.
+- `SESSION_SECRET` — signed-session cookie secret.
 
 ---
 
 ## 🎓 Designed For
 
-- **College Freshmen & Self-Learners:** A complete one-month QR course delivered with on-demand tutoring and adaptive practice — no instructor required.
-- **Instructors & Curriculum Designers:** A working reference for what AI-taught, AI-graded, AI-detection-screened coursework actually looks like end-to-end.
-- **Academic-Integrity Researchers:** A live testbed for layered AI-authorship detection that combines text-based classification with behavioral keystroke evidence.
-- **Product & Engineering Teams:** A reference implementation of contract-first full-stack architecture, streaming AI UX, and self-diagnostic operator tooling in a pnpm monorepo.
+- **The Maintainer of QuantReason and Its Clones:** A pure stress test of the math-notation stack — keyboard, LaTeX rendering, grading, and AI detection — without the noise of a different curriculum to debug at the same time.
+- **Anyone Who Has Ever Squinted at a Math Paper:** A short, focused course that explains *what the symbols mean*, with one science example for each.
 
 ---
 
 ## 💡 Core Idea
 
-QuantReason redefines an AI-taught course as a *closed accountability loop*.
+A formula is the most compressed piece of writing a scientist ever produces. Every symbol does work — and the cost of *misreading* one is that the whole sentence flips its meaning.
 
-It doesn't just teach the material and grade the homework — it **teaches**, **tutors**, **drills**, **grades**, **detects misuse**, and **proves the whole pipeline still works** with a single click. The result is a self-paced course students can actually trust to be fair, and that instructors can actually trust to be honest.
+This course teaches notation by *using* notation: read the symbol, see it in a real scientific equation, then type it back in an answer of your own. The math keyboard is the gym; the symbols are the weights; the science examples are the reason any of it matters.
 
-**QuantReason — where the curriculum, the tutor, the grader, and the integrity check all live in one room.**
+**Teach Yourself Mathematical Notation — read the symbol, type the symbol, mean the symbol.**

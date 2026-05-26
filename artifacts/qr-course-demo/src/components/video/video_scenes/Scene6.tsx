@@ -94,7 +94,7 @@ export function Scene6({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
               >
                 <div>
                   <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Homework</div>
-                  <h4 className="font-serif text-lg text-primary mb-1">Homework 1.1 — Number, fractions, ratios</h4>
+                  <h4 className="font-serif text-lg text-primary mb-1">Homework 1.1 — Equality, inequality, ± and ∝</h4>
                   <div className="text-sm text-muted-foreground">3 problems</div>
                 </div>
                 <div className="flex items-center space-x-6">
@@ -117,7 +117,7 @@ export function Scene6({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
               >
                 <div>
                   <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Homework</div>
-                  <h4 className="font-serif text-lg text-primary mb-1">Homework 1.2 — Units, expressions, equations</h4>
+                  <h4 className="font-serif text-lg text-primary mb-1">Homework 1.2 — Exponents, roots, |x|, n!, subscripts</h4>
                   <div className="text-sm text-muted-foreground">4 problems</div>
                 </div>
                 <div className="flex items-center space-x-6">

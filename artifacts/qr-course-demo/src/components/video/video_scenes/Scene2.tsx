@@ -64,7 +64,7 @@ export function Scene2({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
       {/* Left Pane: Lecture Content */}
       <div className="w-1/2 h-full border-r border-border p-12 overflow-hidden flex flex-col relative">
         <div className="text-xs font-bold tracking-widest text-muted-foreground mb-4">WEEK 1</div>
-        <h1 className="text-3xl font-serif text-primary mb-8">1.1 Number sense and the real line</h1>
+        <h1 className="text-3xl font-serif text-primary mb-8">1.1 The equality family: =, ≠, ≈, ≡</h1>
         
         <div className="flex bg-muted/50 rounded-lg p-1 w-fit mb-10 border border-border">
           <div className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${phase < 1 ? 'bg-white shadow-sm text-primary' : 'text-muted-foreground'}`}>Short</div>
@@ -73,7 +73,7 @@ export function Scene2({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
         </div>
 
         <div className="prose prose-sm max-w-none text-foreground/80 space-y-6">
-          <h2 className="font-serif text-2xl text-primary">Number sense</h2>
+          <h2 className="font-serif text-2xl text-primary">Four kinds of "equals"</h2>
           <p>
             Mathematical notation is the most compressed writing a scientist ever produces. Every symbol does work — and misreading one flips the meaning of the whole sentence. This course teaches you to read, type, and mean each symbol on the page.
           </p>
@@ -90,10 +90,10 @@ export function Scene2({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
                 className="space-y-6"
               >
                 <p>
-                  When we talk about numbers, we distinguish between different types: integers, rational numbers (fractions), and irrational numbers. Understanding how these fit together is crucial.
+                  Math uses four different "equals" signs and they don't mean the same thing. `=` means the two sides are literally the same number. `≠` means they are not. `≈` means approximately equal — close, but not exact. `≡` means identically equal — true for every value, or true by definition.
                 </p>
                 <p>
-                  For example, between any two fractions, there is always another fraction. This property means the rational numbers are "dense" on the number line. Yet, there are still holes—these are the irrational numbers like π or √2.
+                  For example, π ≈ 3.14159 (the digits never end, so we can't write `=`), but (x+1)² ≡ x² + 2x + 1 is an identity — it holds for every x. Mixing these up flips the meaning of the sentence.
                 </p>
               </motion.div>
             )}
@@ -120,13 +120,13 @@ export function Scene2({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
               >
                 <div className="mb-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest">Starter questions for this section</div>
                 <div className="flex flex-wrap gap-2 mb-6">
-                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">Why does dividing by zero break things?</div>
-                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">What's the difference between rational and irrational?</div>
-                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">How do I estimate when I can't calculate exactly?</div>
+                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">When should I use ≈ instead of =?</div>
+                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">What does ≡ mean in modular arithmetic?</div>
+                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">Is x ≠ y the same as ¬(x = y)?</div>
                 </div>
                 <div className="w-full h-24 border border-border rounded-lg bg-muted/20 p-3 text-muted-foreground text-sm flex items-end shadow-inner">
                   <div className="w-full flex justify-between">
-                    <span>Ask a question about number sense...</span>
+                    <span>Ask a question about the equality family...</span>
                     <div className="w-8 h-8 rounded bg-primary text-white flex items-center justify-center cursor-pointer opacity-50">↑</div>
                   </div>
                 </div>

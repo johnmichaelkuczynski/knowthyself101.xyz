@@ -74,6 +74,44 @@ export function heuristicAiScore(text: string): number {
   return Math.min(1, lenScore * 0.4 + hitScore * 0.5);
 }
 
+// Real GPTZero API call. Returns null if no key or on failure (caller falls back).
+export async function gptzeroAiScore(text: string): Promise<number | null> {
+  const apiKey = process.env.GPTZERO_API_KEY;
+  if (!apiKey) return null;
+  const t = text.trim();
+  if (t.length < 40) return null;
+  try {
+    const res = await fetch("https://api.gptzero.me/v2/predict/text", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "x-api-key": apiKey,
+      },
+      body: JSON.stringify({ document: t, multilingual: false }),
+    });
+    if (!res.ok) return null;
+    const data: unknown = await res.json();
+    // GPTZero shape: { documents: [{ class_probabilities: { ai, human, mixed }, completely_generated_prob, ... }] }
+    const doc = (data as { documents?: Array<Record<string, unknown>> })?.documents?.[0];
+    if (!doc) return null;
+    const cls = doc.class_probabilities as
+      | { ai?: number; human?: number; mixed?: number }
+      | undefined;
+    const cg = typeof doc.completely_generated_prob === "number"
+      ? (doc.completely_generated_prob as number)
+      : null;
+    const aiProb =
+      typeof cls?.ai === "number"
+        ? cls.ai + (typeof cls.mixed === "number" ? cls.mixed * 0.5 : 0)
+        : cg;
+    if (typeof aiProb !== "number") return null;
+    return Math.max(0, Math.min(1, aiProb));
+  } catch {
+    return null;
+  }
+}
+
 export async function llmAiScore(text: string): Promise<number | null> {
   const t = text.trim();
   if (t.length < 40) return null;
@@ -96,11 +134,23 @@ export async function detect(
   trace: TraceInput,
 ): Promise<DetectionOutcome> {
   const heuristic = heuristicAiScore(text);
-  const llm = await llmAiScore(text);
-  const aiScore = llm == null ? heuristic : 0.4 * heuristic + 0.6 * llm;
+  const gptzero = await gptzeroAiScore(text);
+  let aiScore: number;
+  if (gptzero != null) {
+    // Real GPTZero result — trust it heavily, anchor with a small heuristic blend.
+    aiScore = 0.85 * gptzero + 0.15 * heuristic;
+  } else {
+    const llm = await llmAiScore(text);
+    aiScore = llm == null ? heuristic : 0.4 * heuristic + 0.6 * llm;
+  }
   const diaScore = diachronicScore(text, trace);
 
   const reasons: string[] = [];
+  if (gptzero != null) {
+    reasons.push(
+      `GPTZero scored this response ${(gptzero * 100).toFixed(0)}% likely AI-generated.`,
+    );
+  }
   if (aiScore >= 0.55) reasons.push("Text patterns match common LLM outputs.");
   if (diaScore >= 0.55)
     reasons.push(

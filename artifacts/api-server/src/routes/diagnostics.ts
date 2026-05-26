@@ -143,17 +143,16 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
   res.setTimeout(10 * 60 * 1000);
 
   // Course discovery
-  let topics: Awaited<ReturnType<typeof db.select>> = [] as never;
-  let lectures: Awaited<ReturnType<typeof db.select>> = [] as never;
+  let topics: { id: number; title: string; weekNumber: number }[] = [];
+  let lectures: { id: number; body: string }[] = [];
   let assignments: { id: number; title: string; weekNumber: number; kind: string }[] = [];
 
   steps.push(
     await run("Load course catalog", async () => {
-      topics = (await db.select().from(topicsTable).orderBy(asc(topicsTable.position))) as never;
-      lectures = (await db
-        .select()
-        .from(lecturesTable)
-        .orderBy(asc(lecturesTable.id))) as never;
+      const t = await db.select().from(topicsTable).orderBy(asc(topicsTable.position));
+      topics = t.map((x) => ({ id: x.id, title: x.title, weekNumber: x.weekNumber }));
+      const l = await db.select().from(lecturesTable).orderBy(asc(lecturesTable.id));
+      lectures = l.map((x) => ({ id: x.id, body: x.body }));
       const a = await db
         .select()
         .from(assignmentsTable)
@@ -164,24 +163,22 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
         weekNumber: x.weekNumber,
         kind: x.kind,
       }));
-      return `${(topics as unknown[]).length} topics, ${
-        (lectures as unknown[]).length
-      } lectures, ${assignments.length} assignments`;
+      return `${topics.length} topics, ${lectures.length} lectures, ${assignments.length} assignments`;
     }),
   );
 
   steps.push(
     await run("Read each lecture", async () => {
       let total = 0;
-      for (const l of lectures as Array<{ id: number; bodyMarkdown: string | null }>) {
+      for (const l of lectures) {
         const [row] = await db
           .select()
           .from(lecturesTable)
           .where(eq(lecturesTable.id, l.id));
         if (!row) throw new Error(`lecture ${l.id} missing`);
-        total += (row.bodyMarkdown ?? "").length;
+        total += (row.body ?? "").length;
       }
-      return `read ${(lectures as unknown[]).length} lectures (${total} chars total)`;
+      return `read ${lectures.length} lectures (${total} chars total)`;
     }),
   );
 
@@ -314,8 +311,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
       // eslint-disable-next-line no-loop-func
       await run(`Practice problem ${i + 1}: generate + grade + adapt`, async () => {
         if (!sessionId) throw new Error("no session");
-        const tArr = topics as Array<{ id: number; title: string; weekNumber: number }>;
-        const topic = tArr[Math.floor(Math.random() * tArr.length)]!;
+        const topic = topics[Math.floor(Math.random() * topics.length)]!;
         const gen = await chatJson<{
           prompt: string;
           correctAnswer: string;
@@ -357,8 +353,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
 
   steps.push(
     await run("AI tutor: ask with lecture context", async () => {
-      const lec = (lectures as Array<{ bodyMarkdown: string | null }>)[0];
-      const ctx = (lec?.bodyMarkdown ?? "").slice(0, 400);
+      const ctx = (lectures[0]?.body ?? "").slice(0, 400);
       const txt = await chatText(
         "You are a concise tutor. Reply in 2 sentences.",
         `Context from a lecture:\n"""${ctx}"""\n\nStudent question: Can you summarize the key takeaway?`,

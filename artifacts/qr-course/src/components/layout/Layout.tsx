@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { BookOpen, LayoutDashboard, Calendar, PenTool, BarChart3, Activity } from "lucide-react";
+import { LayoutDashboard, PenTool, BarChart3, Activity } from "lucide-react";
 
 export function Sidebar() {
   const [location] = useLocation();
@@ -8,7 +8,6 @@ export function Sidebar() {
   const navItems = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/assignments", label: "Assignments", icon: PenTool },
-    { href: "/practice", label: "Practice", icon: BookOpen },
     { href: "/analytics", label: "Analytics", icon: BarChart3 },
   ];
 

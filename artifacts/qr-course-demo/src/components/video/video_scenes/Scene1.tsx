@@ -64,7 +64,7 @@ export function Scene1({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x
             exit={{ opacity: 0, filter: 'blur(4px)' }}
             transition={{ duration: 0.4 }}
           >
-            <h1 className="text-4xl font-serif text-primary mb-8 tracking-tight">Quantitative Reasoning</h1>
+            <h1 className="text-4xl font-serif text-primary mb-8 tracking-tight">Mathematical Notation</h1>
             
             <div className="grid grid-cols-3 gap-6 mb-12">
               <div className="col-span-2 flex space-x-6">

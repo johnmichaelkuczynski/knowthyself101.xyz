@@ -30,6 +30,11 @@ synthesis prompt as `previousProfile` so the portrait builds cumulatively.
 - Empty state (`answeredCount === 0`) returns early before persistence, so snapshots
   only ever exist once there's real user material.
 
-## Single-user note
-`profile_reports` has no `userId` yet (single-user, like `app_settings`). If multi-user
-is added later, scope every snapshot query by user as well as mode.
+## Ownership note
+`profile_reports` now carries a `userId` FK. There are two users — PRIMARY (the real
+user) and SYNTHETIC (the diagnostic). Generation is centralized in
+`lib/profile.ts:generateProfileReport(userId, settings)`: it scopes prior-snapshot
+selection, the answer/practice joins, and the persisted row by `userId` (and mode).
+Always scope snapshot queries by **both** `userId` and `mode`. The synthetic
+diagnostic calls it twice as the synthetic user to prove the portrait evolves
+(pass 2 sees pass 1 as `previousProfile`) without ever touching the primary user.

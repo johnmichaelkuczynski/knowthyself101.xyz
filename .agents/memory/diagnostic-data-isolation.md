@@ -1,28 +1,35 @@
 ---
 name: Diagnostic data isolation
-description: Self-tests/diagnostics that write to the shared app DB must be self-cleaning and never touch real user rows.
+description: How the synthetic diagnostic stays isolated from the real user — now via real row ownership, not just finally-cleanup.
 ---
 
 # Diagnostics must not pollute real user data
 
 The QuantReason/Know-Thyself `POST /diagnostics/synthetic-run` writes real rows
-(attempts, answers, practice sessions) into the same DB the single real user uses.
-Earlier it (a) could *resume* the user's in-progress attempt and (b) left every
-created row behind — running it 3× created submitted attempts for all 13
-assignments, so the UI showed everything "submitted" and the analytics profile
-was computed over synthetic answers.
+(attempts, answers, practice sessions) into the same DB the real user uses. The
+original design had no row ownership, so a diagnostic write was indistinguishable
+from real work; it could *resume* the user's in-progress attempt and left rows
+behind (running it 3× marked all assignments "submitted" and polluted analytics).
 
-**Rule:** any diagnostic/self-test that writes to the shared app DB must:
-- ALWAYS create fresh, isolated rows — never resume/overwrite the real user's.
-- Track every id it creates and delete them in a `finally` block (FK cascades
-  clean children: answers←attempts, practice_problems/attempts←sessions).
+**Current model (preferred): real ownership.** There is a `users` table with two
+rows — PRIMARY (the real user) and SYNTHETIC (the diagnostic). Every owned table
+(`attempts`, `practice_sessions`, `profile_reports`) carries a `userId` FK
+(cascade). The diagnostic runs entirely AS the synthetic user; the app runs as
+PRIMARY. All app queries are scoped to the primary userId, so the synthetic run
+is physically incapable of reading or overwriting the real user's data.
 
-**Why:** this is a single-user app with no row ownership, so a diagnostic write is
-indistinguishable from real work unless it cleans up after itself.
+**Rule:**
+- All app routes that read/update by attempt/session id MUST also constrain by
+  `userId = primary` (avoid IDOR-style cross-owner access). Make shared helpers
+  owner-aware (e.g. `loadAttempt(attemptId, userId)`).
+- The synthetic diagnostic still tracks created ids and deletes ALL synthetic-owned
+  rows in a `finally` block (belt-and-suspenders; FK cascades clean children).
+- A boot backfill assigns any legacy NULL-owner rows to PRIMARY; `userId` is kept
+  nullable in schema only so an additive push survives existing rows.
 
-**How to apply:** when adding/editing any `/diagnostics/*` route that inserts rows,
-collect created ids into arrays and tear them down in `finally`. To identify
-already-leaked synthetic assignment rows for cleanup: an attempt is synthetic if
-every one of its answers equals the problem's `correctAnswer` (model reflection);
-synthetic practice sessions have all attempts equal to the practice problem's
-`correctAnswer`.
+**Why:** ownership makes isolation a structural guarantee, not a cleanup hope. The
+finally-cleanup alone left residue whenever the handler was killed mid-run.
+
+**How to apply:** when adding any `/diagnostics/*` route or app route that touches
+owned tables, resolve the user id first (`getPrimaryUserId`/`getSyntheticUserId`,
+both cached) and scope every query by it.

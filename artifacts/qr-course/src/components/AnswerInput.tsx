@@ -88,7 +88,7 @@ export function AnswerInput({ value, onChange, placeholder, disabled }: AnswerIn
         className="w-full min-h-[160px] p-5 bg-card border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-lg leading-relaxed resize-y"
       />
       <span className="text-xs text-muted-foreground px-1">
-        Pasting is disabled — answer in your own words. There are no right answers; honesty is the whole point.
+        Pasting is disabled — answer in your own words. Shallow or phony answers reveal nothing; depth and honesty are the whole point.
       </span>
     </div>
   );

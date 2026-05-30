@@ -5,6 +5,7 @@ import {
   topicsTable,
   attemptsTable,
   practiceAttemptsTable,
+  practiceProblemsTable,
   assignmentsTable,
   answersTable,
   problemsTable,
@@ -15,7 +16,7 @@ import {
   GetRecentActivityResponse,
   GenerateReportResponse,
 } from "@workspace/api-zod";
-import { chatJson } from "../lib/ai";
+import { chatJson, TEXT_MODEL } from "../lib/ai";
 
 const router: IRouter = Router();
 
@@ -174,6 +175,7 @@ router.post("/analytics/report", async (_req, res) => {
     .select({
       topicTitle: topicsTable.title,
       weekNumber: topicsTable.weekNumber,
+      problemId: problemsTable.id,
       prompt: problemsTable.prompt,
       answer: answersTable.answer,
       submittedAt: attemptsTable.submittedAt,
@@ -185,26 +187,61 @@ router.post("/analytics/report", async (_req, res) => {
     .where(eq(attemptsTable.status, "submitted"))
     .orderBy(asc(attemptsTable.submittedAt));
 
-  // Include practice reflections too — they're part of the same self.
+  // Include practice reflections too — they're part of the same self. Join through
+  // to the practice problem so we have the ACTUAL reflective prompt, not just the
+  // answer, and so these reflections are genuinely analyzed (not merely counted).
   const practiceRows = await db
     .select({
       topicTitle: topicsTable.title,
-      prompt: practiceAttemptsTable.answer,
+      weekNumber: topicsTable.weekNumber,
+      prompt: practiceProblemsTable.prompt,
       answer: practiceAttemptsTable.answer,
     })
     .from(practiceAttemptsTable)
-    .innerJoin(topicsTable, eq(practiceAttemptsTable.topicId, topicsTable.id));
+    .innerJoin(
+      practiceProblemsTable,
+      eq(practiceAttemptsTable.problemId, practiceProblemsTable.id),
+    )
+    .innerJoin(topicsTable, eq(practiceAttemptsTable.topicId, topicsTable.id))
+    .orderBy(asc(practiceAttemptsTable.id));
 
-  const reflections = submittedRows
+  const assignmentReflections = submittedRows
+    .filter((r) => (r.answer ?? "").trim().length > 0)
+    .map((r) => ({
+      problemId: r.problemId,
+      topic: r.topicTitle,
+      week: r.weekNumber,
+      question: r.prompt,
+      answer: r.answer,
+      source: "assignment" as const,
+    }));
+  const practiceReflections = practiceRows
     .filter((r) => (r.answer ?? "").trim().length > 0)
     .map((r) => ({
       topic: r.topicTitle,
       week: r.weekNumber,
       question: r.prompt,
       answer: r.answer,
+      source: "practice" as const,
     }));
+  // Every reflection the person has written — assignments AND practice — feeds the
+  // portrait. The picture sharpens with each one.
+  const reflections = [...assignmentReflections, ...practiceReflections];
   const answeredCount = reflections.length;
-  const practiceCount = practiceRows.filter((r) => (r.answer ?? "").trim().length > 0).length;
+  const assignmentCount = assignmentReflections.length;
+  const practiceCount = practiceReflections.length;
+
+  // Cap what we feed the two-pass analysis so it stays within token limits even
+  // for prolific users (the model must emit one entry per analyzed answer). We
+  // keep the LATEST answer per assignment question — i.e. the person's current
+  // self, which is exactly what an "evolving" portrait should reflect — plus the
+  // most recent practice reflections, capped to a safe total.
+  const latestAssignment = new Map<number, (typeof assignmentReflections)[number]>();
+  for (const r of assignmentReflections) latestAssignment.set(r.problemId, r);
+  const analyzed = [
+    ...Array.from(latestAssignment.values()),
+    ...practiceReflections.slice(-25),
+  ].slice(-70);
 
   // Not enough material yet — return a gentle, honest placeholder.
   if (answeredCount === 0) {
@@ -230,26 +267,64 @@ router.post("/analytics/report", async (_req, res) => {
   let weaknesses: string[] = [];
   let recommendations: string[] = [];
   try {
+    // PASS 1 — analyze EACH reflection on its own. For every answer we extract the
+    // concrete psychological signal it carries (an inference, not a paraphrase) and
+    // any defense/evasion at work. These per-answer analyses are the raw material
+    // the portrait is built from, so the portrait genuinely aggregates analysis
+    // rather than skimming the surface of the raw text.
+    const analysisPass = await chatJson<{
+      perAnswer: Array<{
+        topic: string;
+        reveals: string;
+        defense: string;
+      }>;
+    }>(
+      "You are a rigorous, perceptive psychological analyst. You are given a numbered list of one person's short, first-person answers to reflective questions, each with its topic and question. " +
+        "Analyze EACH answer individually. For each one, infer what it actually reveals about this specific person — their drives, fears, attachments, self-image, or coping style — and WHY their particular wording implies it. Do not restate the answer; read beneath it. " +
+        "Also note any 'defense' visible in the answer: avoidance, intellectualizing, self-flattery, minimizing, contradiction with another answer, or none. " +
+        "Return ONE entry per input answer, in the same order. Strict JSON: " +
+        '{"perAnswer": [{"topic": string, "reveals": string, "defense": string}]}. ' +
+        "Each 'reveals' is 1-2 sharp, specific sentences. 'defense' is a short phrase or 'none'.",
+      JSON.stringify({
+        reflections: analyzed.map((r, i) => ({
+          n: i + 1,
+          topic: r.topic,
+          week: r.week,
+          question: r.question,
+          answer: r.answer,
+        })),
+      }),
+      TEXT_MODEL,
+      8192,
+    );
+    const perAnswer = Array.isArray(analysisPass.perAnswer) ? analysisPass.perAnswer : [];
+
+    // PASS 2 — synthesize the per-answer analyses into one coherent, evolving
+    // portrait. This is where separate signals become a single increasingly
+    // accurate description of the person, including how they line up and clash.
     const out = await chatJson<{
       portrait: string;
       patterns: string[];
       tensions: string[];
       questions: string[];
     }>(
-      "You are a perceptive, warm, and honest psychological portraitist on a self-knowledge course. " +
-        "You are given a person's own short, honest answers to reflective questions about themselves (their inherited self, how they act, how they relate to others, and who they're becoming). " +
-        "From ONLY the evidence in their answers, build an evolving psychological self-portrait. Speak directly to them as 'you'. Be specific to what they actually wrote — quote or paraphrase their own words where it helps. " +
-        "Be insightful and compassionate, like a wise friend who has listened closely. Offer observations and hypotheses ('you seem to...', 'a thread running through your answers is...'), never clinical diagnoses, labels, or verdicts. Do not flatter and do not condemn; aim for true. " +
-        "Acknowledge that this is a portrait-in-progress that will deepen as they answer more.\n" +
+      "You are a perceptive, honest psychological portraitist on a self-knowledge course. " +
+        "You are given (a) a person's own short answers and (b) a prior per-answer analysis of what each one reveals. " +
+        "Synthesize them into a single evolving self-portrait. Do not summarize answer-by-answer; integrate the signals into a coherent reading of one person — connect threads across different answers, show where their self-image and their behavior diverge, and name what consistently drives them. " +
+        "Speak directly to them as 'you'. Be specific and evidence-based: ground claims in their actual words and the analysis, and where you make an inferential leap, say so. Be honest, not flattering — if the evidence suggests a blind spot, evasion, or a gap between who they say they are and what they reveal, say it plainly and kindly. Avoid horoscope-style generalities that could apply to anyone; if a claim isn't supported by their specific answers, don't make it. No clinical labels or diagnoses. " +
+        "Note that accuracy increases with more (and more honest) answers.\n" +
         "Produce strict JSON: {\"portrait\": string, \"patterns\": string[], \"tensions\": string[], \"questions\": string[]}.\n" +
-        "- portrait: 2-3 paragraphs describing who this person appears to be, the threads connecting their answers, what they value, fear, and seek.\n" +
-        "- patterns: 3-5 short phrases naming recurring traits or patterns that come through clearly.\n" +
-        "- tensions: 2-4 short phrases naming contradictions, blind spots, or unresolved tensions you notice between their answers.\n" +
-        "- questions: 3 gentle, specific questions worth sitting with next, drawn from what's still unexamined in their answers.",
+        "- portrait: 2-3 paragraphs on who this person appears to be — what drives them, what they protect, the gap between stated and revealed self.\n" +
+        "- patterns: 3-5 short, specific phrases naming recurring traits or motives clearly evidenced across answers.\n" +
+        "- tensions: 2-4 short, specific phrases naming contradictions, blind spots, or evasions you can actually point to between their answers.\n" +
+        "- questions: 3 specific, probing questions worth sitting with next, aimed at what they have so far avoided or left vague.",
       JSON.stringify({
-        answersAnalyzed: answeredCount,
-        reflections,
+        answersAnalyzed: analyzed.length,
+        reflections: analyzed,
+        perAnswerAnalysis: perAnswer,
       }),
+      TEXT_MODEL,
+      8192,
     );
     narrative = (out.portrait || "").trim();
     strengths = Array.isArray(out.patterns) ? out.patterns.filter(Boolean) : [];
@@ -268,16 +343,13 @@ router.post("/analytics/report", async (_req, res) => {
     narrative = `Drawn from ${answeredCount} of your own reflections. Keep answering honestly and this portrait will sharpen.`;
   }
   // Note how many answers fed this portrait so its evolution is visible.
-  const provenance =
-    practiceCount > 0
-      ? `\n\n— Drawn from ${answeredCount} assignment reflection${
-          answeredCount === 1 ? "" : "s"
-        } and ${practiceCount} practice reflection${
-          practiceCount === 1 ? "" : "s"
-        }. This portrait deepens every time you answer.`
-      : `\n\n— Drawn from ${answeredCount} reflection${
-          answeredCount === 1 ? "" : "s"
-        } so far. This portrait deepens every time you answer.`;
+  const parts: string[] = [];
+  if (assignmentCount > 0)
+    parts.push(`${assignmentCount} assignment reflection${assignmentCount === 1 ? "" : "s"}`);
+  if (practiceCount > 0)
+    parts.push(`${practiceCount} practice reflection${practiceCount === 1 ? "" : "s"}`);
+  const source = parts.length > 0 ? parts.join(" and ") : `${answeredCount} reflections`;
+  const provenance = `\n\n— Drawn from ${source}. This portrait deepens and sharpens with every honest answer you add.`;
 
   res.json(
     GenerateReportResponse.parse({

@@ -17,7 +17,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-serif font-bold text-primary mb-2">
             {overview ? overview.title : <Skeleton className="h-9 w-64" />}
           </h1>
-          <p className="text-muted-foreground">A four-week practice in paying attention to yourself. There are no right answers — only honest ones.</p>
+          <p className="text-muted-foreground">A four-week practice in paying attention to yourself. Shallow and phony answers reveal nothing — honest, specific ones do.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

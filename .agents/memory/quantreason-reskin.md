@@ -30,6 +30,43 @@ correctness leaks into more places than the obvious lecture/seed files. Sweep al
 qr-course + api-server tree for `correctAnswer`, `accuracy`, `Score`, `Correct`, `exam` and
 reframe each hit; verify the grade endpoints' JSON keys directly (not just the UI).
 
+## "No right answers" ≠ "every answer passes" — depth/authenticity grading
+
+A reflective-course owner can later demand the *opposite* of leniency: shallow / generic / phony /
+evasive answers must FAIL even though there's no factual "correct" answer. Reconcile this with the
+earlier "brevity is never penalized" rule:
+
+- Grade on a **verdict** (genuine / shallow / phony / evasive) + a depth score, not correctness.
+  `correct === true` ONLY when `verdict === "genuine"`. Brevity still isn't the failure axis —
+  a short but specific, honest answer is genuine; a long generic platitude is shallow and fails.
+- Feedback must **lead with what the answer reveals (inference, not paraphrase)**, then name the
+  shortfall and what real depth would require. The repurposed hidden `correctAnswer` (first-person
+  "model reflection") is the grader's depth reference and must never reach the client.
+
+**Why:** the product's whole value is the mirror; rubber-stamping every answer makes feedback feel
+like hollow pattern-matching. **How to apply:** when an owner complains feedback is shallow, push
+the LLM to classify+infer and let non-genuine verdicts fail, rather than tweaking copy.
+
+## Evolving psychological portrait (analytics /report) — aggregate ALL answers, but cap for tokens
+
+The `/report` endpoint was rebuilt into a two-pass LLM flow (pass 1: per-answer reveals+defense;
+pass 2: synthesize one evolving portrait) mapped onto the unchanged `GenerateReportResponse`
+(narrative/strengths/weaknesses/recommendations). Two durable traps:
+
+- **`chatJson` hard-caps `max_completion_tokens` (was 4096).** Emitting one JSON entry per answer
+  for a prolific user (100+ reflections) truncates the JSON → `JSON.parse` throws → silent
+  fallback. Fix was a `maxTokens` param (use ~8192 for report passes) AND capping the analyzed set.
+- **Aggregate every reflection, but feed the model a deduped/capped set:** keep the LATEST answer
+  **per `problemId`** (NOT per prompt text — distinct problems can share wording) = the current
+  self, plus recent practice reflections, capped (~70). Practice reflections must join
+  `practiceProblemsTable` to recover the real prompt (don't use answer-as-prompt) so they're truly
+  analyzed, not just counted.
+
+**Why:** "increasingly accurate portrait" means current self (latest per question) across all
+topics, but the LLM output token cap, not input, is the silent failure point. **How to apply:**
+any per-item LLM emission over a user's full history needs a recency/dedup cap keyed by stable id +
+a raised output-token budget; test with the heaviest real user, not an empty DB.
+
 ## Companion demo video (qr-course-demo) reskin gotchas
 
 - **A DESIGN subagent reskinning the video can silently leave Scene1 behind.** When it rewrites

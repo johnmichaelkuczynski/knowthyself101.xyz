@@ -41,7 +41,7 @@ The psychologist William James split the self into the *I* (the part doing the e
 
 For the next four weeks you'll examine that picture one piece at a time. Not to demolish it — to *see* it clearly enough that you get a vote. The first step is the hardest: saying, in your own plain words, who you currently believe you are.
 
-There are no right answers here. There is only the honest one and the convenient one — and you can usually feel the difference.`,
+No one grades this for being correct — but a convenient, surface answer and an honest one are not the same thing, and you can usually feel the difference. A shallow answer reveals nothing; reach for the honest one.`,
   },
   {
     slug: "earliest-memory",
@@ -622,11 +622,12 @@ For your final reflection, write a short, honest self-portrait: who you are, as 
 // ───────────────────────────────────────────────────────────────
 // Assignments
 // ───────────────────────────────────────────────────────────────
-// For this course there are NO correct answers. The `correctAnswer` field below
-// holds a short, plausible first-person "model reflection" — a reference for the
-// depth a sincere answer tends to reach. It is used internally by the grader, the
+// For this course there is no single factually correct answer — but answers are
+// NOT all equal: shallow, generic, or phony ones fail. The `correctAnswer` field
+// below holds a short, plausible first-person "model reflection" — a reference for
+// the depth a real answer reaches. It is used internally by the grader, the
 // synthetic-student diagnostic, and content audits; it is NEVER shown to the
-// student as "the correct answer." Students are graded on sincerity and depth.
+// student as "the correct answer." Students are read for depth and honesty.
 
 type SeedAssignment = {
   kind: "homework" | "test" | "midterm" | "final";
@@ -645,10 +646,10 @@ type SeedAssignment = {
 };
 
 const HONEST_INSTRUCTIONS =
-  "Answer honestly and briefly — a sentence or two is plenty. There are no right answers here; you're graded on sincerity and depth, not length or correctness. Everything you write feeds your evolving self-portrait in Analytics, so the more honest you are, the truer that picture becomes.";
+  "Answer honestly and briefly — a sentence or two is plenty. There's no factually correct answer, but there are wrong ones: shallow, generic, or phony answers reveal nothing and won't pass. You're read for depth and honesty, not length. Every honest answer is analyzed and feeds your evolving self-portrait in Analytics — the more candid you are, the sharper that picture becomes.";
 
 const TIMED_INSTRUCTIONS =
-  "This is timed to keep you from over-editing — answer from the gut. Keep each answer short and honest. There are no right answers; you're graded on sincerity and depth, and your answers build your evolving self-portrait.";
+  "This is timed to keep you from over-editing — answer from the gut. Keep each answer short and honest. There's no factually correct answer, but shallow or phony answers fall short; you're read for depth and honesty. Each answer is analyzed and builds your evolving self-portrait.";
 
 const ASSIGNMENTS: SeedAssignment[] = [
   // ───────────── Week 1 ─────────────
@@ -1195,7 +1196,7 @@ const ASSIGNMENTS: SeedAssignment[] = [
     isTimed: true,
     timeLimitMinutes: 60,
     instructions:
-      "This is the capstone. Answer from what you've learned over four weeks — honestly, and still briefly. There are no right answers; you're graded on sincerity and depth. These final answers complete your evolving self-portrait in Analytics.",
+      "This is the capstone. Answer from what you've learned over four weeks — honestly, and still briefly. There's no factually correct answer, but shallow or phony answers fall short; you're read for depth and honesty. These final answers complete your evolving self-portrait in Analytics.",
     problems: [
       {
         topicSlug: "becoming",

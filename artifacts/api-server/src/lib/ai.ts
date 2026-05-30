@@ -23,10 +23,11 @@ export async function chatJson<T = unknown>(
   system: string,
   user: string,
   model: string = TEXT_MODEL,
+  maxTokens: number = 4096,
 ): Promise<T> {
   const resp = await openai.chat.completions.create({
     model,
-    max_completion_tokens: 4096,
+    max_completion_tokens: maxTokens,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: system },

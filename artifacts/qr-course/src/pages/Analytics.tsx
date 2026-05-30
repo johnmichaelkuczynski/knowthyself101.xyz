@@ -98,7 +98,7 @@ export default function Analytics() {
                           <th className="p-3 font-medium">Topic</th>
                           <th className="p-3 font-medium">Week</th>
                           <th className="p-3 font-medium text-right">Reflections</th>
-                          <th className="p-3 font-medium text-right">Sincerity</th>
+                          <th className="p-3 font-medium text-right">Depth</th>
                           <th className="p-3 font-medium text-center">Status</th>
                         </tr>
                       </thead>

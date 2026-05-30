@@ -288,7 +288,7 @@ function TutorPane({
       `I'm reflecting on this starter question before you respond.\n\n` +
       `QUESTION: ${question}\n\n` +
       `MY REFLECTION: ${a}\n\n` +
-      `There is no right answer here. Please (1) reflect back what my words seem to reveal about me; ` +
+      `Don't grade me as factually right or wrong, but be honest about depth: if my reflection is shallow, generic, or evasive, say so plainly. Then (1) reflect back what my words actually reveal about me; ` +
       `(2) gently name any tension, avoidance, or pattern you notice; ` +
       `(3) ask me one deeper follow-up question that would help me see myself more clearly. ` +
       `Be warm and non-judgmental. Keep it tight — don't restate the lecture.`;
@@ -355,7 +355,7 @@ function TutorPane({
                           `The student clicked "Show me an example reflection" — they want to see how someone might honestly respond, not a lecture. ` +
                             `Write a short, sincere, first-person example reflection (3–6 sentences) to the question below, ` +
                             `the kind of candid, specific answer that shows real self-awareness. ` +
-                            `Make clear it's just one example and there's no right answer.\n\nQUESTION: ${q}`,
+                            `Make clear it's just one honest example, not a "correct" answer — what matters is depth and specificity.\n\nQUESTION: ${q}`,
                         )
                       }
                       onDismiss={() =>

@@ -86,7 +86,7 @@ export default function AssignmentRunner() {
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-serif font-bold text-primary mb-2">{assignment.title} — Reflections</h1>
-              <p className="text-muted-foreground">You answered {result.total} {result.total === 1 ? "prompt" : "prompts"}. There are no scores here — only what your words reveal.</p>
+              <p className="text-muted-foreground">You answered {result.total} {result.total === 1 ? "prompt" : "prompts"}. Each was read for depth and honesty — here's what your words reveal, and where they fall short.</p>
             </div>
             <Link href={`/assignments`}>
               <Button variant="outline">Back to Assignments</Button>

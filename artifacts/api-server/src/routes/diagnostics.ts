@@ -326,7 +326,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
           correctAnswer: string;
           explanation: string;
         }>(
-          `You generate a single short reflective prompt for a self-knowledge course on "${topic.title}". It invites a SHORT, honest, first-person answer; there are no correct answers. "correctAnswer" is a short first-person MODEL REFLECTION (a depth reference, never shown as correct). Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}.`,
+          `You generate a single short reflective prompt for a self-knowledge course on "${topic.title}". It invites a SHORT, honest, first-person answer; there is no single correct answer, but a real answer must be specific and self-revealing. "correctAnswer" is a short first-person MODEL REFLECTION (a depth reference, never shown as correct). Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}.`,
           `New reflective prompt on ${topic.title}.`,
         );
         const [stored] = await db
@@ -570,10 +570,10 @@ async function auditProblem(p: {
       issue?: string;
       betterAnswer?: string;
     }>(
-      "You are a reviewer for a self-knowledge course. There are NO correct answers on this course. " +
+      "You are a reviewer for a self-knowledge course. There is no single factually correct answer here, but answers vary in depth and honesty. " +
         "You are given a reflective PROMPT and a stored MODEL REFLECTION — a short, first-person example answer whose only job is to show the kind of SINCERITY and DEPTH a real answer can reach (it is never shown to students as a correct answer). " +
         "Decide whether the model reflection is a good fit for its prompt: it should (a) actually respond to what the prompt asks, (b) be written in the first person, (c) be short, and (d) read as a sincere, specific, non-evasive human reflection rather than a generic platitude. " +
-        "Do NOT judge it for being 'wrong' — there is no right answer. Flag only true mismatches: it answers a different question, isn't first-person, is generic/evasive, or contradicts the prompt. " +
+        "Judge it on depth and authenticity, not factual correctness. Flag only true mismatches: it answers a different question, isn't first-person, is generic/evasive, or contradicts the prompt. " +
         'Respond as strict JSON: {"verdict": "correct" | "incorrect" | "ambiguous", "issue": string, "betterAnswer": string}. ' +
         'Use "correct" when the model reflection is a good fit. ' +
         'If verdict is "incorrect" or "ambiguous", "issue" must explain the mismatch in one sentence and "betterAnswer" must give a better short first-person model reflection to store instead.',

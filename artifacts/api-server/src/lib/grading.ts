@@ -1,24 +1,27 @@
 import { chatJson } from "./ai";
 
-// This is a self-knowledge course, not a quiz. There are NO correct answers.
-// `correctAnswer` carries a short, plausible first-person "model reflection" that
-// shows the kind of DEPTH a sincere answer tends to reach — it is a reference for
-// the grader, never a key the student must match.
+// This is a self-knowledge course. There is no single factually "correct" answer,
+// but there ARE better and worse answers: a genuine, specific, self-revealing
+// reflection is a good answer; a shallow, generic, evasive, or phony one is a bad
+// answer that reveals nothing and must not pass.
+//
+// `correctAnswer` carries a short, first-person "model reflection" — an example of
+// the DEPTH and CANDOR a real answer reaches. It is a reference for the grader,
+// never a key the student must match.
 //
 // `gradeAnswer` returns:
-//   - correct: whether the answer cleared a LENIENT sincerity bar (a genuine,
-//     non-evasive attempt — brevity is never penalised). Only empty, joke,
-//     dodging, or generic copy-paste answers fail.
-//   - explanation: feedback that LEADS with what the answer reveals about the
-//     person, then gently notes sincerity/depth and an invitation to go further.
+//   - correct: true ONLY when the answer is a genuine, specific, self-revealing
+//     attempt. Shallow / generic / evasive / phony answers fail.
+//   - explanation: real analysis. For a passing answer it states what the words
+//     actually reveal (a concrete psychological inference, not a paraphrase) and
+//     pushes one step deeper. For a failing answer it names precisely why the
+//     answer falls short and what a real answer would require.
 
 function wordCount(s: string): number {
   return s.trim().split(/\s+/).filter(Boolean).length;
 }
 
-// Only clearly evasive non-answers — refusals to engage, not short honest ones.
-// Brevity is never penalised, so single sincere words (e.g. "yes", "fear",
-// "nothing") are NOT listed here; only the LLM may judge those for sincerity.
+// Clearly evasive non-answers — refusals to engage.
 const LOW_EFFORT = new Set([
   "idk",
   "i dont know",
@@ -30,6 +33,11 @@ const LOW_EFFORT = new Set([
   "pass",
   "?",
   ".",
+  "nothing",
+  "no",
+  "yes",
+  "maybe",
+  "sure",
 ]);
 
 export async function gradeAnswer(opts: {
@@ -40,12 +48,12 @@ export async function gradeAnswer(opts: {
   const user = (opts.userAnswer ?? "").trim();
   const modelReflection = opts.correctAnswer ?? "";
 
-  // Empty answer: gentle nudge, not a pass.
+  // Empty answer.
   if (user.length === 0) {
     return {
       correct: false,
       explanation:
-        "There's nothing here yet. This question can't reveal anything until you put down a few honest words — even one true sentence is enough.",
+        "There's nothing here to work with. A blank can't reveal anything about you. Put down at least one true, specific sentence about your own life — not what you think sounds good.",
     };
   }
 
@@ -55,50 +63,65 @@ export async function gradeAnswer(opts: {
     return {
       correct: false,
       explanation:
-        "That's an answer that protects you from the question rather than meeting it. There's no grade for the 'right' words here — only for telling the truth, however small. Try naming one real, specific thing.",
+        "That answer keeps the question at arm's length. A one-word dodge tells us nothing about you. Name one real, specific thing — a moment, a feeling, a person — and say something true about it.",
     };
   }
 
   try {
     const out = await chatJson<{
-      sincere: boolean;
-      reveals: string;
-      depthNote: string;
+      verdict: "genuine" | "shallow" | "phony" | "evasive";
+      depth: number;
+      analysis: string;
+      shortfall: string;
     }>(
-      "You are a perceptive, warm, non-judgmental guide on a self-knowledge course. " +
-        "There are NO correct answers — students write short, honest reflections about themselves. " +
-        "You are given the QUESTION, a MODEL_REFLECTION (an example of the kind of depth a sincere answer can reach — NOT a key to match), and the STUDENT_ANSWER. " +
-        "Your job has two parts:\n" +
-        "1. Judge SINCERITY leniently. `sincere` is true if the answer is a genuine, specific, non-evasive attempt to engage with the question honestly. " +
-        "Brevity is NEVER a reason to fail — a single honest sentence passes. Only mark sincere=false for empty, joking, dodging, deflecting, or generic answers that could have been written by anyone about anyone.\n" +
-        "2. Write `reveals`: 2-4 sentences, addressed to the student as 'you', describing what their answer seems to reveal about them — their values, fears, patterns, needs, or how they relate to themselves and others. " +
-        "Be specific to what they actually wrote. Frame it as a gentle observation or hypothesis ('This suggests...', 'It sounds like...'), never a clinical verdict or diagnosis. Be kind and insightful, the way a wise friend would be.\n" +
-        "Also write `depthNote`: ONE short sentence either appreciating the honesty/depth shown, or — without scolding — inviting them one step deeper (e.g. a question they might sit with). Never criticise length.\n" +
-        'Respond as strict JSON: {"sincere": boolean, "reveals": string, "depthNote": string}.',
+      "You are a perceptive, honest psychological reader on a self-knowledge course. " +
+        "Students write SHORT, first-person reflections about their own lives. There is no factually correct answer, but there ARE genuine answers and there are bad answers, and you must tell them apart. " +
+        "You are given the QUESTION, a MODEL_REFLECTION (an example of the depth a real answer reaches — NOT a key to match), and the STUDENT_ANSWER.\n\n" +
+        "First, classify the STUDENT_ANSWER with a `verdict`:\n" +
+        "- 'genuine': specific, self-revealing, and honest. It says something true about THIS person that could not have been written by just anyone. Brevity is fine if it is specific and real — one true, concrete sentence counts.\n" +
+        "- 'shallow': generic, vague, or a platitude. Could have been written by anyone about anyone ('I want to be happy', 'family is important'). Reveals nothing specific.\n" +
+        "- 'phony': performative or self-flattering — written to look good or give the 'expected' answer rather than to be honest. Polished but hollow, or suspiciously tidy.\n" +
+        "- 'evasive': dodges, intellectualizes, jokes, or answers a different, safer question than the one asked.\n\n" +
+        "Also rate `depth` 0-3 (0 = no self-revelation, 3 = unguarded and specific).\n\n" +
+        "Then write `analysis`: 2-4 sentences of REAL analysis addressed to the student as 'you'. Do NOT merely restate or paraphrase what they wrote — infer. Name what the answer reveals about their values, fears, defenses, needs, or patterns, and WHY their specific wording implies it. Be concrete and perceptive, like someone who actually sees them. Offer it as an informed reading ('What this reveals is...', 'Underneath this is likely...'), not a clinical diagnosis.\n\n" +
+        "Then write `shortfall`: if the verdict is NOT 'genuine', state plainly that this answer falls short, name exactly why (too generic / performative / evasive), and describe what a real answer would have to do — be specific and direct without being cruel. If the verdict IS 'genuine', leave shortfall as an empty string.\n\n" +
+        'Respond as strict JSON: {"verdict": "genuine"|"shallow"|"phony"|"evasive", "depth": number, "analysis": string, "shortfall": string}.',
       JSON.stringify({
         question: opts.prompt,
         model_reflection: modelReflection,
         student_answer: user,
       }),
     );
-    const reveals = (out.reveals || "").trim();
-    const depthNote = (out.depthNote || "").trim();
-    const explanation = [reveals, depthNote].filter(Boolean).join("\n\n");
-    return {
-      correct: !!out.sincere,
-      explanation:
-        explanation ||
-        "Thank you for answering honestly — what you wrote becomes part of your self-portrait in Analytics.",
-    };
+
+    const verdict = out.verdict;
+    const pass = verdict === "genuine";
+    const analysis = (out.analysis || "").trim();
+    const shortfall = (out.shortfall || "").trim();
+
+    let explanation: string;
+    if (pass) {
+      explanation =
+        analysis ||
+        "This reads as a genuine, specific reflection — it adds a real detail to your self-portrait in Analytics.";
+    } else {
+      // Lead with what fell short, then the analysis of what little it did reveal.
+      explanation = [shortfall, analysis].filter(Boolean).join("\n\n");
+      if (!explanation) {
+        explanation =
+          "This answer stays on the surface. It could be true of almost anyone, so it reveals little about you specifically. Try again with one concrete, honest detail from your own life.";
+      }
+    }
+
+    return { correct: pass, explanation };
   } catch {
-    // Fallback when the model is unavailable: pass anything that looks like a
-    // real attempt (even one word), since brevity must never be penalised.
-    const looksReal = wordCount(user) >= 1;
+    // Model unavailable: we can't judge authenticity, so apply a minimal substance
+    // floor. A few words of real attempt passes provisionally; a fragment fails.
+    const looksReal = wordCount(user) >= 6;
     return {
       correct: looksReal,
       explanation: looksReal
-        ? "Thank you for answering honestly. What you wrote becomes part of your evolving self-portrait — the more candid your answers, the truer that picture grows."
-        : "Try putting down at least one true, specific sentence — that's all this needs to start revealing something.",
+        ? "Saved. The analysis engine is briefly unavailable, so this hasn't been read for depth yet — your answer is stored and will feed your self-portrait. Aim for specific and honest over impressive."
+        : "This is too thin to reveal anything yet. Add a concrete, honest detail from your own life — a specific moment or feeling, not a general statement.",
     };
   }
 }

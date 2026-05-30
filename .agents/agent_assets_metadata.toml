@@ -12,3 +12,15 @@ id = "zpoa4kJaFwLQ67_UaLoks"
 uri = "file://BLUEPRINT.md"
 type = "text"
 title = "QuantReason — App Blueprint"
+
+[[outputs]]
+id = "1EWTG_jif5t8T3psHkq0u"
+uri = "file://attached_assets/generated_audio/know_thyself_narration.mp3"
+type = "audio"
+title = "know thyself narration"
+
+[[outputs]]
+id = "nOTJl9xeHDL1pW9RIsDWW"
+uri = "file://attached_assets/generated_audio/know_thyself_music.mp3"
+type = "audio"
+title = "know thyself ambient bed"

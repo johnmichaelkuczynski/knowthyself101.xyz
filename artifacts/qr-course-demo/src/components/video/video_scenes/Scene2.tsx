@@ -1,171 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
-export function Scene2({ setCursorPos, setIsClicking }: { setCursorPos: (pos: {x: string, y: string}) => void, setIsClicking: (val: boolean) => void }) {
+export function Scene2() {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    // 0.0-1.5s: Page settles, cursor visible on left pane.
-    // 1.5-3.0s: Cursor moves to LONG button, clicks.
-    // 3.0-4.5s: Cursor moves to "Practice on this" tab, clicks.
-    // 4.5-8.0s: Cursor to "Ask the tutor", clicks.
-
-    setCursorPos({ x: '35vw', y: '45vh' }); // Start where Scene 1 left off
-    
-    const t1 = setTimeout(() => {
-      setCursorPos({ x: '25vw', y: '23vh' }); // Move to LONG toggle
-    }, 1500);
-
-    const t2 = setTimeout(() => {
-      setIsClicking(true);
-      setPhase(1); // LONG clicked
-    }, 2800);
-
-    const t3 = setTimeout(() => {
-      setIsClicking(false);
-    }, 3000);
-
-    const t4 = setTimeout(() => {
-      setCursorPos({ x: '75vw', y: '16vh' }); // Move to Practice tab
-    }, 3300);
-
-    const t5 = setTimeout(() => {
-      setIsClicking(true);
-      setPhase(2); // Practice clicked
-    }, 4500);
-
-    const t6 = setTimeout(() => {
-      setIsClicking(false);
-      setPhase(3); // Show practice problem after shimmer
-    }, 5100);
-
-    const t7 = setTimeout(() => {
-      setCursorPos({ x: '60vw', y: '16vh' }); // Move back to Tutor tab
-    }, 6500);
-
-    const t8 = setTimeout(() => {
-      setIsClicking(true);
-      setPhase(4); // Tutor clicked
-    }, 7800);
-
-    return () => {
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4);
-      clearTimeout(t5); clearTimeout(t6); clearTimeout(t7); clearTimeout(t8);
-    };
-  }, [setCursorPos, setIsClicking]);
+    const timers = [
+      setTimeout(() => setPhase(1), 500),
+      setTimeout(() => setPhase(2), 2500),
+    ];
+    return () => timers.forEach(t => clearTimeout(t));
+  }, []);
 
   return (
     <motion.div 
-      className="absolute inset-0 w-full h-full bg-background flex"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      className="absolute inset-0 flex flex-col items-center justify-center"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, filter: 'blur(10px)' }}
+      transition={{ duration: 1 }}
     >
-      {/* Left Pane: Lecture Content */}
-      <div className="w-1/2 h-full border-r border-border p-12 overflow-hidden flex flex-col relative">
-        <div className="text-xs font-bold tracking-widest text-muted-foreground mb-4">WEEK 1</div>
-        <h1 className="text-3xl font-serif text-primary mb-8">1.1 The equality family: =, ≠, ≈, ≡</h1>
+      <div className="relative w-full max-w-4xl px-12">
+        <motion.div
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] bg-[#1C1917]"
+          initial={{ height: 0 }}
+          animate={{ height: phase >= 1 ? '100%' : 0 }}
+          transition={{ duration: 0.8, ease: "anticipate" }}
+        />
         
-        <div className="flex bg-muted/50 rounded-lg p-1 w-fit mb-10 border border-border">
-          <div className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${phase < 1 ? 'bg-white shadow-sm text-primary' : 'text-muted-foreground'}`}>Short</div>
-          <div className="px-4 py-1.5 rounded-md text-sm font-medium text-muted-foreground">Medium</div>
-          <div className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${phase >= 1 ? 'bg-white shadow-sm text-primary' : 'text-muted-foreground'}`}>Long</div>
-        </div>
-
-        <div className="prose prose-sm max-w-none text-foreground/80 space-y-6">
-          <h2 className="font-serif text-2xl text-primary">Four kinds of "equals"</h2>
-          <p>
-            Mathematical notation is the most compressed writing a scientist ever produces. Every symbol does work — and misreading one flips the meaning of the whole sentence. This course teaches you to read, type, and mean each symbol on the page.
-          </p>
-          <p>
-            The real number line is the foundation. Every point on the line corresponds to exactly one real number, and every real number corresponds to exactly one point.
-          </p>
+        <div className="pl-12">
+          <motion.h2 
+            className="text-[4vw] font-serif text-[#1C1917] leading-none mb-4"
+            initial={{ opacity: 0, x: -30 }}
+            animate={phase >= 1 ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            Know Thyself
+          </motion.h2>
           
-          <AnimatePresence>
-            {phase >= 1 && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, y: 10 }}
-                animate={{ opacity: 1, height: 'auto', y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="space-y-6"
-              >
-                <p>
-                  Math uses four different "equals" signs and they don't mean the same thing. `=` means the two sides are literally the same number. `≠` means they are not. `≈` means approximately equal — close, but not exact. `≡` means identically equal — true for every value, or true by definition.
-                </p>
-                <p>
-                  For example, π ≈ 3.14159 (the digits never end, so we can't write `=`), but (x+1)² ≡ x² + 2x + 1 is an identity — it holds for every x. Mixing these up flips the meaning of the sentence.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Right Pane: Tutor / Practice */}
-      <div className="w-1/2 h-full bg-white flex flex-col relative">
-        <div className="flex border-b border-border px-4 pt-4 bg-background">
-          <div className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${phase < 2 || phase >= 4 ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}>Ask the tutor</div>
-          <div className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${phase >= 2 && phase < 4 ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}>Practice on this</div>
-        </div>
-
-        <div className="flex-1 p-8 relative overflow-hidden">
-          <AnimatePresence mode="popLayout">
-            {phase < 2 || phase >= 4 ? (
-              <motion.div 
-                key="tutor"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="h-full flex flex-col justify-end"
-              >
-                <div className="mb-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest">Starter questions for this section</div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">When should I use ≈ instead of =?</div>
-                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">What does ≡ mean in modular arithmetic?</div>
-                  <div className="px-3 py-1.5 rounded-full border border-border text-sm text-primary bg-muted/30">Is x ≠ y the same as ¬(x = y)?</div>
-                </div>
-                <div className="w-full h-24 border border-border rounded-lg bg-muted/20 p-3 text-muted-foreground text-sm flex items-end shadow-inner">
-                  <div className="w-full flex justify-between">
-                    <span>Ask a question about the equality family...</span>
-                    <div className="w-8 h-8 rounded bg-primary text-white flex items-center justify-center cursor-pointer opacity-50">↑</div>
-                  </div>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                key="practice"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="h-full flex flex-col"
-              >
-                <h3 className="font-serif text-xl text-primary mb-6">Generated Practice Problem</h3>
-                
-                {phase === 2 ? (
-                  <div className="space-y-3">
-                    <motion.div className="h-4 bg-muted rounded w-full overflow-hidden relative">
-                      <motion.div className="absolute inset-0 bg-white/50 w-1/2" animate={{ x: ['-100%', '200%'] }} transition={{ repeat: Infinity, duration: 1 }} />
-                    </motion.div>
-                    <motion.div className="h-4 bg-muted rounded w-5/6 overflow-hidden relative">
-                      <motion.div className="absolute inset-0 bg-white/50 w-1/2" animate={{ x: ['-100%', '200%'] }} transition={{ repeat: Infinity, duration: 1, delay: 0.1 }} />
-                    </motion.div>
-                  </div>
-                ) : (
-                  <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }}
-                    className="p-6 border border-border rounded-xl shadow-sm bg-white"
-                  >
-                    <p className="text-foreground font-medium mb-6">
-                      A college has 18,500 students. Tuition is $24,000 per student per year. What is the total tuition revenue?
-                    </p>
-                    <div className="w-full h-12 border border-border rounded-md bg-muted/10 mb-4 px-3 flex items-center text-muted-foreground">Type your answer...</div>
-                    <div className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium w-fit ml-auto">Submit</div>
-                  </motion.div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.p 
+            className="text-[2.5vw] font-sans text-[#78716C] font-light"
+            initial={{ opacity: 0 }}
+            animate={phase >= 2 ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 1 }}
+          >
+            is a four-week course whose subject is you.
+          </motion.p>
         </div>
       </div>
     </motion.div>

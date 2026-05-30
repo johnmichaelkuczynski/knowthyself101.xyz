@@ -29,3 +29,22 @@ correctness leaks into more places than the obvious lecture/seed files. Sweep al
 "no right answers" product. **How to apply:** after the obvious content swap, grep the whole
 qr-course + api-server tree for `correctAnswer`, `accuracy`, `Score`, `Correct`, `exam` and
 reframe each hit; verify the grade endpoints' JSON keys directly (not just the UI).
+
+## Companion demo video (qr-course-demo) reskin gotchas
+
+- **A DESIGN subagent reskinning the video can silently leave Scene1 behind.** When it rewrites
+  `VideoTemplate.tsx` to render scenes prop-less (`<SceneComponent key=... />`) plus Scene2–6, it
+  may not touch `Scene1.tsx`, which still expects the old interactive-cursor props
+  (`setCursorPos`/`setIsClicking`) — producing a runtime `setCursorPos is not a function` crash
+  and an "Invalid hook call" cascade. **How to apply:** after any video reskin, grep
+  `video_scenes/` for `export function Scene\d\(` and confirm every scene is prop-less; check the
+  browser console for the crash; and remove now-orphaned helpers (`CursorPointer`, `StreamingText`,
+  `TypewriterText`, `TypingIndicator`) the new template no longer imports.
+
+- **The `synthetic-run` diagnostic is very slow and aborts on any api-server restart.** It chains
+  many LLM calls (practice + full assignment + grading + detection + analytics) and can run many
+  minutes; restarting api-server while it's in flight logs `request aborted`. The faster
+  `GET /api/diagnostics/system` already independently exercises OpenAI chat, JSON mode, the
+  detection pipeline, and GPTZero, so use it as the primary green signal. **How to apply:** never
+  launch synthetic-run right before an api-server restart; trust the system diagnostic for routine
+  verification and only wait out synthetic-run when a full end-to-end proof is explicitly needed.

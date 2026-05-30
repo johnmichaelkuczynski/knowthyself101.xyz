@@ -1,67 +1,145 @@
-# 🔣 Teach Yourself Mathematical Notation
+# 🔍 Know Thyself
 
-**A Four-Week Course on the Symbols of Mathematics, Science, and Engineering — Built to Beta-Test the Math-Notation Stack of QuantReason and Its Clones**
+**A Four-Week Course in Self-Examination — Read the Lecture, Sit With the Question, Answer Honestly**
 
----
+A self-paced, single-user web course whose subject *is you*. Over four weeks and 29 short
+lectures it walks the territory of a life — where your sense of self came from, what you
+avoid, how you love, what you envy, what you fear is true about you, and who you are becoming.
 
-## 🧩 Overview
+It is a content reskin of the **QuantReason** runtime. The full engine — lectures with
+short / medium / long depth, a section-scoped reflective guide, adaptive practice,
+AI-assisted feedback, two-layer AI-authorship detection, one-click diagnostics, and an
+analytics layer — is preserved unchanged. Two behaviors are specific to this material:
 
-Teach Yourself Mathematical Notation is a self-paced, single-user web course whose subject *is* the symbols themselves: =, ≠, ≈, ≡, ±, ∝, Σ, Π, Δ, ∂, ∫, μ, σ, P(A ∣ B), ∀, ∃, ∈, ⊆, ℕ, ℝ, ℂ, and the rest.
-
-It is a content reskin of the **QuantReason** Quantitative Reasoning app. The full QuantReason runtime — lectures with Short / Medium / Long depth, section-scoped AI tutor, adaptive practice, AI-graded homework / tests / midterm / final, two-layer AI-authorship detection, and one-click diagnostics — is preserved unchanged. The **purpose** of this build is to put the on-screen math keyboard through its paces: every micro-lecture targets one symbol or symbol-subset and every assignment problem requires the student to type that symbol into their answer.
-
-If a symbol on the keyboard cannot be inserted, rendered, graded, or detected cleanly, this course will surface it.
-
----
-
-## 🧠 What It Does
-
-- **Four-Week Curriculum of 28 Micro-Lectures** — One symbol family per lecture, organized by week:
-  - **Week 1 — Foundations.** Equality family (=, ≠, ≈, ≡); inequalities (<, >, ≤, ≥); ± and ∝; exponents (xⁿ); roots (√, ³√); |x| and n!; subscripts (x₀, xₜ, vᵧ).
-  - **Week 2 — Calculus and change.** Σ; Π; Δ and δ; lim, →, ∞; d/dx and ∂/∂x; ∫, ∬, ∮; e, ln, log.
-  - **Week 3 — Probability and statistics.** μ, σ, σ²; x̄, p̂, s; P(A), P(A∣B); E(X), Var(X); X ∼ N(μ, σ²); z, t, χ²; α, β.
-  - **Week 4 — Logic, sets, and foundations.** ∈, ∉; ⊂, ⊆; ∪, ∩, ∅, Aᶜ; ∀, ∃, ∄; ∧, ∨, ¬; →, ↔; ℕ, ℤ, ℚ, ℝ, ℂ.
-- **One Real Science Example per Lecture** — Every micro-lecture grounds its symbol in an actual scientific equation: ΔS ≥ 0 for the second law, N(t) = N₀e^(−λt) for radioactive decay, χ² for Mendelian goodness-of-fit, p̂ for clinical-trial efficacy, ψ : ℝ⁴ → ℂ for the quantum wavefunction.
-- **One Symbol-Use Question per Lecture** — Every homework / test / midterm / final problem demands the student *write the symbol* in their answer, not just describe it in English. The math keyboard is the only practical way to do this.
-- **Three-Depth Lectures, Section-Scoped Tutor, Adaptive Practice, AI Grading, Two-Layer Detection, Operator Diagnostics** — All inherited unchanged from the QuantReason runtime.
-- **Built-In Product Demo Video** — The companion `qr-course-demo` artifact still ships as a ~62-second screencast of the live UI.
+1. **Answers are short and there are no right answers.** Every prompt asks for a sincere,
+   first-person reflection. Responses are read for **sincerity and depth**, never for
+   correctness, and brevity is never penalized.
+2. **Feedback is a mirror.** Instead of marking work right or wrong, the course reflects
+   back *what your words reveal about you*, and the analytics page assembles an **evolving
+   psychological self-portrait** from everything you've written.
 
 ---
 
-## ⚙️ Technical Features
+## 🧱 Architecture at a Glance
 
-- **Math Keyboard Beta Harness** — Every problem prompt is structured so that the *only* way to type the model answer is with the keys on the floating math keyboard (`MathKeyboard.tsx`). This makes the course a stress test of: tab discoverability, symbol insertion at the cursor, keystroke / paste detection on submitted answers, LaTeX-aware grading, and the renderer (KaTeX) for both the lecture and the student's answer.
-- **Static AI Detection (GPTZero):** Every submitted answer is sent to GPTZero's `predict/text` endpoint; the per-document AI probability is blended `0.85 × GPTZero + 0.15 × structural-heuristic` for the final score. If GPTZero is unavailable, the system silently falls back to an LLM scorer plus heuristic — submissions never block.
-- **Diachronic Keystroke Detection:** The student textarea captures keystroke count, erase count, bulk-insert events, longest bulk insert, rewrite segments, and total duration. A scorer penalizes paste-then-reword behavior, low keystroke-to-output ratios, and impossibly sustained typing speeds.
-- **System Diagnostic (`/diagnostics/system`):** Environment, database round-trip, course-seed integrity (≥28 topics), OpenAI chat completion, OpenAI JSON mode, detection pipeline, AI-positive control sample, and GPTZero connectivity. Each step returns pass/fail, timing, and a raw error string.
-- **Synthetic-Student Diagnostic (`/diagnostics/synthetic-run`):** End-to-end stack proof — a fake student takes a practice session, takes a full assignment attempt, submits, and verifies grading + detection + analytics all reflect the run.
-- **Auto-Reseed on Curriculum Change** — `seedIfEmpty` compares the set of topic slugs in the database to the expected curriculum. If they differ, it wipes and re-seeds in dependency order. A single content swap propagates cleanly when the seed file changes.
-- **Contract-First API** — Single OpenAPI document; React Query hooks for the UI and Zod validators for the server are generated from it.
-- **Streaming AI Tutor** — Token-by-token Server-Sent-Event streaming with a section-scoped system prompt grounded in the active lecture.
-- **Adaptive Practice Engine** — Per-session difficulty (1–4) adjusts after each attempt; problems are generated on demand.
+This is a pnpm monorepo. Traffic is routed by path through a shared reverse proxy.
+
+```
+artifacts/
+  qr-course/        React + Vite SPA — the course UI (served at /)
+  api-server/       Express API — lectures, grading, tutor, detection, analytics (served at /api)
+  qr-course-demo/   Animated product demo video (video-js artifact)
+lib/
+  api-spec/         Single OpenAPI document + generated React Query hooks and Zod schemas
+  db/               Drizzle ORM schema + client (reads DATABASE_URL)
+```
+
+- **Contract-first.** `lib/api-spec/openapi.yaml` is the single source of truth. React Query
+  hooks (client) and Zod validators (server) are generated from it. This reskin made **no**
+  schema changes.
+- **Database.** `lib/db` reads `process.env.DATABASE_URL` and connects to an external Neon
+  Postgres, so the app is portable across environments and not tied to any one host.
+
+---
+
+## 🚀 Running Locally
+
+Services run as Replit **workflows**, not via root `pnpm dev`. Each artifact needs
+workflow-provided env (`PORT`, `BASE_PATH`).
+
+| Task | Command |
+| --- | --- |
+| Typecheck everything | `pnpm run typecheck` |
+| Regenerate API client/schemas | `pnpm --filter @workspace/api-spec run codegen` |
+| Push DB schema to `DATABASE_URL` | `pnpm --filter @workspace/db run push` |
+| Restart a service | restart the workflow for that artifact |
+
+Ad-hoc requests go through the proxy, e.g. `curl localhost:80/api/healthz` — never hit a
+service port directly.
+
+---
+
+## 🔌 API Surface (`/api`)
+
+| Area | Endpoints |
+| --- | --- |
+| Health | `GET /healthz` |
+| Course | `GET /course/overview`, `/course/weeks/{n}`, `/course/lectures/{id}`, `/course/topics` |
+| Assignments | `GET /assignments`, `/assignments/{id}`, `POST /assignments/{id}/start`, `/assignments/attempts/{id}/answer`, `/assignments/attempts/{id}/submit` |
+| Practice | `POST /practice/sessions`, `/practice/sessions/{id}/next`, `/practice/sessions/{id}/grade` |
+| Reflective guide | `POST /tutor/ask` (SSE stream) |
+| Detection | `POST /detection/scan` |
+| Analytics | `GET /analytics/summary`, `/analytics/topics`, `/analytics/activity`, `/analytics/report` |
+| Diagnostics | `GET /diagnostics/system`, `POST /diagnostics/synthetic-run`, `/diagnostics/expand-lectures`, `/diagnostics/content-audit`, `/diagnostics/reset` |
+
+---
+
+## ⚙️ How the Two Behavior Changes Work
+
+- **Sincerity & depth grading** (`api-server/src/lib/grading.ts`). The grader reads each
+  answer for honesty, specificity, and self-awareness rather than correctness. Empty or
+  low-effort answers fail gently and invite a second pass; any genuine attempt passes.
+  Feedback always *leads with what the answer reveals*. The `correctAnswer` field is
+  repurposed as a hidden, first-person "model reflection" — a depth reference for the
+  grader, the synthetic-student diagnostic, and the content auditor. It is **never**
+  returned to the client or shown as a correct answer.
+- **Evolving self-portrait** (`api-server/src/routes/analytics.ts`). `GET /analytics/report`
+  joins every submitted answer (and practice reflection) back to its topic and asks an LLM
+  to draw a psychological portrait — narrative, patterns it notices, tensions worth sitting
+  with, and questions to carry forward. It maps onto the existing
+  `GenerateReportResponse` shape (narrative / strengths / weaknesses / recommendations)
+  with no schema change.
+
+## 🛡️ Two-Layer AI-Authorship Detection
+
+- **Static (GPTZero):** each submitted answer is sent to GPTZero's `predict/text` endpoint;
+  the per-document AI probability is blended `0.85 × GPTZero + 0.15 × structural-heuristic`.
+  If GPTZero is unavailable the system silently falls back to an LLM scorer plus heuristic —
+  submissions never block.
+- **Diachronic (keystroke pattern):** the answer textarea captures keystroke count, erase
+  count, bulk-insert events, longest bulk insert, rewrite segments, and total duration.
+  Pasting is disabled — the whole point is to hear from *you*.
+
+## 🩺 Two Diagnostics
+
+- **System diagnostic** (`GET /diagnostics/system`): environment, database round-trip,
+  course-seed integrity, OpenAI chat completion, OpenAI JSON mode, detection pipeline,
+  AI-positive control sample, and GPTZero connectivity. Each step returns pass/fail,
+  timing, and a raw error string.
+- **Synthetic-student diagnostic** (`POST /diagnostics/synthetic-run`): an end-to-end stack
+  proof — a synthetic student takes a practice session and a full assignment attempt,
+  submits, and verifies feedback + detection + analytics all reflect the run.
+
+Both are surfaced with one-click execution (plus a content auditor) on the in-app
+**Diagnostics** page.
+
+## 🌱 Auto-Reseed on Curriculum Change
+
+`seedIfEmpty` compares the topic slugs in the database against the expected curriculum. If
+they differ, it wipes and re-seeds in dependency order, so a single content swap in the
+seed file propagates cleanly.
 
 ---
 
 ## 🔐 Required Secrets
 
-- `DATABASE_URL` — Postgres connection string for the external database.
-- `OPENAI_API_KEY` — required at boot. Powers the tutor, practice generator, AI graders, and lecture-expansion job.
-- `GPTZERO_API_KEY` — required for the GPTZero leg of the static-AI-detection layer. Without it, the system falls back to the LLM scorer + heuristic but loses the primary detection signal.
-- `SESSION_SECRET` — signed-session cookie secret.
+| Secret | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Postgres connection string (external Neon database). |
+| `OPENAI_API_KEY` | Required at boot. Powers the reflective guide, practice generator, feedback grader, self-portrait, and lecture-expansion job. |
+| `GPTZERO_API_KEY` | The GPTZero leg of static AI detection. Without it the system falls back to the LLM scorer + heuristic but loses the primary detection signal. |
+| `SESSION_SECRET` | Signed-session cookie secret. |
 
----
-
-## 🎓 Designed For
-
-- **The Maintainer of QuantReason and Its Clones:** A pure stress test of the math-notation stack — keyboard, LaTeX rendering, grading, and AI detection — without the noise of a different curriculum to debug at the same time.
-- **Anyone Who Has Ever Squinted at a Math Paper:** A short, focused course that explains *what the symbols mean*, with one science example for each.
+All are managed through the Secrets panel; none are hard-coded.
 
 ---
 
 ## 💡 Core Idea
 
-A formula is the most compressed piece of writing a scientist ever produces. Every symbol does work — and the cost of *misreading* one is that the whole sentence flips its meaning.
+Most of what runs a life runs quietly, just below awareness. The work of this course is to
+turn some of it over in the light — gently, specifically, in your own words.
 
-This course teaches notation by *using* notation: read the symbol, see it in a real scientific equation, then type it back in an answer of your own. The math keyboard is the gym; the symbols are the weights; the science examples are the reason any of it matters.
+Read the lecture, sit with the question, and write the truest short answer you can. The
+feedback won't tell you whether you're right. It will tell you what you just revealed.
 
-**Teach Yourself Mathematical Notation — read the symbol, type the symbol, mean the symbol.**
+**Know Thyself — read the lecture, sit with the question, answer honestly.**

@@ -48,3 +48,14 @@ reframe each hit; verify the grade endpoints' JSON keys directly (not just the U
   detection pipeline, and GPTZero, so use it as the primary green signal. **How to apply:** never
   launch synthetic-run right before an api-server restart; trust the system diagnostic for routine
   verification and only wait out synthetic-run when a full end-to-end proof is explicitly needed.
+
+- **video-js export ("Video export failed") breaks when audio is wired off the skill's path.**
+  The export build cannot resolve `<audio src>` imported via a deep relative path into
+  `attached_assets/` (outside the artifact), and the recorder dislikes multiple `<audio>` elements
+  (esp. one with a `loop` attr). **Why:** export runs a production build/headless recording; assets
+  outside the artifact root and per-element audio swaps drift or fail. **How to apply:** follow
+  `.local/skills/video-js/references/audio.md` — put ONE pre-mixed `composite_audio.mp3` (narration
+  ducked-music via ffmpeg, clamped to total SCENE_DURATIONS runtime) in the artifact's
+  `public/audio/`, reference it as `${import.meta.env.BASE_URL}audio/composite_audio.mp3`, single
+  audioRef, NO `loop` attr, time-sync via SCENE_START_SEC. Audio wiring is a MAIN-AGENT task, not
+  the DESIGN subagent's. The Replit export captures the audio too, so the downloaded MP4 has sound.

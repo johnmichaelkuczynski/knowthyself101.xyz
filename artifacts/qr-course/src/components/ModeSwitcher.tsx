@@ -4,6 +4,8 @@ import {
   useGetSettings,
   useUpdateSettings,
   getGetSettingsQueryKey,
+  getGetLatestReportQueryKey,
+  getGetReportHistoryQueryKey,
 } from "@workspace/api-client-react";
 import type {
   SettingsInputMode,
@@ -51,6 +53,10 @@ export function ModeSwitcher() {
       onSuccess: () => {
         // Refresh settings everywhere; reports/feedback re-lens off the new mode.
         qc.invalidateQueries({ queryKey: getGetSettingsQueryKey() });
+        // The saved profile + its history are mode-scoped; refetch them so the
+        // Analytics page shows the new mode's persisted reading.
+        qc.invalidateQueries({ queryKey: getGetLatestReportQueryKey() });
+        qc.invalidateQueries({ queryKey: getGetReportHistoryQueryKey() });
       },
     },
   });

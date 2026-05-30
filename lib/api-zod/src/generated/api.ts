@@ -433,7 +433,7 @@ export const GetRecentActivityResponse = zod.array(GetRecentActivityResponseItem
 
 
 /**
- * @summary Generate a narrative strengths/weaknesses report
+ * @summary Generate (and persist) a narrative strengths/weaknesses report
  */
 export const GenerateReportResponse = zod.object({
   "generatedAt": zod.coerce.date(),
@@ -442,6 +442,41 @@ export const GenerateReportResponse = zod.object({
   "weaknesses": zod.array(zod.string()),
   "recommendations": zod.array(zod.string())
 })
+
+
+/**
+ * @summary Most recently saved report for the current mode (null if none yet)
+ */
+export const GetLatestReportResponse = zod.object({
+  "report": zod.union([zod.object({
+  "id": zod.number(),
+  "generatedAt": zod.coerce.date(),
+  "mode": zod.string(),
+  "framework": zod.string(),
+  "narrative": zod.string(),
+  "strengths": zod.array(zod.string()),
+  "weaknesses": zod.array(zod.string()),
+  "recommendations": zod.array(zod.string()),
+  "answeredCount": zod.number()
+}),zod.null()])
+})
+
+
+/**
+ * @summary Past report snapshots for the current mode, newest first
+ */
+export const GetReportHistoryResponseItem = zod.object({
+  "id": zod.number(),
+  "generatedAt": zod.coerce.date(),
+  "mode": zod.string(),
+  "framework": zod.string(),
+  "narrative": zod.string(),
+  "strengths": zod.array(zod.string()),
+  "weaknesses": zod.array(zod.string()),
+  "recommendations": zod.array(zod.string()),
+  "answeredCount": zod.number()
+})
+export const GetReportHistoryResponse = zod.array(GetReportHistoryResponseItem)
 
 
 /**

@@ -123,6 +123,25 @@ export const appSettingsTable = pgTable("app_settings", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// A timestamped snapshot of a generated self-portrait / career reading. Persisting
+// every report is what gives the app real memory: the profile is remembered between
+// visits, its evolution over time is visible, and each new reading is generated
+// with the previous one as context so the picture genuinely builds rather than
+// resetting on every generation. Single-user for now (no userId column yet).
+export const profileReportsTable = pgTable("profile_reports", {
+  id: serial("id").primaryKey(),
+  mode: text("mode").notNull(), // self_knowledge | career
+  framework: text("framework").notNull(), // active framework when generated (e.g. auto)
+  narrative: text("narrative").notNull(),
+  patterns: jsonb("patterns").notNull().$type<string[]>().default([]),
+  tensions: jsonb("tensions").notNull().$type<string[]>().default([]),
+  questions: jsonb("questions").notNull().$type<string[]>().default([]),
+  answeredCount: integer("answered_count").notNull().default(0),
+  assignmentCount: integer("assignment_count").notNull().default(0),
+  practiceCount: integer("practice_count").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const practiceAttemptsTable = pgTable("practice_attempts", {
   id: serial("id").primaryKey(),
   sessionId: integer("session_id")

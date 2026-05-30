@@ -363,7 +363,7 @@ paths:
     post:
       operationId: generateReport
       tags: [analytics]
-      summary: Generate a narrative strengths/weaknesses report
+      summary: Generate (and persist) a narrative strengths/weaknesses report
       responses:
         "200":
           description: OK
@@ -371,6 +371,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnalyticsReport"
+
+  /analytics/report/latest:
+    get:
+      operationId: getLatestReport
+      tags: [analytics]
+      summary: Most recently saved report for the current mode (null if none yet)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LatestProfileReport"
+
+  /analytics/report/history:
+    get:
+      operationId: getReportHistory
+      tags: [analytics]
+      summary: Past report snapshots for the current mode, newest first
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileReportHistory"
 
   /settings:
     get:
@@ -743,6 +769,51 @@ components:
         recommendations:
           type: array
           items: { type: string }
+
+    ProfileReport:
+      type: object
+      required:
+        [
+          id,
+          generatedAt,
+          mode,
+          framework,
+          narrative,
+          strengths,
+          weaknesses,
+          recommendations,
+          answeredCount,
+        ]
+      properties:
+        id: { type: integer }
+        generatedAt: { type: string, format: date-time }
+        mode: { type: string }
+        framework: { type: string }
+        narrative: { type: string }
+        strengths:
+          type: array
+          items: { type: string }
+        weaknesses:
+          type: array
+          items: { type: string }
+        recommendations:
+          type: array
+          items: { type: string }
+        answeredCount: { type: integer }
+
+    LatestProfileReport:
+      type: object
+      required: [report]
+      properties:
+        report:
+          oneOf:
+            - $ref: "#/components/schemas/ProfileReport"
+            - type: "null"
+
+    ProfileReportHistory:
+      type: array
+      items:
+        $ref: "#/components/schemas/ProfileReport"
 
     CourseOverview:
       type: object

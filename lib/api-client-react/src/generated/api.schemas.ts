@@ -339,6 +339,24 @@ export interface AnalyticsReport {
   recommendations: string[];
 }
 
+export interface ProfileReport {
+  id: number;
+  generatedAt: string;
+  mode: string;
+  framework: string;
+  narrative: string;
+  strengths: string[];
+  weaknesses: string[];
+  recommendations: string[];
+  answeredCount: number;
+}
+
+export interface LatestProfileReport {
+  report: ProfileReport | null;
+}
+
+export type ProfileReportHistory = ProfileReport[];
+
 export type CourseOverviewTotals = {
   assignmentsCompleted: number;
   assignmentsTotal: number;

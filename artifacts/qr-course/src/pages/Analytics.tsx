@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { 
   useGetAnalyticsSummary, 
   useGetTopicAnalytics, 
   useGetRecentActivity,
   useGenerateReport,
-  useGetSettings
+  useGetSettings,
+  useGetLatestReport,
+  getGetLatestReportQueryKey,
+  getGetReportHistoryQueryKey
 } from "@workspace/api-client-react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -20,17 +24,27 @@ export default function Analytics() {
   const { data: activity, isLoading: isLoadingActivity } = useGetRecentActivity();
   const generateReport = useGenerateReport();
   const { data: settings } = useGetSettings();
+  const { data: latest } = useGetLatestReport();
+  const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
   const [report, setReport] = useState<any>(null);
 
   const isCareer = settings?.mode === "career";
 
-  // A generated report is mode-specific; if the lens changes, drop the stale one
-  // so old narrative text never shows under the new mode's headings.
+  // A freshly generated report is held in local state for this session; if the lens
+  // changes, drop it so old narrative text never shows under the new mode's headings.
   useEffect(() => {
     setReport(null);
   }, [settings?.mode]);
+
+  // The persisted profile: the latest saved reading for the current mode, loaded on
+  // mount so the portrait survives between visits. The endpoint is mode-scoped, but
+  // its query key is static, so guard by mode to avoid flashing the other mode's
+  // reading during a refetch after a mode switch.
+  const persisted =
+    latest?.report && latest.report.mode === settings?.mode ? latest.report : null;
+  const effectiveReport = report ?? persisted;
   const reportTitle = isCareer ? "Your Career Reading" : "Your Self-Portrait";
   const reportSubtitle = isCareer
     ? "An evolving read on the work that fits you, drawn from everything you've written so far."
@@ -42,7 +56,13 @@ export default function Analytics() {
 
   const handleGenerateReport = () => {
     generateReport.mutate(undefined, {
-      onSuccess: (data) => setReport(data)
+      onSuccess: (data) => {
+        setReport(data);
+        // The generation persisted a new snapshot server-side; refresh the saved
+        // profile + its history so they reflect the latest reading.
+        queryClient.invalidateQueries({ queryKey: getGetLatestReportQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetReportHistoryQueryKey() });
+      },
     });
   };
 
@@ -59,35 +79,35 @@ export default function Analytics() {
           </Button>
         </div>
 
-        {report && (
+        {effectiveReport && (
           <Card className="border-primary bg-primary/5">
             <CardHeader>
               <CardTitle>{reportTitle}</CardTitle>
-              <div className="text-xs text-muted-foreground">Drawn {new Date(report.generatedAt).toLocaleString()}</div>
+              <div className="text-xs text-muted-foreground">Drawn {new Date(effectiveReport.generatedAt).toLocaleString()}</div>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
               <div>
-                <MarkdownRenderer content={report.narrative} />
+                <MarkdownRenderer content={effectiveReport.narrative} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-semibold text-chart-2 mb-2">{patternsLabel}</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
-                    {report.strengths.map((s: string, i: number) => <li key={i}>{s}</li>)}
+                    {effectiveReport.strengths.map((s: string, i: number) => <li key={i}>{s}</li>)}
                   </ul>
                 </div>
                 <div>
                   <h4 className="font-semibold text-chart-4 mb-2">{tensionsLabel}</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
-                    {report.weaknesses.map((w: string, i: number) => <li key={i}>{w}</li>)}
+                    {effectiveReport.weaknesses.map((w: string, i: number) => <li key={i}>{w}</li>)}
                   </ul>
                 </div>
               </div>
-              {Array.isArray(report.recommendations) && report.recommendations.length > 0 && (
+              {Array.isArray(effectiveReport.recommendations) && effectiveReport.recommendations.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-primary mb-2">{questionsLabel}</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
-                    {report.recommendations.map((r: string, i: number) => <li key={i}>{r}</li>)}
+                    {effectiveReport.recommendations.map((r: string, i: number) => <li key={i}>{r}</li>)}
                   </ul>
                 </div>
               )}

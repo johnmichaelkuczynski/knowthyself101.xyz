@@ -9,18 +9,38 @@ import {
   assignmentsTable,
   answersTable,
   problemsTable,
+  profileReportsTable,
 } from "@workspace/db";
 import {
   GetAnalyticsSummaryResponse,
   GetTopicAnalyticsResponse,
   GetRecentActivityResponse,
   GenerateReportResponse,
+  GetLatestReportResponse,
+  GetReportHistoryResponse,
 } from "@workspace/api-zod";
 import { chatJson, TEXT_MODEL } from "../lib/ai";
 import { getSettings, activeFramework } from "../lib/settings";
 import { frameworkBrief, MODE_LABEL } from "../lib/frameworks";
 
 const router: IRouter = Router();
+
+// Shape a stored snapshot row into the API ProfileReport. The narrative is stored
+// exactly as it was shown (provenance line included), so a loaded snapshot reads
+// identically to the moment it was generated.
+function toProfileReport(row: typeof profileReportsTable.$inferSelect) {
+  return {
+    id: row.id,
+    generatedAt: (row.createdAt as Date).toISOString(),
+    mode: row.mode,
+    framework: row.framework,
+    narrative: row.narrative,
+    strengths: row.patterns ?? [],
+    weaknesses: row.tensions ?? [],
+    recommendations: row.questions ?? [],
+    answeredCount: row.answeredCount,
+  };
+}
 
 type StrengthLabel = "strong" | "solid" | "developing" | "weak" | "untested";
 function labelFor(accuracy: number, attempts: number): StrengthLabel {
@@ -275,10 +295,33 @@ router.post("/analytics/report", async (_req, res) => {
     return;
   }
 
+  // Real memory across visits: pull the most recent saved reading for THIS mode so
+  // the new one can build on it rather than starting from a blank page. This is what
+  // makes the profile genuinely evolve over time instead of being recomputed cold.
+  const [priorReport] = await db
+    .select()
+    .from(profileReportsTable)
+    .where(eq(profileReportsTable.mode, settings.mode))
+    .orderBy(desc(profileReportsTable.createdAt), desc(profileReportsTable.id))
+    .limit(1);
+  const priorContext = priorReport
+    ? JSON.stringify({
+        previousReading: priorReport.narrative,
+        previousPatterns: priorReport.patterns ?? [],
+        previousTensions: priorReport.tensions ?? [],
+        previousAnsweredCount: priorReport.answeredCount,
+        drawnAt: (priorReport.createdAt as Date).toISOString(),
+      })
+    : null;
+
   let narrative = "";
   let strengths: string[] = [];
   let weaknesses: string[] = [];
   let recommendations: string[] = [];
+  // When the AI synthesis fails we still return a friendly placeholder, but we must
+  // NOT persist it: a saved outage message would become next run's `previousProfile`
+  // and anchor the evolving portrait to error text instead of the user's own words.
+  let synthesisFailed = false;
   try {
     // PASS 1 — analyze EACH reflection on its own. For every answer we extract the
     // concrete psychological signal it carries (an inference, not a paraphrase) and
@@ -338,7 +381,8 @@ router.post("/analytics/report", async (_req, res) => {
           "- portrait: 2-3 paragraphs on the kinds of work and environments that fit this person — their interests, motivators, strengths, and non-negotiables, named through the frameworks where apt.\n" +
           "- patterns: 3-5 short, specific phrases naming recurring vocational interests, anchors, or trait-fits clearly evidenced across answers.\n" +
           "- tensions: 2-4 short, specific phrases naming conflicts, blind spots, or gaps between what they say they want and what their answers suggest fits them.\n" +
-          "- questions: 3 specific, probing questions worth sitting with next to sharpen the career direction."
+          "- questions: 3 specific, probing questions worth sitting with next to sharpen the career direction.\n" +
+          "If the input includes a 'previousProfile', it is your earlier reading of this same person. Treat it as memory: build on it — keep what the new answers still support, deepen it, and revise anything the latest answers contradict. Do not simply repeat it; show how the picture has developed."
         : "You are a perceptive, honest psychological portraitist on a self-knowledge course. " +
           "You are given (a) a person's own short answers and (b) a prior per-answer analysis of what each one reveals. " +
           "Synthesize them into a single evolving self-portrait. Do not summarize answer-by-answer; integrate the signals into a coherent reading of one person — connect threads across different answers, show where their self-image and their behavior diverge, and name what consistently drives them. " +
@@ -350,11 +394,16 @@ router.post("/analytics/report", async (_req, res) => {
           "- portrait: 2-3 paragraphs on who this person appears to be — what drives them, what they protect, the gap between stated and revealed self.\n" +
           "- patterns: 3-5 short, specific phrases naming recurring traits or motives clearly evidenced across answers.\n" +
           "- tensions: 2-4 short, specific phrases naming contradictions, blind spots, or evasions you can actually point to between their answers.\n" +
-          "- questions: 3 specific, probing questions worth sitting with next, aimed at what they have so far avoided or left vague.") ,
+          "- questions: 3 specific, probing questions worth sitting with next, aimed at what they have so far avoided or left vague.\n" +
+          "If the input includes a 'previousProfile', it is your earlier portrait of this same person. Treat it as memory: build on it — keep what the new answers still support, deepen it, and revise anything the latest answers contradict or that they've grown past. Do not simply repeat it; show how the picture has developed.") ,
       JSON.stringify({
         answersAnalyzed: analyzed.length,
         reflections: analyzed,
         perAnswerAnalysis: perAnswer,
+        // If present, this is the previous saved reading. Evolve it: keep what the
+        // new evidence still supports, deepen it, and revise anything the latest
+        // answers contradict. Do not merely repeat it.
+        previousProfile: priorContext ? JSON.parse(priorContext) : null,
       }),
       TEXT_MODEL,
       8192,
@@ -364,6 +413,7 @@ router.post("/analytics/report", async (_req, res) => {
     weaknesses = Array.isArray(out.tensions) ? out.tensions.filter(Boolean) : [];
     recommendations = Array.isArray(out.questions) ? out.questions.filter(Boolean) : [];
   } catch {
+    synthesisFailed = true;
     const noun = isCareer ? "career reading" : "self-portrait";
     narrative = `Your ${noun} is being drawn from ${answeredCount} reflection${
       answeredCount === 1 ? "" : "s"
@@ -389,15 +439,65 @@ router.post("/analytics/report", async (_req, res) => {
     isCareer ? "career reading" : "portrait"
   } deepens and sharpens with every honest answer you add.`;
 
+  const fullNarrative = narrative + provenance;
+
+  // Persist this reading as a timestamped snapshot so the profile is remembered
+  // between visits and its evolution over time is queryable. The next generation
+  // will pick this up as `priorReport` and build on it. Skip persistence when the
+  // synthesis failed — an outage placeholder must never become a saved snapshot.
+  if (!synthesisFailed) {
+    await db.insert(profileReportsTable).values({
+      mode: settings.mode,
+      framework: activeFramework(settings),
+      narrative: fullNarrative,
+      patterns: strengths,
+      tensions: weaknesses,
+      questions: recommendations,
+      answeredCount,
+      assignmentCount,
+      practiceCount,
+    });
+  }
+
   res.json(
     GenerateReportResponse.parse({
       generatedAt: new Date().toISOString(),
-      narrative: narrative + provenance,
+      narrative: fullNarrative,
       strengths,
       weaknesses,
       recommendations,
     }),
   );
+});
+
+// The most recently saved reading for the current mode — loaded when the analytics
+// page opens so the profile persists across visits instead of starting blank.
+router.get("/analytics/report/latest", async (_req, res) => {
+  const settings = await getSettings();
+  const [row] = await db
+    .select()
+    .from(profileReportsTable)
+    .where(eq(profileReportsTable.mode, settings.mode))
+    .orderBy(desc(profileReportsTable.createdAt), desc(profileReportsTable.id))
+    .limit(1);
+  res.json(
+    GetLatestReportResponse.parse({
+      report: row ? toProfileReport(row) : null,
+    }),
+  );
+});
+
+// Past snapshots for the current mode, newest first — the visible record of how the
+// profile has developed over time.
+router.get("/analytics/report/history", async (_req, res) => {
+  const settings = await getSettings();
+  const rows = await db
+    .select()
+    .from(profileReportsTable)
+    .where(eq(profileReportsTable.mode, settings.mode))
+    .orderBy(desc(profileReportsTable.createdAt), desc(profileReportsTable.id))
+    .limit(50);
+  res.json(GetReportHistoryResponse.parse(rows.map(toProfileReport)));
 });
 
 export default router;

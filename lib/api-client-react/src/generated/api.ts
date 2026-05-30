@@ -34,6 +34,7 @@ import type {
   DetectionResult,
   DetectionScanInput,
   HealthStatus,
+  LatestProfileReport,
   Lecture,
   NextProblemInput,
   PracticeAnswerInput,
@@ -41,6 +42,7 @@ import type {
   PracticeProblem,
   PracticeSession,
   PracticeSessionInput,
+  ProfileReportHistory,
   SettingsInput,
   Topic,
   TopicAnalytics,
@@ -1486,7 +1488,7 @@ export const getGenerateReportUrl = () => {
 }
 
 /**
- * @summary Generate a narrative strengths/weaknesses report
+ * @summary Generate (and persist) a narrative strengths/weaknesses report
  */
 export const generateReport = async ( options?: RequestInit): Promise<AnalyticsReport> => {
 
@@ -1534,7 +1536,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type GenerateReportMutationError = ErrorType<unknown>
 
     /**
- * @summary Generate a narrative strengths/weaknesses report
+ * @summary Generate (and persist) a narrative strengths/weaknesses report
  */
 export const useGenerateReport = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateReport>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -1546,6 +1548,160 @@ export const useGenerateReport = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getGenerateReportMutationOptions(options));
     }
+
+export const getGetLatestReportUrl = () => {
+
+
+
+
+  return `/api/analytics/report/latest`
+}
+
+/**
+ * @summary Most recently saved report for the current mode (null if none yet)
+ */
+export const getLatestReport = async ( options?: RequestInit): Promise<LatestProfileReport> => {
+
+  return customFetch<LatestProfileReport>(getGetLatestReportUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetLatestReportQueryKey = () => {
+    return [
+    `/api/analytics/report/latest`
+    ] as const;
+    }
+
+
+export const getGetLatestReportQueryOptions = <TData = Awaited<ReturnType<typeof getLatestReport>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLatestReport>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetLatestReportQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getLatestReport>>> = ({ signal }) => getLatestReport({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLatestReport>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetLatestReportQueryResult = NonNullable<Awaited<ReturnType<typeof getLatestReport>>>
+export type GetLatestReportQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Most recently saved report for the current mode (null if none yet)
+ */
+
+export function useGetLatestReport<TData = Awaited<ReturnType<typeof getLatestReport>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLatestReport>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetLatestReportQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetReportHistoryUrl = () => {
+
+
+
+
+  return `/api/analytics/report/history`
+}
+
+/**
+ * @summary Past report snapshots for the current mode, newest first
+ */
+export const getReportHistory = async ( options?: RequestInit): Promise<ProfileReportHistory> => {
+
+  return customFetch<ProfileReportHistory>(getGetReportHistoryUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetReportHistoryQueryKey = () => {
+    return [
+    `/api/analytics/report/history`
+    ] as const;
+    }
+
+
+export const getGetReportHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getReportHistory>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReportHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetReportHistoryQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getReportHistory>>> = ({ signal }) => getReportHistory({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getReportHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetReportHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getReportHistory>>>
+export type GetReportHistoryQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Past report snapshots for the current mode, newest first
+ */
+
+export function useGetReportHistory<TData = Awaited<ReturnType<typeof getReportHistory>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReportHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetReportHistoryQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getGetSettingsUrl = () => {
 

@@ -9,11 +9,6 @@ import { Scene4 } from './video_scenes/Scene4';
 import { Scene5 } from './video_scenes/Scene5';
 import { Scene6 } from './video_scenes/Scene6';
 
-// @ts-ignore
-import narrationUrl from "../../../../../attached_assets/generated_audio/know_thyself_narration.mp3";
-// @ts-ignore
-import musicUrl from "../../../../../attached_assets/generated_audio/know_thyself_music.mp3";
-
 export const SCENE_DURATIONS = {
   s1: 5200,
   s2: 5000,
@@ -22,6 +17,18 @@ export const SCENE_DURATIONS = {
   s5: 5000,
   s6: 6000,
 };
+
+const SCENE_START_SEC: Record<string, number> = (() => {
+  const out: Record<string, number> = {};
+  let cumulativeMs = 0;
+  for (const [key, ms] of Object.entries(SCENE_DURATIONS)) {
+    out[key] = cumulativeMs / 1000;
+    cumulativeMs += ms;
+  }
+  return out;
+})();
+
+const AUDIO_SEEK_EPSILON_SEC = 0.18;
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
   s1: Scene1,
@@ -43,9 +50,8 @@ export default function VideoTemplate({
   muted?: boolean;
   onSceneChange?: (sceneKey: string) => void;
 } = {}) {
-  const { currentSceneKey, currentScene } = useVideoPlayer({ durations, loop });
-  const narrationRef = useRef<HTMLAudioElement | null>(null);
-  const musicRef = useRef<HTMLAudioElement | null>(null);
+  const { currentSceneKey } = useVideoPlayer({ durations, loop });
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
@@ -54,20 +60,18 @@ export default function VideoTemplate({
   const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '') as keyof typeof SCENE_DURATIONS;
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
 
+  // Keep the pre-mixed narration+music track aligned with the visible scene
+  // for normal looping, scene jumps, and scene-lock _r1 / _r2 replays.
   useEffect(() => {
-    if (musicRef.current) {
-      musicRef.current.volume = 0.22;
-      musicRef.current.play().catch(() => {});
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = 1.0;
+    const targetTime = SCENE_START_SEC[baseSceneKey] ?? 0;
+    if (Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC) {
+      audio.currentTime = targetTime;
     }
-  }, []);
-
-  // When video loops (currentScene goes back to 0), reset narration audio
-  useEffect(() => {
-    if (currentScene === 0 && narrationRef.current) {
-      narrationRef.current.currentTime = 0;
-      narrationRef.current.play().catch(() => {});
-    }
-  }, [currentScene]);
+    audio.play().catch(() => {});
+  }, [currentSceneKey, baseSceneKey, muted]);
 
 
   return (
@@ -104,18 +108,10 @@ export default function VideoTemplate({
       </div>
 
       <audio
-        ref={narrationRef}
-        src={narrationUrl}
+        ref={audioRef}
+        src={`${import.meta.env.BASE_URL}audio/composite_audio.mp3`}
         preload="auto"
         autoPlay
-        muted={muted}
-      />
-      <audio
-        ref={musicRef}
-        src={musicUrl}
-        preload="auto"
-        autoPlay
-        loop
         muted={muted}
       />
     </div>

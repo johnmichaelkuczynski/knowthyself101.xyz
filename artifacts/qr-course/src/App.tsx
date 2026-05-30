@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
 import Dashboard from "@/pages/Dashboard";
+import Lectures from "@/pages/Lectures";
 import Assignments from "@/pages/Assignments";
 import Analytics from "@/pages/Analytics";
 import WeekView from "@/pages/WeekView";
@@ -19,6 +20,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/lectures" component={Lectures} />
       <Route path="/assignments" component={Assignments} />
       <Route path="/assignments/:id" component={AssignmentRunner} />
       <Route path="/analytics" component={Analytics} />

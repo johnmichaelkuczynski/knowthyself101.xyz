@@ -78,6 +78,7 @@ export const answersTable = pgTable("answers", {
     .references(() => problemsTable.id, { onDelete: "cascade" }),
   answer: text("answer").notNull().default(""),
   correct: boolean("correct"),
+  explanation: text("explanation"),
   keystrokeCount: integer("keystroke_count").notNull().default(0),
   eraseCount: integer("erase_count").notNull().default(0),
   bulkInsertCount: integer("bulk_insert_count").notNull().default(0),

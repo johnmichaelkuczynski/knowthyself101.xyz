@@ -1,3 +1,4 @@
 - [QuantReason runtime reskins](quantreason-reskin.md) — cloning qr-course/api-server into a no-right-answers domain: drop optional `correctAnswer` from API responses, sweep correctness copy in TopicPractice/Assignments/Analytics, relax brevity penalties in grading.
 - [Orval component naming](orval-component-naming.md) — name PUT/POST request-body components input-flavored (e.g. `SettingsInput`), never `<Operation>Body`, or the generated TS type collides with the operationId-derived zod schema.
 - [Evolving profile snapshots](evolving-profile-snapshots.md) — profile_reports persistence: never persist AI-failure fallback narratives, order by createdAt DESC + id DESC, mode-scoped server-side.
+- [Diagnostic data isolation](diagnostic-data-isolation.md) — any /diagnostics/* route writing to the shared single-user DB must create isolated rows and delete them in a finally block; never resume the real user's attempt.

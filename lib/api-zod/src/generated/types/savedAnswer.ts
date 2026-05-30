@@ -13,4 +13,12 @@ export interface SavedAnswer {
   keystrokeCount?: number | null;
   /** @nullable */
   eraseCount?: number | null;
+  /** @nullable */
+  correct?: boolean | null;
+  /** @nullable */
+  explanation?: string | null;
+  /** @nullable */
+  aiFlagged?: boolean | null;
+  /** @nullable */
+  detectionRationale?: string | null;
 }

@@ -179,7 +179,11 @@ export const StartAssignmentAttemptResponse = zod.object({
   "problemId": zod.number(),
   "answer": zod.string(),
   "keystrokeCount": zod.number().nullish(),
-  "eraseCount": zod.number().nullish()
+  "eraseCount": zod.number().nullish(),
+  "correct": zod.boolean().nullish(),
+  "explanation": zod.string().nullish(),
+  "aiFlagged": zod.boolean().nullish(),
+  "detectionRationale": zod.string().nullish()
 }))
 })
 
@@ -202,7 +206,11 @@ export const GetAttemptResponse = zod.object({
   "problemId": zod.number(),
   "answer": zod.string(),
   "keystrokeCount": zod.number().nullish(),
-  "eraseCount": zod.number().nullish()
+  "eraseCount": zod.number().nullish(),
+  "correct": zod.boolean().nullish(),
+  "explanation": zod.string().nullish(),
+  "aiFlagged": zod.boolean().nullish(),
+  "detectionRationale": zod.string().nullish()
 }))
 })
 

@@ -151,6 +151,14 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
   const steps: Step[] = [];
   res.setTimeout(10 * 60 * 1000);
 
+  // Everything this diagnostic writes is throwaway. We track every row it creates
+  // and delete it in a finally block so a self-test never pollutes the real
+  // student's attempts, answers, practice, or analytics.
+  const createdAttemptIds: number[] = [];
+  const createdSessionIds: number[] = [];
+
+  try {
+
   // Course discovery
   let topics: { id: number; title: string; weekNumber: number }[] = [];
   let lectures: { id: number; body: string }[] = [];
@@ -205,22 +213,16 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
             .orderBy(asc(problemsTable.position));
           if (problems.length === 0) throw new Error("no problems");
 
-          // Start (or resume) attempt
-          const [existing] = await db
-            .select()
-            .from(attemptsTable)
-            .where(eq(attemptsTable.assignmentId, a.id));
-          let attemptId: number;
-          if (existing && existing.status === "in_progress") {
-            attemptId = existing.id;
-          } else {
-            const [created] = await db
-              .insert(attemptsTable)
-              .values({ assignmentId: a.id, status: "in_progress" })
-              .returning();
-            if (!created) throw new Error("could not start attempt");
-            attemptId = created.id;
-          }
+          // Always create a fresh, isolated attempt. We never resume an existing
+          // one so the diagnostic can never hijack or overwrite the real
+          // student's in-progress work; this attempt is deleted afterward.
+          const [created] = await db
+            .insert(attemptsTable)
+            .values({ assignmentId: a.id, status: "in_progress" })
+            .returning();
+          if (!created) throw new Error("could not start attempt");
+          const attemptId = created.id;
+          createdAttemptIds.push(attemptId);
 
           // Save an answer for every problem
           for (const p of problems) {
@@ -311,6 +313,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
         .returning();
       if (!s) throw new Error("could not create session");
       sessionId = s.id;
+      createdSessionIds.push(s.id);
       return `session #${s.id}`;
     }),
   );
@@ -416,6 +419,17 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
 
   const ok = steps.every((s) => s.ok);
   res.json({ ok, generatedAt: new Date().toISOString(), steps });
+  } finally {
+    // Tear down everything the diagnostic created so it leaves no residue in the
+    // real student's data. Cascades remove answers (from attempts) and practice
+    // problems + attempts (from sessions).
+    for (const id of createdAttemptIds) {
+      await db.delete(attemptsTable).where(eq(attemptsTable.id, id)).catch(() => {});
+    }
+    for (const id of createdSessionIds) {
+      await db.delete(practiceSessionsTable).where(eq(practiceSessionsTable.id, id)).catch(() => {});
+    }
+  }
 });
 
 // ---------- Expand lectures: generate medium / long versions with more examples ----------

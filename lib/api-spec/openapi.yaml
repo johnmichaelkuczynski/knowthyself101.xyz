@@ -561,6 +561,10 @@ components:
         answer: { type: string }
         keystrokeCount: { type: ["integer", "null"] }
         eraseCount: { type: ["integer", "null"] }
+        correct: { type: ["boolean", "null"] }
+        explanation: { type: ["string", "null"] }
+        aiFlagged: { type: ["boolean", "null"] }
+        detectionRationale: { type: ["string", "null"] }
 
     AnswerInput:
       type: object

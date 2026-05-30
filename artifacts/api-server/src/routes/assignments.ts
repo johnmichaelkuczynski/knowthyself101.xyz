@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import {
   db,
   assignmentsTable,
@@ -132,6 +132,10 @@ async function loadAttempt(attemptId: number) {
       answer: x.answer,
       keystrokeCount: x.keystrokeCount,
       eraseCount: x.eraseCount,
+      correct: x.correct,
+      explanation: x.explanation,
+      aiFlagged: x.aiFlagged,
+      detectionRationale: x.detectionRationale,
     })),
   };
 }
@@ -148,11 +152,12 @@ router.post("/assignments/:assignmentId/start", async (req, res): Promise<void> 
     return;
   }
 
-  // Resume any in-progress attempt
+  // Resume the most recent in-progress attempt (deterministic if several exist)
   const [existing] = await db
     .select()
     .from(attemptsTable)
-    .where(and(eq(attemptsTable.assignmentId, id), eq(attemptsTable.status, "in_progress")));
+    .where(and(eq(attemptsTable.assignmentId, id), eq(attemptsTable.status, "in_progress")))
+    .orderBy(desc(attemptsTable.id));
   if (existing) {
     const state = await loadAttempt(existing.id);
     res.json(StartAssignmentAttemptResponse.parse(state));
@@ -305,6 +310,7 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
         .update(answersTable)
         .set({
           correct: graded.correct,
+          explanation: graded.explanation || p.explanation,
           aiScore: det.aiScore,
           aiFlagged: det.aiFlagged,
           diachronicScore: det.diachronicScore,
@@ -315,7 +321,7 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
     } else if (a) {
       await db
         .update(answersTable)
-        .set({ correct: graded.correct })
+        .set({ correct: graded.correct, explanation: graded.explanation || p.explanation })
         .where(eq(answersTable.id, a.id));
     }
   }

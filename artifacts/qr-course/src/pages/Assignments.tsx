@@ -58,7 +58,11 @@ export default function Assignments() {
                           <span>{item.problemCount} prompt{item.problemCount === 1 ? "" : "s"}</span>
                           {item.isTimed && <span>⏱️ {item.timeLimitMinutes} min</span>}
                         </div>
-                        <Link href={`/assignments/${item.id}`}>
+                        <Link href={
+                          item.status === 'submitted' && item.lastAttemptId
+                            ? `/assignments/${item.id}?review=${item.lastAttemptId}`
+                            : `/assignments/${item.id}`
+                        }>
                           <Button className="w-full" variant={item.status === 'submitted' ? "outline" : "default"}>
                             {item.status === 'submitted' ? 'Review Results' : 
                              item.status === 'in_progress' ? 'Resume' : 'Start'}

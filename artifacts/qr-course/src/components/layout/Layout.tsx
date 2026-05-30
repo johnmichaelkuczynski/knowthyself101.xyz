@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { ModeSwitcher } from "@/components/ModeSwitcher";
 
 export function Sidebar() {
   const [location] = useLocation();
@@ -107,7 +108,9 @@ function TopBar() {
   }
 
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-end gap-2 px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
+    <div className="sticky top-0 z-10 flex items-center gap-2 px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
+      <ModeSwitcher />
+      <div className="flex-1" />
       <button
         onClick={handleExpandLectures}
         disabled={expanding}

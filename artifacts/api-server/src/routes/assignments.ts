@@ -18,6 +18,7 @@ import {
 } from "@workspace/api-zod";
 import { gradeAnswer } from "../lib/grading";
 import { detect } from "../lib/detection";
+import { getSettings, activeFramework } from "../lib/settings";
 
 const router: IRouter = Router();
 
@@ -268,6 +269,7 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
     .where(eq(answersTable.attemptId, id));
   const byProblem = new Map(answers.map((a) => [a.problemId, a]));
 
+  const settings = await getSettings();
   const perProblem = [];
   const detection = [];
   let score = 0;
@@ -278,6 +280,8 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
       prompt: p.prompt,
       correctAnswer: p.correctAnswer,
       userAnswer,
+      mode: settings.mode,
+      framework: activeFramework(settings),
     });
     if (graded.correct) score += 1;
     perProblem.push({

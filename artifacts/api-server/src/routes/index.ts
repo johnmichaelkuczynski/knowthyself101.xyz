@@ -7,6 +7,7 @@ import tutorRouter from "./tutor";
 import detectionRouter from "./detection";
 import analyticsRouter from "./analytics";
 import diagnosticsRouter from "./diagnostics";
+import settingsRouter from "./settings";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(tutorRouter);
 router.use(detectionRouter);
 router.use(analyticsRouter);
 router.use(diagnosticsRouter);
+router.use(settingsRouter);
 
 export default router;

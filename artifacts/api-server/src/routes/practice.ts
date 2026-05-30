@@ -17,6 +17,7 @@ import {
 } from "@workspace/api-zod";
 import { chatJson } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
+import { getSettings, activeFramework } from "../lib/settings";
 
 const router: IRouter = Router();
 
@@ -247,10 +248,13 @@ router.post("/practice/sessions/:sessionId/grade", async (req, res): Promise<voi
     return;
   }
 
+  const settings = await getSettings();
   const graded = await gradeAnswer({
     prompt: problem.prompt,
     correctAnswer: problem.correctAnswer,
     userAnswer: answer,
+    mode: settings.mode,
+    framework: activeFramework(settings),
   });
 
   await db.insert(practiceAttemptsTable).values({

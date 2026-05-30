@@ -17,6 +17,8 @@ import {
   GenerateReportResponse,
 } from "@workspace/api-zod";
 import { chatJson, TEXT_MODEL } from "../lib/ai";
+import { getSettings, activeFramework } from "../lib/settings";
+import { frameworkBrief, MODE_LABEL } from "../lib/frameworks";
 
 const router: IRouter = Router();
 
@@ -170,6 +172,12 @@ router.get("/analytics/activity", async (_req, res) => {
 //   weaknesses     -> tensions, contradictions, and blind spots
 //   recommendations-> questions worth sitting with next
 router.post("/analytics/report", async (_req, res) => {
+  // The report is re-lensed by the active mode. Self-knowledge draws a psychological
+  // self-portrait; career re-reads the SAME reflections as a vocational reading. The
+  // active framework(s) are injected so the synthesis reasons through them explicitly.
+  const settings = await getSettings();
+  const isCareer = settings.mode === "career";
+  const lensBrief = frameworkBrief(settings.mode, activeFramework(settings));
   // Gather every submitted assignment answer, joined to its question and topic.
   const submittedRows = await db
     .select({
@@ -248,14 +256,19 @@ router.post("/analytics/report", async (_req, res) => {
     res.json(
       GenerateReportResponse.parse({
         generatedAt: new Date().toISOString(),
-        narrative:
-          "Your self-portrait is still blank — it's painted from your own words. Answer a few reflections in any homework, test, or practice session, then come back here. With each honest answer, this picture of you grows more detailed and more specific. Nothing here is a verdict; it's a mirror you fill in yourself.",
+        narrative: isCareer
+          ? "Your career reading is still blank — it's drawn entirely from your own words. Answer a few reflections in any homework, test, or practice session, then come back here. Read through career frameworks, your answers will start to point at the kinds of work that fit you. Nothing here is a verdict; it's a reading you fill in yourself."
+          : "Your self-portrait is still blank — it's painted from your own words. Answer a few reflections in any homework, test, or practice session, then come back here. With each honest answer, this picture of you grows more detailed and more specific. Nothing here is a verdict; it's a mirror you fill in yourself.",
         strengths: [],
         weaknesses: [],
         recommendations: [
           "Start with Homework 1.1 — it asks who you think you are.",
-          "Answer honestly rather than impressively; the mirror only reflects what's real.",
-          "Return here after a few answers to watch your portrait take shape.",
+          isCareer
+            ? "Answer honestly rather than impressively; the reading only reflects what's real."
+            : "Answer honestly rather than impressively; the portrait only reflects what's real.",
+          isCareer
+            ? "Return here after a few answers to watch your career direction take shape."
+            : "Return here after a few answers to watch your portrait take shape.",
         ],
       }),
     );
@@ -279,9 +292,14 @@ router.post("/analytics/report", async (_req, res) => {
         defense: string;
       }>;
     }>(
-      "You are a rigorous, perceptive psychological analyst. You are given a numbered list of one person's short, first-person answers to reflective questions, each with its topic and question. " +
-        "Analyze EACH answer individually. For each one, infer what it actually reveals about this specific person — their drives, fears, attachments, self-image, or coping style — and WHY their particular wording implies it. Do not restate the answer; read beneath it. " +
-        "Also note any 'defense' visible in the answer: avoidance, intellectualizing, self-flattery, minimizing, contradiction with another answer, or none. " +
+      (isCareer
+        ? "You are a rigorous, perceptive career analyst. You are given a numbered list of one person's short, first-person answers to reflective questions, each with its topic and question. " +
+          "Analyze EACH answer individually through career-fit frameworks. For each one, infer what it reveals about the kinds of work, environments, and roles that would fit or frustrate this specific person — their interests, motivators, strengths, and non-negotiables — and WHY their particular wording implies it. Do not restate the answer; read beneath it for vocational signal. " +
+          "Also note any 'defense' visible in the answer: avoidance, intellectualizing, self-flattery, minimizing, contradiction with another answer, or none. "
+        : "You are a rigorous, perceptive psychological analyst. You are given a numbered list of one person's short, first-person answers to reflective questions, each with its topic and question. " +
+          "Analyze EACH answer individually. For each one, infer what it actually reveals about this specific person — their drives, fears, attachments, self-image, or coping style — and WHY their particular wording implies it. Do not restate the answer; read beneath it. " +
+          "Also note any 'defense' visible in the answer: avoidance, intellectualizing, self-flattery, minimizing, contradiction with another answer, or none. ") +
+        `Reason using these ${MODE_LABEL[settings.mode]} frameworks where the answer gives real signal; do not force a framework onto an answer that doesn't support it:\n${lensBrief}\n` +
         "Return ONE entry per input answer, in the same order. Strict JSON: " +
         '{"perAnswer": [{"topic": string, "reveals": string, "defense": string}]}. ' +
         "Each 'reveals' is 1-2 sharp, specific sentences. 'defense' is a short phrase or 'none'.",
@@ -308,16 +326,31 @@ router.post("/analytics/report", async (_req, res) => {
       tensions: string[];
       questions: string[];
     }>(
-      "You are a perceptive, honest psychological portraitist on a self-knowledge course. " +
-        "You are given (a) a person's own short answers and (b) a prior per-answer analysis of what each one reveals. " +
-        "Synthesize them into a single evolving self-portrait. Do not summarize answer-by-answer; integrate the signals into a coherent reading of one person — connect threads across different answers, show where their self-image and their behavior diverge, and name what consistently drives them. " +
-        "Speak directly to them as 'you'. Be specific and evidence-based: ground claims in their actual words and the analysis, and where you make an inferential leap, say so. Be honest, not flattering — if the evidence suggests a blind spot, evasion, or a gap between who they say they are and what they reveal, say it plainly and kindly. Avoid horoscope-style generalities that could apply to anyone; if a claim isn't supported by their specific answers, don't make it. No clinical labels or diagnoses. " +
-        "Note that accuracy increases with more (and more honest) answers.\n" +
-        "Produce strict JSON: {\"portrait\": string, \"patterns\": string[], \"tensions\": string[], \"questions\": string[]}.\n" +
-        "- portrait: 2-3 paragraphs on who this person appears to be — what drives them, what they protect, the gap between stated and revealed self.\n" +
-        "- patterns: 3-5 short, specific phrases naming recurring traits or motives clearly evidenced across answers.\n" +
-        "- tensions: 2-4 short, specific phrases naming contradictions, blind spots, or evasions you can actually point to between their answers.\n" +
-        "- questions: 3 specific, probing questions worth sitting with next, aimed at what they have so far avoided or left vague.",
+      (isCareer
+        ? "You are a perceptive, honest career counselor. " +
+          "You are given (a) a person's own short answers to self-reflective questions and (b) a prior per-answer analysis of what each one reveals. " +
+          "Synthesize them into a single evolving CAREER READING — what kinds of work, roles, and environments fit this specific person, and what would frustrate them. Do not summarize answer-by-answer; integrate the signals into a coherent vocational reading of one person — connect threads across different answers, and name what consistently motivates and drains them. " +
+          "Reason explicitly through these career frameworks where the evidence supports it; do not force a framework that the answers don't support:\n" +
+          lensBrief + "\n" +
+          "Speak directly to them as 'you'. Be specific and evidence-based: ground claims in their actual words and the analysis, and where you make an inferential leap, say so. Be honest, not flattering — if the evidence is thin or points to a mismatch with what they say they want, say so plainly and kindly. Avoid horoscope-style generalities; if a claim isn't supported by their specific answers, don't make it. Do not invent job titles wholesale — point at families of work and the qualities that fit. " +
+          "Note that accuracy increases with more (and more honest) answers.\n" +
+          "Produce strict JSON: {\"portrait\": string, \"patterns\": string[], \"tensions\": string[], \"questions\": string[]}.\n" +
+          "- portrait: 2-3 paragraphs on the kinds of work and environments that fit this person — their interests, motivators, strengths, and non-negotiables, named through the frameworks where apt.\n" +
+          "- patterns: 3-5 short, specific phrases naming recurring vocational interests, anchors, or trait-fits clearly evidenced across answers.\n" +
+          "- tensions: 2-4 short, specific phrases naming conflicts, blind spots, or gaps between what they say they want and what their answers suggest fits them.\n" +
+          "- questions: 3 specific, probing questions worth sitting with next to sharpen the career direction."
+        : "You are a perceptive, honest psychological portraitist on a self-knowledge course. " +
+          "You are given (a) a person's own short answers and (b) a prior per-answer analysis of what each one reveals. " +
+          "Synthesize them into a single evolving self-portrait. Do not summarize answer-by-answer; integrate the signals into a coherent reading of one person — connect threads across different answers, show where their self-image and their behavior diverge, and name what consistently drives them. " +
+          "Reason explicitly through these frameworks where the evidence supports it; do not force a framework that the answers don't support:\n" +
+          lensBrief + "\n" +
+          "Speak directly to them as 'you'. Be specific and evidence-based: ground claims in their actual words and the analysis, and where you make an inferential leap, say so. Be honest, not flattering — if the evidence suggests a blind spot, evasion, or a gap between who they say they are and what they reveal, say it plainly and kindly. Avoid horoscope-style generalities that could apply to anyone; if a claim isn't supported by their specific answers, don't make it. No clinical labels or diagnoses. " +
+          "Note that accuracy increases with more (and more honest) answers.\n" +
+          "Produce strict JSON: {\"portrait\": string, \"patterns\": string[], \"tensions\": string[], \"questions\": string[]}.\n" +
+          "- portrait: 2-3 paragraphs on who this person appears to be — what drives them, what they protect, the gap between stated and revealed self.\n" +
+          "- patterns: 3-5 short, specific phrases naming recurring traits or motives clearly evidenced across answers.\n" +
+          "- tensions: 2-4 short, specific phrases naming contradictions, blind spots, or evasions you can actually point to between their answers.\n" +
+          "- questions: 3 specific, probing questions worth sitting with next, aimed at what they have so far avoided or left vague.") ,
       JSON.stringify({
         answersAnalyzed: analyzed.length,
         reflections: analyzed,
@@ -331,16 +364,19 @@ router.post("/analytics/report", async (_req, res) => {
     weaknesses = Array.isArray(out.tensions) ? out.tensions.filter(Boolean) : [];
     recommendations = Array.isArray(out.questions) ? out.questions.filter(Boolean) : [];
   } catch {
-    narrative = `Your self-portrait is being drawn from ${answeredCount} reflection${
+    const noun = isCareer ? "career reading" : "self-portrait";
+    narrative = `Your ${noun} is being drawn from ${answeredCount} reflection${
       answeredCount === 1 ? "" : "s"
-    } you've written so far. The portrait engine is briefly unavailable, but your answers are saved — every one of them adds to the picture. Try generating your portrait again in a moment.`;
+    } you've written so far. The analysis engine is briefly unavailable, but your answers are saved — every one of them adds to the picture. Try generating it again in a moment.`;
     strengths = [];
     weaknesses = [];
-    recommendations = ["Try regenerating your portrait shortly.", "Answer a few more reflections to deepen it."];
+    recommendations = [`Try regenerating your ${noun} shortly.`, "Answer a few more reflections to deepen it."];
   }
 
   if (!narrative) {
-    narrative = `Drawn from ${answeredCount} of your own reflections. Keep answering honestly and this portrait will sharpen.`;
+    narrative = `Drawn from ${answeredCount} of your own reflections. Keep answering honestly and this ${
+      isCareer ? "career reading" : "portrait"
+    } will sharpen.`;
   }
   // Note how many answers fed this portrait so its evolution is visible.
   const parts: string[] = [];
@@ -349,7 +385,9 @@ router.post("/analytics/report", async (_req, res) => {
   if (practiceCount > 0)
     parts.push(`${practiceCount} practice reflection${practiceCount === 1 ? "" : "s"}`);
   const source = parts.length > 0 ? parts.join(" and ") : `${answeredCount} reflections`;
-  const provenance = `\n\n— Drawn from ${source}. This portrait deepens and sharpens with every honest answer you add.`;
+  const provenance = `\n\n— Drawn from ${source}. This ${
+    isCareer ? "career reading" : "portrait"
+  } deepens and sharpens with every honest answer you add.`;
 
   res.json(
     GenerateReportResponse.parse({

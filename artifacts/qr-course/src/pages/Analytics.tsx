@@ -3,7 +3,8 @@ import {
   useGetAnalyticsSummary, 
   useGetTopicAnalytics, 
   useGetRecentActivity,
-  useGenerateReport
+  useGenerateReport,
+  useGetSettings
 } from "@workspace/api-client-react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -18,9 +19,26 @@ export default function Analytics() {
   const { data: topics, isLoading: isLoadingTopics } = useGetTopicAnalytics();
   const { data: activity, isLoading: isLoadingActivity } = useGetRecentActivity();
   const generateReport = useGenerateReport();
+  const { data: settings } = useGetSettings();
   const [, setLocation] = useLocation();
 
   const [report, setReport] = useState<any>(null);
+
+  const isCareer = settings?.mode === "career";
+
+  // A generated report is mode-specific; if the lens changes, drop the stale one
+  // so old narrative text never shows under the new mode's headings.
+  useEffect(() => {
+    setReport(null);
+  }, [settings?.mode]);
+  const reportTitle = isCareer ? "Your Career Reading" : "Your Self-Portrait";
+  const reportSubtitle = isCareer
+    ? "An evolving read on the work that fits you, drawn from everything you've written so far."
+    : "An evolving picture of you, drawn from everything you've written so far.";
+  const reportButtonLabel = isCareer ? "Update My Career Reading" : "Update My Self-Portrait";
+  const patternsLabel = isCareer ? "Signals I noticed" : "Patterns I noticed";
+  const tensionsLabel = isCareer ? "Mismatches worth weighing" : "Tensions worth sitting with";
+  const questionsLabel = isCareer ? "Questions to sharpen direction" : "Questions to carry forward";
 
   const handleGenerateReport = () => {
     generateReport.mutate(undefined, {
@@ -33,18 +51,18 @@ export default function Analytics() {
       <div className="p-8 max-w-6xl mx-auto w-full flex flex-col gap-8 pb-24">
         <div className="flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-serif font-bold text-primary mb-2">Your Self-Portrait</h1>
-            <p className="text-muted-foreground">An evolving picture of you, drawn from everything you've written so far.</p>
+            <h1 className="text-3xl font-serif font-bold text-primary mb-2">{reportTitle}</h1>
+            <p className="text-muted-foreground">{reportSubtitle}</p>
           </div>
           <Button onClick={handleGenerateReport} disabled={generateReport.isPending}>
-            {generateReport.isPending ? "Reflecting..." : "Update My Self-Portrait"}
+            {generateReport.isPending ? "Reflecting..." : reportButtonLabel}
           </Button>
         </div>
 
         {report && (
           <Card className="border-primary bg-primary/5">
             <CardHeader>
-              <CardTitle>Your Self-Portrait</CardTitle>
+              <CardTitle>{reportTitle}</CardTitle>
               <div className="text-xs text-muted-foreground">Drawn {new Date(report.generatedAt).toLocaleString()}</div>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
@@ -53,13 +71,13 @@ export default function Analytics() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold text-chart-2 mb-2">Patterns I noticed</h4>
+                  <h4 className="font-semibold text-chart-2 mb-2">{patternsLabel}</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
                     {report.strengths.map((s: string, i: number) => <li key={i}>{s}</li>)}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-chart-4 mb-2">Tensions worth sitting with</h4>
+                  <h4 className="font-semibold text-chart-4 mb-2">{tensionsLabel}</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
                     {report.weaknesses.map((w: string, i: number) => <li key={i}>{w}</li>)}
                   </ul>
@@ -67,7 +85,7 @@ export default function Analytics() {
               </div>
               {Array.isArray(report.recommendations) && report.recommendations.length > 0 && (
                 <div>
-                  <h4 className="font-semibold text-primary mb-2">Questions to carry forward</h4>
+                  <h4 className="font-semibold text-primary mb-2">{questionsLabel}</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
                     {report.recommendations.map((r: string, i: number) => <li key={i}>{r}</li>)}
                   </ul>

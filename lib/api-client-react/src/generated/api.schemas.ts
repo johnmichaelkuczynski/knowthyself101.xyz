@@ -351,3 +351,79 @@ export interface CourseOverview {
   totals: CourseOverviewTotals;
 }
 
+export type AppSettingsMode = typeof AppSettingsMode[keyof typeof AppSettingsMode];
+
+
+export const AppSettingsMode = {
+  self_knowledge: 'self_knowledge',
+  career: 'career',
+} as const;
+
+export type AppSettingsSelfFramework = typeof AppSettingsSelfFramework[keyof typeof AppSettingsSelfFramework];
+
+
+export const AppSettingsSelfFramework = {
+  auto: 'auto',
+  cognitive_distortions: 'cognitive_distortions',
+  defense_mechanisms: 'defense_mechanisms',
+  attachment: 'attachment',
+  self_discrepancy: 'self_discrepancy',
+  attribution: 'attribution',
+} as const;
+
+export type AppSettingsCareerFramework = typeof AppSettingsCareerFramework[keyof typeof AppSettingsCareerFramework];
+
+
+export const AppSettingsCareerFramework = {
+  auto: 'auto',
+  riasec: 'riasec',
+  onet: 'onet',
+  strong: 'strong',
+  career_anchors: 'career_anchors',
+  big_five: 'big_five',
+} as const;
+
+export interface AppSettings {
+  mode: AppSettingsMode;
+  selfFramework: AppSettingsSelfFramework;
+  careerFramework: AppSettingsCareerFramework;
+}
+
+export type SettingsInputMode = typeof SettingsInputMode[keyof typeof SettingsInputMode];
+
+
+export const SettingsInputMode = {
+  self_knowledge: 'self_knowledge',
+  career: 'career',
+} as const;
+
+export type SettingsInputSelfFramework = typeof SettingsInputSelfFramework[keyof typeof SettingsInputSelfFramework];
+
+
+export const SettingsInputSelfFramework = {
+  auto: 'auto',
+  cognitive_distortions: 'cognitive_distortions',
+  defense_mechanisms: 'defense_mechanisms',
+  attachment: 'attachment',
+  self_discrepancy: 'self_discrepancy',
+  attribution: 'attribution',
+} as const;
+
+export type SettingsInputCareerFramework = typeof SettingsInputCareerFramework[keyof typeof SettingsInputCareerFramework];
+
+
+export const SettingsInputCareerFramework = {
+  auto: 'auto',
+  riasec: 'riasec',
+  onet: 'onet',
+  strong: 'strong',
+  career_anchors: 'career_anchors',
+  big_five: 'big_five',
+} as const;
+
+export interface SettingsInput {
+  mode?: SettingsInputMode;
+  selfFramework?: SettingsInputSelfFramework;
+  careerFramework?: SettingsInputCareerFramework;
+}
+

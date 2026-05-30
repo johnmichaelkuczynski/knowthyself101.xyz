@@ -444,3 +444,29 @@ export const GenerateReportResponse = zod.object({
 })
 
 
+/**
+ * @summary Current analysis mode and per-mode framework selection
+ */
+export const GetSettingsResponse = zod.object({
+  "mode": zod.enum(['self_knowledge', 'career']),
+  "selfFramework": zod.enum(['auto', 'cognitive_distortions', 'defense_mechanisms', 'attachment', 'self_discrepancy', 'attribution']),
+  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five'])
+})
+
+
+/**
+ * @summary Update analysis mode and/or framework selection
+ */
+export const UpdateSettingsBody = zod.object({
+  "mode": zod.enum(['self_knowledge', 'career']).optional(),
+  "selfFramework": zod.enum(['auto', 'cognitive_distortions', 'defense_mechanisms', 'attachment', 'self_discrepancy', 'attribution']).optional(),
+  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five']).optional()
+})
+
+export const UpdateSettingsResponse = zod.object({
+  "mode": zod.enum(['self_knowledge', 'career']),
+  "selfFramework": zod.enum(['auto', 'cognitive_distortions', 'defense_mechanisms', 'attachment', 'self_discrepancy', 'attribution']),
+  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five'])
+})
+
+

@@ -372,6 +372,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/AnalyticsReport"
 
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Current analysis mode and per-mode framework selection
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppSettings"
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update analysis mode and/or framework selection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingsInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppSettings"
+
 components:
   schemas:
     HealthStatus:
@@ -730,3 +760,48 @@ components:
             assignmentsCompleted: { type: integer }
             assignmentsTotal: { type: integer }
             practiceCount: { type: integer }
+
+    AppSettings:
+      type: object
+      required: [mode, selfFramework, careerFramework]
+      properties:
+        mode:
+          type: string
+          enum: [self_knowledge, career]
+        selfFramework:
+          type: string
+          enum:
+            [
+              auto,
+              cognitive_distortions,
+              defense_mechanisms,
+              attachment,
+              self_discrepancy,
+              attribution,
+            ]
+        careerFramework:
+          type: string
+          enum:
+            [auto, riasec, onet, strong, career_anchors, big_five]
+
+    SettingsInput:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [self_knowledge, career]
+        selfFramework:
+          type: string
+          enum:
+            [
+              auto,
+              cognitive_distortions,
+              defense_mechanisms,
+              attachment,
+              self_discrepancy,
+              attribution,
+            ]
+        careerFramework:
+          type: string
+          enum:
+            [auto, riasec, onet, strong, career_anchors, big_five]

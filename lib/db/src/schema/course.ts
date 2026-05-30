@@ -115,6 +115,14 @@ export const practiceProblemsTable = pgTable("practice_problems", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const appSettingsTable = pgTable("app_settings", {
+  id: integer("id").primaryKey().default(1),
+  mode: text("mode").notNull().default("self_knowledge"), // self_knowledge | career
+  selfFramework: text("self_framework").notNull().default("auto"),
+  careerFramework: text("career_framework").notNull().default("auto"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const practiceAttemptsTable = pgTable("practice_attempts", {
   id: serial("id").primaryKey(),
   sessionId: integer("session_id")

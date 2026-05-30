@@ -1,21 +1,19 @@
 import { chatJson } from "./ai";
+import { frameworkBrief, MODE_LABEL, type Mode } from "./frameworks";
 
-// This is a self-knowledge course. There is no single factually "correct" answer,
-// but there ARE better and worse answers: a genuine, specific, self-revealing
-// reflection is a good answer; a shallow, generic, evasive, or phony one is a bad
-// answer that reveals nothing and must not pass.
+// This course runs in one of two MODES — self-knowledge (default) or career — each
+// with five analytic FRAMEWORKS. There is no single factually "correct" answer, but
+// there ARE better and worse answers: a genuine, specific, self-revealing reflection
+// is good; a shallow, generic, evasive, or phony one reveals nothing and must not pass.
+//
+// On top of the genuine/shallow/phony/evasive verdict, the grader runs the active
+// framework(s) in the SAME LLM call. With framework = "auto" it considers all five
+// for the mode and reports ONLY the ones that genuinely fire; when the answer is too
+// thin for anything to fire, it says so honestly rather than inventing a reading.
+// Fired-framework findings are packed as Markdown into `explanation` (no API change).
 //
 // `correctAnswer` carries a short, first-person "model reflection" — an example of
-// the DEPTH and CANDOR a real answer reaches. It is a reference for the grader,
-// never a key the student must match.
-//
-// `gradeAnswer` returns:
-//   - correct: true ONLY when the answer is a genuine, specific, self-revealing
-//     attempt. Shallow / generic / evasive / phony answers fail.
-//   - explanation: real analysis. For a passing answer it states what the words
-//     actually reveal (a concrete psychological inference, not a paraphrase) and
-//     pushes one step deeper. For a failing answer it names precisely why the
-//     answer falls short and what a real answer would require.
+// the DEPTH a real answer reaches. It is a reference for the grader, never a key.
 
 function wordCount(s: string): number {
   return s.trim().split(/\s+/).filter(Boolean).length;
@@ -40,13 +38,32 @@ const LOW_EFFORT = new Set([
   "sure",
 ]);
 
+type FrameworkFinding = { id: string; label: string; finding: string };
+
+function renderFrameworks(mode: Mode, findings: FrameworkFinding[]): string {
+  if (findings.length === 0) return "";
+  const heading =
+    mode === "career"
+      ? "**What the career lenses see**"
+      : "**What the lenses see**";
+  const lines = findings
+    .filter((f) => f && (f.finding ?? "").trim())
+    .map((f) => `- **${f.label || f.id}** — ${f.finding.trim()}`);
+  if (lines.length === 0) return "";
+  return `${heading}\n\n${lines.join("\n")}`;
+}
+
 export async function gradeAnswer(opts: {
   prompt: string;
   correctAnswer: string;
   userAnswer: string;
+  mode?: Mode;
+  framework?: string;
 }): Promise<{ correct: boolean; explanation: string }> {
   const user = (opts.userAnswer ?? "").trim();
   const modelReflection = opts.correctAnswer ?? "";
+  const mode: Mode = opts.mode === "career" ? "career" : "self_knowledge";
+  const framework = opts.framework || "auto";
 
   // Empty answer.
   if (user.length === 0) {
@@ -67,26 +84,37 @@ export async function gradeAnswer(opts: {
     };
   }
 
+  const isAuto = framework === "auto";
+  const brief = frameworkBrief(mode, framework);
+  const frameworkInstruction = isAuto
+    ? `You also have a set of analytic lenses for ${MODE_LABEL[mode]} work. Consider ALL of them, but report a finding ONLY for the lens/lenses that GENUINELY fire — where this specific answer carries real, identifiable signal for that lens. Do NOT force a reading: if the answer is too thin, generic, or off-topic for a lens, omit it. It is correct and expected to return an EMPTY frameworks array when nothing genuinely fires.\n\nLENSES:\n${brief}`
+    : `Analyze the answer through this single lens only. Report a finding ONLY if it genuinely fires for this specific answer; if there is no real signal for it, return an empty frameworks array and say so honestly rather than inventing a reading.\n\nLENS:\n${brief}`;
+
   try {
     const out = await chatJson<{
       verdict: "genuine" | "shallow" | "phony" | "evasive";
       depth: number;
       analysis: string;
       shortfall: string;
+      frameworks: FrameworkFinding[];
     }>(
-      "You are a perceptive, honest psychological reader on a self-knowledge course. " +
+      "You are a perceptive, honest reader on a self-examination course. " +
+        `The current analysis mode is ${MODE_LABEL[mode]}. ` +
         "Students write SHORT, first-person reflections about their own lives. There is no factually correct answer, but there ARE genuine answers and there are bad answers, and you must tell them apart. " +
         "You are given the QUESTION, a MODEL_REFLECTION (an example of the depth a real answer reaches — NOT a key to match), and the STUDENT_ANSWER.\n\n" +
         "First, classify the STUDENT_ANSWER with a `verdict`:\n" +
         "- 'genuine': specific, self-revealing, and honest. It says something true about THIS person that could not have been written by just anyone. Brevity is fine if it is specific and real — one true, concrete sentence counts.\n" +
-        "- 'shallow': generic, vague, or a platitude. Could have been written by anyone about anyone ('I want to be happy', 'family is important'). Reveals nothing specific.\n" +
-        "- 'phony': performative or self-flattering — written to look good or give the 'expected' answer rather than to be honest. Polished but hollow, or suspiciously tidy.\n" +
+        "- 'shallow': generic, vague, or a platitude. Could have been written by anyone about anyone. Reveals nothing specific.\n" +
+        "- 'phony': performative or self-flattering — written to look good rather than to be honest. Polished but hollow.\n" +
         "- 'evasive': dodges, intellectualizes, jokes, or answers a different, safer question than the one asked.\n\n" +
         "Also rate `depth` 0-3 (0 = no self-revelation, 3 = unguarded and specific).\n\n" +
-        "Then write `analysis`: 2-4 sentences of REAL analysis addressed to the student as 'you'. Do NOT merely restate or paraphrase what they wrote — infer. Name what the answer reveals about their values, fears, defenses, needs, or patterns, and WHY their specific wording implies it. Be concrete and perceptive, like someone who actually sees them. Offer it as an informed reading ('What this reveals is...', 'Underneath this is likely...'), not a clinical diagnosis.\n\n" +
-        "Then write `shortfall`: if the verdict is NOT 'genuine', state plainly that this answer falls short, name exactly why (too generic / performative / evasive), and describe what a real answer would have to do — be specific and direct without being cruel. If the verdict IS 'genuine', leave shortfall as an empty string.\n\n" +
-        'Respond as strict JSON: {"verdict": "genuine"|"shallow"|"phony"|"evasive", "depth": number, "analysis": string, "shortfall": string}.',
+        "Then write `analysis`: 2-4 sentences of REAL analysis addressed to the student as 'you'. Do NOT merely restate what they wrote — infer. Name what the answer reveals about their values, fears, defenses, needs, drives, or patterns, and WHY their specific wording implies it. Offer it as an informed reading, not a clinical diagnosis.\n\n" +
+        "Then write `shortfall`: if the verdict is NOT 'genuine', state plainly that this answer falls short, name exactly why, and describe what a real answer would have to do. If the verdict IS 'genuine', leave shortfall as an empty string.\n\n" +
+        frameworkInstruction +
+        "\n\nFor each lens that fires, return {id, label, finding} where `finding` is 1-2 specific sentences naming what THIS answer shows through that lens, grounded in their actual words. Use the exact lens id and a short human label. Brevity must never be penalized — a short but specific answer can fire a lens; only genuine absence of signal should leave the array empty.\n\n" +
+        'Respond as strict JSON: {"verdict": "genuine"|"shallow"|"phony"|"evasive", "depth": number, "analysis": string, "shortfall": string, "frameworks": [{"id": string, "label": string, "finding": string}]}.',
       JSON.stringify({
+        mode,
         question: opts.prompt,
         model_reflection: modelReflection,
         student_answer: user,
@@ -97,19 +125,29 @@ export async function gradeAnswer(opts: {
     const pass = verdict === "genuine";
     const analysis = (out.analysis || "").trim();
     const shortfall = (out.shortfall || "").trim();
+    const findings = Array.isArray(out.frameworks) ? out.frameworks : [];
+    const frameworkBlock = renderFrameworks(mode, findings);
 
     let explanation: string;
     if (pass) {
       explanation =
         analysis ||
-        "This reads as a genuine, specific reflection — it adds a real detail to your self-portrait in Analytics.";
+        "This reads as a genuine, specific reflection — it adds a real detail to your portrait in Analytics.";
+      if (frameworkBlock) {
+        explanation = `${explanation}\n\n${frameworkBlock}`;
+      } else {
+        // Genuine but no lens fired — be honest about that rather than padding.
+        explanation = `${explanation}\n\n_No single ${MODE_LABEL[mode]} lens fired strongly on this one — it's real, but didn't land squarely on any one pattern. More detail would give the lenses something to catch._`;
+      }
     } else {
-      // Lead with what fell short, then the analysis of what little it did reveal.
+      // Lead with what fell short, then any analysis.
       explanation = [shortfall, analysis].filter(Boolean).join("\n\n");
       if (!explanation) {
         explanation =
           "This answer stays on the surface. It could be true of almost anyone, so it reveals little about you specifically. Try again with one concrete, honest detail from your own life.";
       }
+      // A failing answer may still show a defense/distortion worth naming.
+      if (frameworkBlock) explanation = `${explanation}\n\n${frameworkBlock}`;
     }
 
     return { correct: pass, explanation };
@@ -120,7 +158,7 @@ export async function gradeAnswer(opts: {
     return {
       correct: looksReal,
       explanation: looksReal
-        ? "Saved. The analysis engine is briefly unavailable, so this hasn't been read for depth yet — your answer is stored and will feed your self-portrait. Aim for specific and honest over impressive."
+        ? "Saved. The analysis engine is briefly unavailable, so this hasn't been read for depth yet — your answer is stored and will feed your portrait. Aim for specific and honest over impressive."
         : "This is too thin to reveal anything yet. Add a concrete, honest detail from your own life — a specific moment or feeling, not a general statement.",
     };
   }

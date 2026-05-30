@@ -9,6 +9,19 @@ import {
   doublePrecision,
 } from "drizzle-orm/pg-core";
 
+// Distinct people whose work the app tracks. There is no auth: the app always
+// operates as the "primary" user (the actual person using the course), while the
+// diagnostics operate as the "synthetic" user. Giving the synthetic student its
+// own ownership row is what keeps a self-test from ever touching the real user's
+// attempts, practice, or evolving profile.
+export const usersTable = pgTable("users", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(), // "primary" | "synthetic"
+  label: text("label").notNull(),
+  isSynthetic: boolean("is_synthetic").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const topicsTable = pgTable("topics", {
   id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -58,6 +71,9 @@ export const problemsTable = pgTable("problems", {
 
 export const attemptsTable = pgTable("attempts", {
   id: serial("id").primaryKey(),
+  // Owner of this attempt. Nullable only so existing rows survive the migration;
+  // it is backfilled to the primary user at boot and always set on new inserts.
+  userId: integer("user_id").references(() => usersTable.id, { onDelete: "cascade" }),
   assignmentId: integer("assignment_id")
     .notNull()
     .references(() => assignmentsTable.id, { onDelete: "cascade" }),
@@ -95,6 +111,9 @@ export const answersTable = pgTable("answers", {
 
 export const practiceSessionsTable = pgTable("practice_sessions", {
   id: serial("id").primaryKey(),
+  // Owner of this practice session (and, by cascade, its problems + attempts).
+  // Nullable only for migration; backfilled to primary, always set on insert.
+  userId: integer("user_id").references(() => usersTable.id, { onDelete: "cascade" }),
   weekNumber: integer("week_number"),
   topicId: integer("topic_id"),
   tutorEnabled: boolean("tutor_enabled").notNull().default(false),
@@ -128,9 +147,13 @@ export const appSettingsTable = pgTable("app_settings", {
 // every report is what gives the app real memory: the profile is remembered between
 // visits, its evolution over time is visible, and each new reading is generated
 // with the previous one as context so the picture genuinely builds rather than
-// resetting on every generation. Single-user for now (no userId column yet).
+// resetting on every generation. Scoped per user via userId.
 export const profileReportsTable = pgTable("profile_reports", {
   id: serial("id").primaryKey(),
+  // Owner of this snapshot. Each user evolves their own profile independently, so
+  // the synthetic diagnostic's readings never mingle with the real user's memory.
+  // Nullable only for migration; backfilled to primary, always set on insert.
+  userId: integer("user_id").references(() => usersTable.id, { onDelete: "cascade" }),
   mode: text("mode").notNull(), // self_knowledge | career
   framework: text("framework").notNull(), // active framework when generated (e.g. auto)
   narrative: text("narrative").notNull(),

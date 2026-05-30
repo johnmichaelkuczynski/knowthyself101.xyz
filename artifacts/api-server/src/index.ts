@@ -2,6 +2,7 @@ import app from "./app";
 import { logger } from "./lib/logger";
 import { seedIfEmpty } from "./lib/seed";
 import { ensureSettings } from "./lib/settings";
+import { ensureUsersAndBackfill } from "./lib/users";
 
 const rawPort = process.env["PORT"];
 
@@ -23,6 +24,13 @@ seedIfEmpty().catch((err) => {
 
 ensureSettings().catch((err) => {
   logger.error({ err }, "Settings init failed");
+});
+
+// Create the two well-known users (primary + synthetic) and assign any pre-existing
+// rows to the primary user. This is what keeps the synthetic diagnostic's data from
+// ever touching the real user's work.
+ensureUsersAndBackfill().catch((err) => {
+  logger.error({ err }, "User init/backfill failed");
 });
 
 app.listen(port, (err) => {

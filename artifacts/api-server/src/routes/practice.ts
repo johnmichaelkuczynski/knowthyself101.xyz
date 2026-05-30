@@ -18,6 +18,7 @@ import {
 import { chatJson } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
 import { getSettings, activeFramework } from "../lib/settings";
+import { getPrimaryUserId } from "../lib/users";
 
 const router: IRouter = Router();
 
@@ -30,6 +31,7 @@ async function pickTopicId(
   weekNumber: number | null | undefined,
   preferred: number | null | undefined,
   focusOnWeaknesses: boolean,
+  userId: number,
 ): Promise<{ id: number; title: string; weekNumber: number }> {
   if (preferred != null) {
     const [t] = await db.select().from(topicsTable).where(eq(topicsTable.id, preferred));
@@ -40,9 +42,15 @@ async function pickTopicId(
     : await db.select().from(topicsTable);
 
   if (focusOnWeaknesses) {
+    // Weakness stats are scoped to this session's owner so one user's history
+    // never steers another's adaptive difficulty.
     const stats = await db.execute(sql`
-      select topic_id, count(*)::int as n, avg(case when correct then 1.0 else 0.0 end) as acc
-      from practice_attempts group by topic_id
+      select pa.topic_id as topic_id, count(*)::int as n,
+             avg(case when pa.correct then 1.0 else 0.0 end) as acc
+      from practice_attempts pa
+      join practice_sessions ps on pa.session_id = ps.id
+      where ps.user_id = ${userId}
+      group by pa.topic_id
     `);
     const byId = new Map<number, { n: number; acc: number }>();
     for (const r of stats.rows as Array<{ topic_id: number; n: number; acc: number }>) {
@@ -76,9 +84,11 @@ router.post("/practice/sessions", async (req, res): Promise<void> => {
     typeof initialDifficulty === "number" && !Number.isNaN(initialDifficulty)
       ? Math.max(1, Math.min(5, initialDifficulty))
       : 2.0;
+  const userId = await getPrimaryUserId();
   const [created] = await db
     .insert(practiceSessionsTable)
     .values({
+      userId,
       weekNumber: weekNumber ?? null,
       topicId: topicId ?? null,
       tutorEnabled,
@@ -109,10 +119,11 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
     res.status(400).json({ error: parsed.error.message });
     return;
   }
+  const userId = await getPrimaryUserId();
   const [session] = await db
     .select()
     .from(practiceSessionsTable)
-    .where(eq(practiceSessionsTable.id, sessionId));
+    .where(and(eq(practiceSessionsTable.id, sessionId), eq(practiceSessionsTable.userId, userId)));
   if (!session) {
     res.status(404).json({ error: "session not found" });
     return;
@@ -122,6 +133,7 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
     session.weekNumber,
     parsed.data.topicId ?? session.topicId,
     session.focusOnWeaknesses,
+    userId,
   );
 
   const lastProblems = await db
@@ -226,10 +238,11 @@ router.post("/practice/sessions/:sessionId/grade", async (req, res): Promise<voi
     return;
   }
   const { problemId, answer, trace } = parsed.data;
+  const userId = await getPrimaryUserId();
   const [session] = await db
     .select()
     .from(practiceSessionsTable)
-    .where(eq(practiceSessionsTable.id, sessionId));
+    .where(and(eq(practiceSessionsTable.id, sessionId), eq(practiceSessionsTable.userId, userId)));
   if (!session) {
     res.status(404).json({ error: "session not found" });
     return;

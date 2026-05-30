@@ -19,6 +19,7 @@ import {
 import { gradeAnswer } from "../lib/grading";
 import { detect } from "../lib/detection";
 import { getSettings, activeFramework } from "../lib/settings";
+import { getPrimaryUserId } from "../lib/users";
 
 const router: IRouter = Router();
 
@@ -28,6 +29,7 @@ function parseIdParam(raw: unknown): number {
 }
 
 router.get("/assignments", async (_req, res) => {
+  const userId = await getPrimaryUserId();
   const rows = await db
     .select()
     .from(assignmentsTable)
@@ -41,7 +43,7 @@ router.get("/assignments", async (_req, res) => {
       const attempts = await db
         .select()
         .from(attemptsTable)
-        .where(eq(attemptsTable.assignmentId, a.id))
+        .where(and(eq(attemptsTable.assignmentId, a.id), eq(attemptsTable.userId, userId)))
         .orderBy(asc(attemptsTable.id));
       const submitted = attempts.filter((x) => x.status === "submitted");
       const inProgress = attempts.find((x) => x.status === "in_progress");
@@ -110,11 +112,11 @@ router.get("/assignments/:assignmentId", async (req, res): Promise<void> => {
   );
 });
 
-async function loadAttempt(attemptId: number) {
+async function loadAttempt(attemptId: number, userId: number) {
   const [attempt] = await db
     .select()
     .from(attemptsTable)
-    .where(eq(attemptsTable.id, attemptId));
+    .where(and(eq(attemptsTable.id, attemptId), eq(attemptsTable.userId, userId)));
   if (!attempt) return null;
   const answers = await db
     .select()
@@ -151,15 +153,22 @@ router.post("/assignments/:assignmentId/start", async (req, res): Promise<void> 
     res.status(404).json({ error: "assignment not found" });
     return;
   }
+  const userId = await getPrimaryUserId();
 
   // Resume the most recent in-progress attempt (deterministic if several exist)
   const [existing] = await db
     .select()
     .from(attemptsTable)
-    .where(and(eq(attemptsTable.assignmentId, id), eq(attemptsTable.status, "in_progress")))
+    .where(
+      and(
+        eq(attemptsTable.assignmentId, id),
+        eq(attemptsTable.userId, userId),
+        eq(attemptsTable.status, "in_progress"),
+      ),
+    )
     .orderBy(desc(attemptsTable.id));
   if (existing) {
-    const state = await loadAttempt(existing.id);
+    const state = await loadAttempt(existing.id, userId);
     res.json(StartAssignmentAttemptResponse.parse(state));
     return;
   }
@@ -170,13 +179,13 @@ router.post("/assignments/:assignmentId/start", async (req, res): Promise<void> 
       : null;
   const [created] = await db
     .insert(attemptsTable)
-    .values({ assignmentId: id, status: "in_progress", deadlineAt })
+    .values({ userId, assignmentId: id, status: "in_progress", deadlineAt })
     .returning();
   if (!created) {
     res.status(500).json({ error: "failed to create" });
     return;
   }
-  const state = await loadAttempt(created.id);
+  const state = await loadAttempt(created.id, userId);
   res.json(StartAssignmentAttemptResponse.parse(state));
 });
 
@@ -186,7 +195,8 @@ router.get("/assignments/attempts/:attemptId", async (req, res): Promise<void> =
     res.status(400).json({ error: "invalid id" });
     return;
   }
-  const state = await loadAttempt(id);
+  const userId = await getPrimaryUserId();
+  const state = await loadAttempt(id, userId);
   if (!state) {
     res.status(404).json({ error: "attempt not found" });
     return;
@@ -207,10 +217,11 @@ router.put("/assignments/attempts/:attemptId/answer", async (req, res): Promise<
   }
   const { problemId, answer, trace } = parsed.data;
 
+  const userId = await getPrimaryUserId();
   const [attempt] = await db
     .select()
     .from(attemptsTable)
-    .where(eq(attemptsTable.id, id));
+    .where(and(eq(attemptsTable.id, id), eq(attemptsTable.userId, userId)));
   if (!attempt) {
     res.status(404).json({ error: "attempt not found" });
     return;
@@ -255,10 +266,11 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
     res.status(400).json({ error: "invalid id" });
     return;
   }
+  const userId = await getPrimaryUserId();
   const [attempt] = await db
     .select()
     .from(attemptsTable)
-    .where(eq(attemptsTable.id, id));
+    .where(and(eq(attemptsTable.id, id), eq(attemptsTable.userId, userId)));
   if (!attempt) {
     res.status(404).json({ error: "attempt not found" });
     return;

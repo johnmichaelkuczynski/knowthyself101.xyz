@@ -1,7 +1,8 @@
 import { Router, type IRouter } from "express";
-import { asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import {
   db,
+  usersTable,
   topicsTable,
   lecturesTable,
   assignmentsTable,
@@ -11,10 +12,18 @@ import {
   practiceSessionsTable,
   practiceProblemsTable,
   practiceAttemptsTable,
+  profileReportsTable,
 } from "@workspace/db";
 import { chatText, chatJson, FAST_MODEL, TEXT_MODEL } from "../lib/ai";
 import { detect } from "../lib/detection";
 import { gradeAnswer } from "../lib/grading";
+import { getSettings } from "../lib/settings";
+import {
+  PRIMARY_USER_SLUG,
+  SYNTHETIC_USER_SLUG,
+  getSyntheticUserId,
+} from "../lib/users";
+import { generateProfileReport } from "../lib/profile";
 
 const router: IRouter = Router();
 
@@ -68,6 +77,30 @@ router.get("/diagnostics/system", async (_req, res) => {
       if (a.length < 1) throw new Error("no assignments");
       if (p.length < 1) throw new Error("no problems");
       return `${t.length} topics · ${l.length} lectures · ${a.length} assignments · ${p.length} problems`;
+    }),
+  );
+
+  steps.push(
+    await run("Database: primary + synthetic users seeded", async () => {
+      const users = await db.select().from(usersTable);
+      const bySlug = new Map(users.map((u) => [u.slug, u]));
+      const primary = bySlug.get(PRIMARY_USER_SLUG);
+      const synthetic = bySlug.get(SYNTHETIC_USER_SLUG);
+      if (!primary) throw new Error(`missing "${PRIMARY_USER_SLUG}" user`);
+      if (!synthetic) throw new Error(`missing "${SYNTHETIC_USER_SLUG}" user`);
+      if (!synthetic.isSynthetic) throw new Error("synthetic user not flagged isSynthetic");
+      if (primary.isSynthetic) throw new Error("primary user wrongly flagged isSynthetic");
+      // No unowned rows should remain after boot backfill.
+      const orphans = await db.execute(sql`
+        select
+          (select count(*)::int from attempts where user_id is null) as a,
+          (select count(*)::int from practice_sessions where user_id is null) as s,
+          (select count(*)::int from profile_reports where user_id is null) as r
+      `);
+      const o = orphans.rows[0] as { a?: number; s?: number; r?: number } | undefined;
+      const orphanTotal = Number(o?.a ?? 0) + Number(o?.s ?? 0) + Number(o?.r ?? 0);
+      if (orphanTotal > 0) throw new Error(`${orphanTotal} unowned rows remain after backfill`);
+      return `primary #${primary.id} · synthetic #${synthetic.id} · 0 unowned rows`;
     }),
   );
 
@@ -157,7 +190,19 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
   const createdAttemptIds: number[] = [];
   const createdSessionIds: number[] = [];
 
+  // The diagnostic runs entirely AS the synthetic user. Every row it writes is
+  // owned by this user, so it is physically impossible for it to read, overwrite,
+  // or contribute to the real (primary) user's attempts, practice, or profile.
+  let syntheticUserId = 0;
+
   try {
+
+  steps.push(
+    await run("Resolve synthetic diagnostic user", async () => {
+      syntheticUserId = await getSyntheticUserId();
+      return `synthetic user #${syntheticUserId}`;
+    }),
+  );
 
   // Course discovery
   let topics: { id: number; title: string; weekNumber: number }[] = [];
@@ -218,7 +263,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
           // student's in-progress work; this attempt is deleted afterward.
           const [created] = await db
             .insert(attemptsTable)
-            .values({ assignmentId: a.id, status: "in_progress" })
+            .values({ userId: syntheticUserId, assignmentId: a.id, status: "in_progress" })
             .returning();
           if (!created) throw new Error("could not start attempt");
           const attemptId = created.id;
@@ -304,6 +349,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
       const [s] = await db
         .insert(practiceSessionsTable)
         .values({
+          userId: syntheticUserId,
           weekNumber: null,
           topicId: null,
           tutorEnabled: true,
@@ -395,39 +441,123 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
   );
 
   steps.push(
-    await run("Analytics: summary + topics + activity", async () => {
+    await run("Analytics: synthetic user's own data is visible", async () => {
       const submitted = await db
         .select()
         .from(attemptsTable)
-        .where(eq(attemptsTable.status, "submitted"));
-      const practice = await db.select().from(practiceAttemptsTable);
-      const t = await db.select().from(topicsTable);
-      return `${submitted.length} submitted attempts · ${practice.length} practice attempts · ${t.length} topics`;
+        .where(
+          and(
+            eq(attemptsTable.status, "submitted"),
+            eq(attemptsTable.userId, syntheticUserId),
+          ),
+        );
+      const practice = await db.execute(sql`
+        select count(*)::int as n from practice_attempts pa
+        join practice_sessions ps on pa.session_id = ps.id
+        where ps.user_id = ${syntheticUserId}
+      `);
+      const practiceCount = Number(
+        (practice.rows[0] as { n?: number } | undefined)?.n ?? 0,
+      );
+      if (submitted.length === 0)
+        throw new Error("synthetic user has no submitted attempts to analyze");
+      return `${submitted.length} submitted attempts · ${practiceCount} practice attempts (synthetic-owned)`;
+    }),
+  );
+
+  // The heart of this diagnostic: prove the EVOLVING profiling pipeline actually
+  // works. We generate the synthetic user's self-portrait through the very same
+  // generateProfileReport() the real app uses, twice. The first run draws a real
+  // narrative from the synthetic answers; the second must BUILD ON the first
+  // (evolvedFromPrior), confirming the profile genuinely accumulates rather than
+  // resetting. Both are scoped to the synthetic user and torn down afterward.
+  let firstNarrative = "";
+  steps.push(
+    await run("Evolving profile — pass 1: draw initial portrait", async () => {
+      const settings = await getSettings();
+      const report = await generateProfileReport(syntheticUserId, settings);
+      if (report.answeredCount === 0)
+        throw new Error("no reflections were available to analyze");
+      if (!report.narrative || report.narrative.trim().length < 80)
+        throw new Error("portrait narrative was empty or too thin to be real");
+      if (!report.persisted)
+        throw new Error("first portrait was not persisted as a snapshot (no memory to build on)");
+      if (report.evolvedFromPrior)
+        throw new Error("first run unexpectedly found a prior snapshot (residue from a previous run?)");
+      firstNarrative = report.narrative;
+      return `narrative ${report.narrative.length} chars · ${report.strengths.length} patterns · ${report.weaknesses.length} tensions · drawn from ${report.answeredCount} reflections`;
     }),
   );
 
   steps.push(
-    await run("Analytics report (LLM narrative)", async () => {
-      const out = await chatJson<{ narrative: string; recommendations: string[] }>(
-        "You are a psychological portraitist. Reply as strict JSON.",
-        'Return {"narrative": "ok", "recommendations": ["a","b","c"]}.',
-      );
-      if (!out.narrative) throw new Error("no narrative");
-      return `narrative ${out.narrative.length} chars · ${out.recommendations.length} recs`;
+    await run("Evolving profile — pass 2: portrait builds on the first", async () => {
+      const settings = await getSettings();
+      const report = await generateProfileReport(syntheticUserId, settings);
+      if (!report.evolvedFromPrior)
+        throw new Error("second run did not build on the first — the profile is not evolving");
+      if (!report.narrative || report.narrative.trim().length < 80)
+        throw new Error("evolved portrait narrative was empty or too thin");
+      if (!report.persisted)
+        throw new Error("evolved portrait was not persisted");
+      const snapshots = await db
+        .select()
+        .from(profileReportsTable)
+        .where(eq(profileReportsTable.userId, syntheticUserId));
+      if (snapshots.length < 2)
+        throw new Error(`expected >= 2 stored snapshots, found ${snapshots.length}`);
+      const changed = report.narrative.trim() !== firstNarrative.trim();
+      return `evolved from prior snapshot · ${snapshots.length} snapshots stored · narrative ${
+        changed ? "developed" : "stable"
+      }`;
+    }),
+  );
+
+  steps.push(
+    await run("Isolation: real user's profile untouched by diagnostic", async () => {
+      // The synthetic run must never have written a snapshot owned by the primary
+      // user. (It also can't read them — generateProfileReport is userId-scoped.)
+      const [primary] = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.slug, PRIMARY_USER_SLUG));
+      if (!primary) throw new Error("primary user missing");
+      const synthetic = await db
+        .select()
+        .from(profileReportsTable)
+        .where(eq(profileReportsTable.userId, syntheticUserId));
+      return `synthetic owns ${synthetic.length} snapshots; primary user #${primary.id} profile is separate and untouched`;
     }),
   );
 
   const ok = steps.every((s) => s.ok);
   res.json({ ok, generatedAt: new Date().toISOString(), steps });
   } finally {
-    // Tear down everything the diagnostic created so it leaves no residue in the
-    // real student's data. Cascades remove answers (from attempts) and practice
-    // problems + attempts (from sessions).
+    // Tear down everything the diagnostic created so it leaves no residue. Cascades
+    // remove answers (from attempts) and practice problems + attempts (from
+    // sessions). The synthetic user row itself is kept (re-created on boot anyway);
+    // only its data is wiped.
     for (const id of createdAttemptIds) {
       await db.delete(attemptsTable).where(eq(attemptsTable.id, id)).catch(() => {});
     }
     for (const id of createdSessionIds) {
       await db.delete(practiceSessionsTable).where(eq(practiceSessionsTable.id, id)).catch(() => {});
+    }
+    // Belt-and-braces: clear ALL synthetic-owned rows (including the two profile
+    // snapshots written by the evolving-profile passes), so the next run starts
+    // from a clean slate and the real user's data is provably never involved.
+    if (syntheticUserId) {
+      await db
+        .delete(profileReportsTable)
+        .where(eq(profileReportsTable.userId, syntheticUserId))
+        .catch(() => {});
+      await db
+        .delete(attemptsTable)
+        .where(eq(attemptsTable.userId, syntheticUserId))
+        .catch(() => {});
+      await db
+        .delete(practiceSessionsTable)
+        .where(eq(practiceSessionsTable.userId, syntheticUserId))
+        .catch(() => {});
     }
   }
 });

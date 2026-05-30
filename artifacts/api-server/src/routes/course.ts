@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, asc, sql } from "drizzle-orm";
+import { and, eq, asc, sql } from "drizzle-orm";
 import {
   db,
   topicsTable,
@@ -13,6 +13,7 @@ import {
   GetLectureResponse,
   ListTopicsResponse,
 } from "@workspace/api-zod";
+import { getPrimaryUserId } from "../lib/users";
 
 const router: IRouter = Router();
 
@@ -39,7 +40,7 @@ const WEEK_TITLES: Record<number, { title: string; summary: string }> = {
   },
 };
 
-async function buildWeek(weekNumber: number) {
+async function buildWeek(weekNumber: number, userId: number) {
   const lectures = await db
     .select({
       id: lecturesTable.id,
@@ -65,7 +66,7 @@ async function buildWeek(weekNumber: number) {
       const attempts = await db
         .select()
         .from(attemptsTable)
-        .where(eq(attemptsTable.assignmentId, a.id))
+        .where(and(eq(attemptsTable.assignmentId, a.id), eq(attemptsTable.userId, userId)))
         .orderBy(asc(attemptsTable.id));
       const submitted = attempts.filter((x) => x.status === "submitted");
       const inProgress = attempts.find((x) => x.status === "in_progress");
@@ -110,14 +111,17 @@ async function buildWeek(weekNumber: number) {
 }
 
 router.get("/course/overview", async (_req, res) => {
-  const weeks = await Promise.all([1, 2, 3, 4].map(buildWeek));
+  const userId = await getPrimaryUserId();
+  const weeks = await Promise.all([1, 2, 3, 4].map((w) => buildWeek(w, userId)));
   const assignmentsTotal = weeks.reduce((s, w) => s + w.assignments.length, 0);
   const assignmentsCompleted = weeks.reduce(
     (s, w) => s + w.assignments.filter((a) => a.status === "submitted").length,
     0,
   );
   const practiceCountRow = await db.execute(
-    sql`select count(*)::int as n from practice_attempts`,
+    sql`select count(*)::int as n from practice_attempts pa
+        join practice_sessions ps on pa.session_id = ps.id
+        where ps.user_id = ${userId}`,
   );
   const practiceCount =
     (practiceCountRow.rows[0] as { n?: number } | undefined)?.n ?? 0;
@@ -140,7 +144,8 @@ router.get("/course/weeks/:weekNumber", async (req, res): Promise<void> => {
     res.status(400).json({ error: "invalid weekNumber" });
     return;
   }
-  const week = await buildWeek(weekNumber);
+  const userId = await getPrimaryUserId();
+  const week = await buildWeek(weekNumber, userId);
   res.json(GetWeekResponse.parse(week));
 });
 

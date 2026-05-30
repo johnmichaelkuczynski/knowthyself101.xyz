@@ -19,31 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-type Mode = "self_knowledge" | "career";
-
-const MODE_OPTIONS: { value: Mode; label: string }[] = [
-  { value: "self_knowledge", label: "Self-Knowledge" },
-  { value: "career", label: "Career" },
-];
-
-const SELF_FRAMEWORKS: { value: string; label: string }[] = [
-  { value: "auto", label: "Auto — surface what fires" },
-  { value: "cognitive_distortions", label: "Cognitive distortions" },
-  { value: "defense_mechanisms", label: "Defense mechanisms" },
-  { value: "attachment", label: "Attachment style" },
-  { value: "self_discrepancy", label: "Self-discrepancy" },
-  { value: "attribution", label: "Attribution / locus of control" },
-];
-
-const CAREER_FRAMEWORKS: { value: string; label: string }[] = [
-  { value: "auto", label: "Auto — surface what fires" },
-  { value: "riasec", label: "Holland RIASEC" },
-  { value: "onet", label: "O*NET Interest Profiler" },
-  { value: "strong", label: "Strong Interest Inventory" },
-  { value: "career_anchors", label: "Schein Career Anchors" },
-  { value: "big_five", label: "Big Five → occupation fit" },
-];
+import { MODE_OPTIONS, frameworksFor, type Mode } from "@/lib/lens";
 
 export function ModeSwitcher() {
   const qc = useQueryClient();
@@ -64,7 +40,7 @@ export function ModeSwitcher() {
   if (!settings) return null;
 
   const mode = settings.mode as Mode;
-  const frameworks = mode === "career" ? CAREER_FRAMEWORKS : SELF_FRAMEWORKS;
+  const frameworks = frameworksFor(mode);
   const framework = mode === "career" ? settings.careerFramework : settings.selfFramework;
 
   const setMode = (next: Mode) => {

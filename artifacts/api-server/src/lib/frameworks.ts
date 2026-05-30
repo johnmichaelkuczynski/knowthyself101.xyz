@@ -111,3 +111,29 @@ export const MODE_LABEL: Record<Mode, string> = {
   self_knowledge: "self-knowledge",
   career: "career",
 };
+
+/** Title-cased mode label for stamping feedback and reports. */
+export const MODE_DISPLAY: Record<Mode, string> = {
+  self_knowledge: "Self-Knowledge",
+  career: "Career",
+};
+
+/**
+ * Human label for the active framework selection ("auto" → all frameworks).
+ * The scholar attribution in parentheses (e.g. "(Beck / Burns)") is dropped so the
+ * stamp matches the shorter labels the client UI shows.
+ */
+export function frameworkDisplayLabel(mode: Mode, selection: string): string {
+  if (!selection || selection === "auto") return "all frameworks";
+  const f = frameworksFor(mode).find((x) => x.id === selection);
+  return f ? f.label.replace(/\s*\([^)]*\)\s*$/, "").trim() : "all frameworks";
+}
+
+/**
+ * A short, human-readable stamp of the lens a piece of feedback or a report was
+ * produced under, e.g. "Self-Knowledge lens · all frameworks" or
+ * "Career lens · Holland RIASEC".
+ */
+export function lensStamp(mode: Mode, selection: string): string {
+  return `${MODE_DISPLAY[mode]} lens · ${frameworkDisplayLabel(mode, selection)}`;
+}

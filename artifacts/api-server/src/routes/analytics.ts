@@ -21,7 +21,7 @@ import {
 } from "@workspace/api-zod";
 import { chatJson, TEXT_MODEL } from "../lib/ai";
 import { getSettings, activeFramework } from "../lib/settings";
-import { frameworkBrief, MODE_LABEL } from "../lib/frameworks";
+import { frameworkBrief, lensStamp, MODE_LABEL } from "../lib/frameworks";
 
 const router: IRouter = Router();
 
@@ -435,7 +435,8 @@ router.post("/analytics/report", async (_req, res) => {
   if (practiceCount > 0)
     parts.push(`${practiceCount} practice reflection${practiceCount === 1 ? "" : "s"}`);
   const source = parts.length > 0 ? parts.join(" and ") : `${answeredCount} reflections`;
-  const provenance = `\n\n— Drawn from ${source}. This ${
+  const stamp = lensStamp(settings.mode, activeFramework(settings));
+  const provenance = `\n\n— Drawn from ${source}, read through the ${stamp}. This ${
     isCareer ? "career reading" : "portrait"
   } deepens and sharpens with every honest answer you add.`;
 

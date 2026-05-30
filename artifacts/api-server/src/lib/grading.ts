@@ -1,5 +1,5 @@
 import { chatJson } from "./ai";
-import { frameworkBrief, MODE_LABEL, type Mode } from "./frameworks";
+import { frameworkBrief, lensStamp, MODE_LABEL, type Mode } from "./frameworks";
 
 // This course runs in one of two MODES — self-knowledge (default) or career — each
 // with five analytic FRAMEWORKS. There is no single factually "correct" answer, but
@@ -65,12 +65,18 @@ export async function gradeAnswer(opts: {
   const mode: Mode = opts.mode === "career" ? "career" : "self_knowledge";
   const framework = opts.framework || "auto";
 
+  // Every graded answer is stamped with the lens it was read under so the
+  // feedback stays legible after the fact — no matter which return path it takes.
+  const stamp = `_Read through the ${lensStamp(mode, framework)}._`;
+  const withStamp = (explanation: string) => `${explanation}\n\n${stamp}`;
+
   // Empty answer.
   if (user.length === 0) {
     return {
       correct: false,
-      explanation:
+      explanation: withStamp(
         "There's nothing here to work with. A blank can't reveal anything about you. Put down at least one true, specific sentence about your own life — not what you think sounds good.",
+      ),
     };
   }
 
@@ -79,8 +85,9 @@ export async function gradeAnswer(opts: {
   if (LOW_EFFORT.has(user.toLowerCase().replace(/[^a-z?./' ]/g, "").trim()) || LOW_EFFORT.has(norm)) {
     return {
       correct: false,
-      explanation:
+      explanation: withStamp(
         "That answer keeps the question at arm's length. A one-word dodge tells us nothing about you. Name one real, specific thing — a moment, a feeling, a person — and say something true about it.",
+      ),
     };
   }
 
@@ -150,16 +157,19 @@ export async function gradeAnswer(opts: {
       if (frameworkBlock) explanation = `${explanation}\n\n${frameworkBlock}`;
     }
 
-    return { correct: pass, explanation };
+    // Stamp which lens read this answer so the feedback is legible after the fact.
+    return { correct: pass, explanation: withStamp(explanation) };
   } catch {
     // Model unavailable: we can't judge authenticity, so apply a minimal substance
     // floor. A few words of real attempt passes provisionally; a fragment fails.
     const looksReal = wordCount(user) >= 6;
     return {
       correct: looksReal,
-      explanation: looksReal
-        ? "Saved. The analysis engine is briefly unavailable, so this hasn't been read for depth yet — your answer is stored and will feed your portrait. Aim for specific and honest over impressive."
-        : "This is too thin to reveal anything yet. Add a concrete, honest detail from your own life — a specific moment or feeling, not a general statement.",
+      explanation: withStamp(
+        looksReal
+          ? "Saved. The analysis engine is briefly unavailable, so this hasn't been read for depth yet — your answer is stored and will feed your portrait. Aim for specific and honest over impressive."
+          : "This is too thin to reveal anything yet. Add a concrete, honest detail from your own life — a specific moment or feeling, not a general statement.",
+      ),
     };
   }
 }

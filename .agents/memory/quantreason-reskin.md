@@ -67,6 +67,25 @@ topics, but the LLM output token cap, not input, is the silent failure point. **
 any per-item LLM emission over a user's full history needs a recency/dedup cap keyed by stable id +
 a raised output-token budget; test with the heaviest real user, not an empty DB.
 
+## Surfacing per-request metadata (lens/framework) without an API schema change
+
+To make the active mode+framework legible *after the fact*, embed a human "lens stamp" into the
+existing free-text/markdown response fields (grade `explanation`, report `narrative` provenance)
+rather than adding response fields — the contract is frozen across reskins and those fields are the
+only carriers. Two durable traps a code reviewer will catch:
+
+- **Stamp EVERY `gradeAnswer` return path, not just the LLM-scored one.** The function returns
+  early for blank and low-effort answers and has a model-unavailable catch fallback; all are valid
+  graded outcomes and must carry the stamp. Build the stamp once at the top and wrap each
+  explanation, so no path can be missed.
+- **A UI badge reading the lens from live `settings` can drift from a report pinned at
+  generation-time.** Clear the cached report when EITHER mode OR the active framework changes (the
+  framework, not just mode, must be in the clearing `useEffect` deps).
+
+**Also:** keep the server stamp's framework label in sync with the client's by stripping the
+scholar attribution parenthetical (e.g. "(Beck / Burns)") so the feedback prose and the UI badge
+read identically.
+
 ## Companion demo video (qr-course-demo) reskin gotchas
 
 - **A DESIGN subagent reskinning the video can silently leave Scene1 behind.** When it rewrites

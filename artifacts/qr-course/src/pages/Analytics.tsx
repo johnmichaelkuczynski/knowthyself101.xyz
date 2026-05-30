@@ -15,6 +15,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { lensStamp, type Mode } from "@/lib/lens";
 import { useLocation } from "wouter";
 import { ChevronRight } from "lucide-react";
 
@@ -31,12 +32,19 @@ export default function Analytics() {
   const [report, setReport] = useState<any>(null);
 
   const isCareer = settings?.mode === "career";
+  const activeFrameworkId = isCareer
+    ? settings?.careerFramework
+    : settings?.selfFramework;
+  const lensLabel = settings
+    ? lensStamp(settings.mode as Mode, activeFrameworkId ?? "auto")
+    : null;
 
-  // A freshly generated report is held in local state for this session; if the lens
-  // changes, drop it so old narrative text never shows under the new mode's headings.
+  // A freshly generated report is held in local state for this session; it is
+  // lens-specific, so if the mode OR framework changes, drop it so old narrative
+  // text never shows under the new mode's headings or a mismatched lens badge.
   useEffect(() => {
     setReport(null);
-  }, [settings?.mode]);
+  }, [settings?.mode, activeFrameworkId]);
 
   // The persisted profile: the latest saved reading for the current mode, loaded on
   // mount so the portrait survives between visits. The endpoint is mode-scoped, but
@@ -83,7 +91,17 @@ export default function Analytics() {
           <Card className="border-primary bg-primary/5">
             <CardHeader>
               <CardTitle>{reportTitle}</CardTitle>
-              <div className="text-xs text-muted-foreground">Drawn {new Date(effectiveReport.generatedAt).toLocaleString()}</div>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span>Drawn {new Date(effectiveReport.generatedAt).toLocaleString()}</span>
+                {lensLabel && (
+                  <span
+                    className="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-semibold uppercase tracking-wider"
+                    data-testid="report-lens-badge"
+                  >
+                    {lensLabel}
+                  </span>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
               <div>

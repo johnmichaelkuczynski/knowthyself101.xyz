@@ -21,7 +21,7 @@ export default function Assignments() {
       <div className="p-8 max-w-4xl mx-auto w-full flex flex-col gap-8">
         <div>
           <h1 className="text-3xl font-serif font-bold text-primary mb-2">Assignments</h1>
-          <p className="text-muted-foreground">Complete your homework, tests, midterm, and final exams.</p>
+          <p className="text-muted-foreground">Sit with each set of prompts and answer honestly — homework, tests, the midterm, and a final self-portrait.</p>
         </div>
 
         {isLoading ? (
@@ -55,11 +55,8 @@ export default function Assignments() {
                       </CardHeader>
                       <CardContent className="flex flex-col gap-4">
                         <div className="text-sm text-muted-foreground flex gap-4">
-                          <span>{item.problemCount} problems</span>
+                          <span>{item.problemCount} prompt{item.problemCount === 1 ? "" : "s"}</span>
                           {item.isTimed && <span>⏱️ {item.timeLimitMinutes} min</span>}
-                          {item.bestScore !== undefined && item.bestScore !== null && (
-                            <span className="font-semibold text-foreground">Score: {item.bestScore}%</span>
-                          )}
                         </div>
                         <Link href={`/assignments/${item.id}`}>
                           <Button className="w-full" variant={item.status === 'submitted' ? "outline" : "default"}>

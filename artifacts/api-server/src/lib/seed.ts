@@ -19,795 +19,614 @@ type SeedTopic = {
 
 const TOPICS: SeedTopic[] = [
   // ───────────────────────────────────────────────────────────────
-  // Week 1 — Foundations of mathematical notation
+  // Week 1 — The Self You Inherited
   // ───────────────────────────────────────────────────────────────
   {
-    slug: "equality-family",
-    title: "Equality and its relatives: =, ≠, ≈, ≡",
+    slug: "self-concept",
+    title: "Who you think you are",
     weekNumber: 1,
-    blurb: "The four shades of 'the same'.",
-    lectureTitle: "1.1 The equality family: =, ≠, ≈, ≡",
-    body: `# Equality and its relatives
+    blurb: "The picture you carry of yourself — and where it came from.",
+    lectureTitle: "1.1 Who you think you are",
+    body: `# Who you think you are
 
-Mathematics has *four* different signs for "is the same as," and they do not mean the same thing.
+Before you can know yourself, you have to notice that you already have an answer — a working picture of who you are that you carry everywhere without examining it. *I'm the responsible one. I'm not creative. I'm easy-going. I'm the type who never finishes things.*
 
-- $=$ — **equal**. Both sides denote the exact same value. $2 + 2 = 4$.
-- $\\neq$ — **not equal**. $3 \\neq 4$.
-- $\\approx$ — **approximately equal**. The two sides are close, usually after rounding. $\\pi \\approx 3.14$.
-- $\\equiv$ — **identically equal** or **congruent**. Either "equal for all values of the variable" (an identity), or "equal modulo something." $\\sin^2 x + \\cos^2 x \\equiv 1$.
+This picture is your **self-concept**, and most of it was assembled early, out of materials you didn't choose: a teacher's offhand remark, a sibling's role you were assigned, a single embarrassing afternoon you've never forgotten.
 
-## A science example
+## Where it comes from
 
-Einstein's famous **equation** $E = mc^2$ uses $=$ because it states a single physical relation: the rest energy of an object equals its mass times $c^2$. It is *not* an identity — it does not hold "for all values of a variable," it holds because that is how rest energy is defined in special relativity.
+The psychologist William James split the self into the *I* (the part doing the experiencing) and the *me* (the part being described). Self-knowledge is mostly the slow work of turning the second one over in your hands. Much of the "me" is **inherited or absorbed**, not discovered — which means some of it is simply wrong, or expired, or true only because you keep acting as if it were.
 
-Contrast that with a genuine **identity** like the Pythagorean identity $\\sin^2 \\theta + \\cos^2 \\theta \\equiv 1$, which is true for *every* angle $\\theta$ — the equality is built into the definitions of sine and cosine themselves.
+## The work of this course
 
-When physicists *report a measurement* they switch to $\\approx$: the proton's rest energy is $E \\approx 938\\ \\text{MeV}$, because the measured value is rounded, not exact.
+For the next four weeks you'll examine that picture one piece at a time. Not to demolish it — to *see* it clearly enough that you get a vote. The first step is the hardest: saying, in your own plain words, who you currently believe you are.
 
-## Why the distinction matters
-
-Writing $\\pi = 3.14$ on a homework is a small lie. Writing $\\pi \\approx 3.14$ is the truth. The notation tells the reader what kind of claim you are making.`,
+There are no right answers here. There is only the honest one and the convenient one — and you can usually feel the difference.`,
   },
   {
-    slug: "inequalities-notation",
-    title: "Inequalities: <, >, ≤, ≥",
+    slug: "earliest-memory",
+    title: "Your earliest memories",
     weekNumber: 1,
-    blurb: "Strict and non-strict ordering.",
-    lectureTitle: "1.2 Inequality symbols: <, >, ≤, ≥",
-    body: `# Inequalities
+    blurb: "Why the memories that survived are the ones that meant something.",
+    lectureTitle: "1.2 Your earliest memories",
+    body: `# Your earliest memories
 
-Where $=$ pins a value, **inequalities** describe a range.
+You can remember almost nothing from before age three or four, and very little before seven. Out of thousands of days, a handful of scenes survived. The interesting question is not *what* you remember but *why these*.
 
-- $a < b$ — $a$ is **strictly less than** $b$. $3 < 5$.
-- $a > b$ — $a$ is **strictly greater than** $b$.
-- $a \\le b$ — $a$ is **less than or equal to** $b$. The equality case is *included*.
-- $a \\ge b$ — $a$ is **greater than or equal to** $b$.
+## Memory as selection
 
-The open mouth always faces the larger number.
+We don't store the past like video. We keep fragments that carried emotional charge, and we quietly edit them to fit the story we're telling now. Alfred Adler, an early psychologist, used to ask patients for their **earliest memory** precisely because it isn't a neutral record — it's a kind of self-chosen emblem. A person who recalls being left at a gate remembers something different from one who recalls being lifted onto a shoulder.
 
-## A science example
+## What survived, and what it taught
 
-In thermodynamics, the **second law** states that for an isolated system the entropy change satisfies
+The memories that stuck usually encode an early lesson about how the world works: *people leave, effort gets noticed, attention is dangerous, I'm on my own.* You absorbed the lesson long before you had the words to argue with it.
 
-$$\\Delta S \\ge 0.$$
+You don't need a dramatic memory for this to matter. A small, vivid scene — light on a kitchen floor, the sound of a door — often says more than a big event, exactly because you can't explain why it stayed.
 
-The $\\ge$ matters. A *reversible* process saturates the bound ($\\Delta S = 0$); every real-world process is irreversible and yields $\\Delta S > 0$. Replacing $\\ge$ with $>$ would falsely outlaw the idealized reversible case that the whole theory is built on.
-
-## Strict vs. non-strict
-
-In an interval like $[2, 5)$, the square bracket means $\\ge 2$ (included), the round bracket means $< 5$ (excluded). Same idea, different notation.`,
+This week, look at one such fragment and ask what it taught you to expect.`,
   },
   {
-    slug: "plus-minus-proportional",
-    title: "Plus-minus and proportional: ±, ∝",
+    slug: "family-system",
+    title: "The family you came from",
     weekNumber: 1,
-    blurb: "Two values in one symbol; 'scales with'.",
-    lectureTitle: "1.3 ± and ∝",
-    body: `# Plus-minus and proportional
+    blurb: "You learned what 'normal' feels like before you could question it.",
+    lectureTitle: "1.3 The family you came from",
+    body: `# The family you came from
 
-Two compact symbols that pack a lot of meaning.
+Your family was the first world you lived in, and like any first world it felt simply like *reality* rather than one arrangement among many. The volume people spoke at, how anger was handled, whether affection was spoken or implied, what got rewarded and what got silently punished — all of it set your baseline for "normal."
 
-## $\\pm$ — plus or minus
+## Families as systems
 
-$\\pm$ means "either of two values." It appears in:
+Family therapists like Murray Bowen describe a family not as a set of individuals but as a **system**: a web of roles that balance each other. There's often a peacekeeper, a scapegoat, a star, a worrier, a clown. You were handed a role, and you may still be playing it in rooms your family will never enter — at work, in friendships, in love.
 
-- **Solutions**: $x = \\pm 3$ means $x = 3$ or $x = -3$.
-- **The quadratic formula**: $x = \\dfrac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ — *both* roots in one expression.
-- **Measurement uncertainty**: $g = 9.81 \\pm 0.02 \\ \\text{m/s}^2$ — the true value lies (with stated confidence) in the interval.
+## Why it's invisible
 
-## $\\propto$ — proportional to
+The hardest patterns to see are the ones you mistook for the way things simply are. People raised where conflict was loud often find calm eerie; people raised where everything was unspoken often can't name what they feel even now.
 
-$y \\propto x$ means $y = kx$ for some constant $k$. The constant is hidden; the *shape* of the relationship is what matters.
-
-## A science example
-
-**Newton's law of gravitation** is most cleanly stated proportionally:
-
-$$F \\propto \\frac{m_1 m_2}{r^2}.$$
-
-Inserting the constant gives $F = G\\,\\dfrac{m_1 m_2}{r^2}$. The $\\propto$ form says the *physics* — force grows with the product of masses and falls as the square of distance — without committing to a unit system. When Newton wrote it down, $G$ had not yet been measured. The proportionality was the discovery; the constant was just bookkeeping.`,
+You are not your family system, but you were shaped on its lathe. This week, name the role you played — and notice where you still play it.`,
   },
   {
-    slug: "exponents-notation",
-    title: "Exponents and powers: x², xⁿ",
+    slug: "formative-wounds",
+    title: "Formative wounds",
     weekNumber: 1,
-    blurb: "Superscripts as repeated multiplication.",
-    lectureTitle: "1.4 Exponents: x², xⁿ",
-    body: `# Exponents
+    blurb: "The early hurts that quietly organised your defences.",
+    lectureTitle: "1.4 Formative wounds",
+    body: `# Formative wounds
 
-A small number written above the line — a **superscript** — means repeated multiplication.
+Some of who you are is a scar — a sensible response to an old injury, kept long after the danger passed. A child who learned that needing things led to disappointment may have become impressively self-sufficient. A child who was praised only for achievement may have become a relentless achiever who can't rest.
 
-$$x^n = \\underbrace{x \\cdot x \\cdots x}_{n \\text{ times}}$$
+## The logic of defences
 
-Special cases everyone needs by reflex:
+The psychoanalytic tradition calls these **defences**: strategies that once protected you and now run on their own. The point is not to blame anyone. The point is that a defence is *intelligent* — it solved a real problem — but it tends to outlive its usefulness and start solving problems you no longer have.
 
-- $x^2$ — "$x$ squared."
-- $x^3$ — "$x$ cubed."
-- $x^0 = 1$ (for $x \\neq 0$).
-- $x^{-n} = 1/x^n$.
-- $x^{1/2} = \\sqrt{x}$.
+## Finding the seam
 
-## A science example
+You can often locate an old wound by its disproportion. When a small thing produces a large reaction — a tone of voice that floods you, a kind of criticism that you can't shake off for days — you've usually touched a seam. The size of the reaction belongs to the past, not the present.
 
-The **kinetic energy** of a moving object is
-
-$$\\text{KE} = \\tfrac{1}{2} m v^2.$$
-
-Doubling the speed *quadruples* the kinetic energy — that's the $v^2$ at work. This is why a car crash at 60 mph is four times as destructive as one at 30 mph, not two. The exponent isn't decoration; it dictates the physics.
-
-## A common pitfall
-
-$-3^2 = -9$, but $(-3)^2 = 9$. The exponent binds tighter than the unary minus, so parentheses change the answer.`,
+This is tender material, so go gently. You don't have to relive anything. You only have to name, briefly and honestly, one early hurt and the protective habit it left behind.`,
   },
   {
-    slug: "roots-notation",
-    title: "Roots: √, ³√",
+    slug: "abandoned-selves",
+    title: "The selves you set aside",
     weekNumber: 1,
-    blurb: "The inverse of raising to a power.",
-    lectureTitle: "1.5 Roots: √, ³√, ⁿ√",
-    body: `# Roots
+    blurb: "What you wanted to be, and the moment that quietly changed.",
+    lectureTitle: "1.5 The selves you set aside",
+    body: `# The selves you set aside
 
-The **radical sign** $\\sqrt{\\phantom{x}}$ undoes a power.
+At some point you wanted to be something — an astronaut, a novelist, a person who lived abroad, someone braver than you turned out to be. Most of those futures were set down somewhere along the way, often without a decision being made out loud.
 
-- $\\sqrt{x}$ — the (positive) **square root** of $x$. $\\sqrt{25} = 5$.
-- $\\sqrt[3]{x}$ — the **cube root**. $\\sqrt[3]{27} = 3$, $\\sqrt[3]{-8} = -2$.
-- $\\sqrt[n]{x} = x^{1/n}$ in general.
+## The roads not taken
 
-By convention, $\\sqrt{x}$ denotes only the non-negative root. The equation $x^2 = 25$ has *two* solutions, $x = \\pm 5$, and we usually write the $\\pm$ explicitly.
+Some were set aside for good reasons: you discovered you didn't actually want them. But others were abandoned out of fear, or because someone made them seem foolish, or because life narrowed and you stopped noticing the off-ramps. The philosopher Kierkegaard wrote about the quiet **despair** of a life that has never become what it sensed it could be — a despair so common it passes for normal.
 
-## A science example
+## Why this matters now
 
-The **period** of a simple pendulum of length $L$ is
+An abandoned self doesn't always disappear. Sometimes it lingers as a faint ache, a thing you feel when you meet someone who took the road you didn't. That ache is information. It can point at a value you let go of, or at a fear that did your choosing for you.
 
-$$T = 2\\pi \\sqrt{\\frac{L}{g}}.$$
-
-To double the period, you must *quadruple* the length — because the square root halves any factor you put under it. This is why grandfather clocks are tall: a one-second tick needs roughly a one-meter pendulum, and you cannot shrink it without paying the price under the root.
-
-## Notation note
-
-A cube root has a small "3" tucked into the crook of the radical: $\\sqrt[3]{x}$. The keyboard's $\\sqrt[3]{\\;}$ key inserts exactly this.`,
+This week, recover one of these set-aside selves. Name what you once wanted to be, and — as honestly as you can — when and why that changed.`,
   },
   {
-    slug: "abs-factorial-notation",
-    title: "Absolute value and factorial: |x|, n!",
+    slug: "inherited-values",
+    title: "The values you inherited",
     weekNumber: 1,
-    blurb: "Magnitude bars and the multiplicative '!'.",
-    lectureTitle: "1.6 |x| and n!",
-    body: `# Absolute value and factorial
+    blurb: "The rules you absorbed before you could consent to them.",
+    lectureTitle: "1.6 The values you inherited",
+    body: `# The values you inherited
 
-Two symbols that look like punctuation but are really operators.
+You arrived at adulthood already holding strong opinions about what a good life looks like, what's shameful, what's admirable, what money is for, how hard you should work. You didn't reason your way to most of them. You absorbed them — from parents, religion, class, country, the era you grew up in.
 
-## $|x|$ — absolute value
+## Absorbed vs. chosen
 
-$|x|$ is the **distance from zero**, always non-negative.
+There's nothing wrong with inherited values; we'd be lost without a starting set. The trouble is that an unexamined value feels like an objective fact rather than a position you could hold differently. *Of course* success means a certain kind of job. *Of course* you don't talk about that. The word "of course" is often the sound of an inheritance you've never audited.
 
-$$|x| = \\begin{cases} x & x \\ge 0 \\\\ -x & x < 0 \\end{cases}$$
+## Testing the inheritance
 
-So $|3| = 3$ and $|-3| = 3$. The bars also denote magnitude of a vector ($|\\vec v|$) or modulus of a complex number ($|z|$).
+One useful test: ask where a strong conviction came from, and whether you'd still choose it from scratch today. Some you'll keep with new conviction. Others you'll find you've been carrying out of loyalty, or habit, or fear of what dropping them would mean.
 
-## $n!$ — factorial
-
-$n!$ is the product of every positive integer from $1$ up to $n$.
-
-$$n! = n \\cdot (n-1) \\cdot (n-2) \\cdots 2 \\cdot 1$$
-
-So $5! = 5 \\cdot 4 \\cdot 3 \\cdot 2 \\cdot 1 = 120$. By convention $0! = 1$.
-
-## A science example
-
-In **statistical mechanics**, the number of ways to arrange $N$ distinguishable particles among themselves is exactly $N!$. For a mole of gas, $N \\approx 6 \\times 10^{23}$, and $N!$ is so astronomical that Boltzmann's entropy formula $S = k_B \\ln(N!)$ requires **Stirling's approximation** $\\ln(N!) \\approx N \\ln N - N$ just to be computable.
-
-Meanwhile $|x|$ shows up whenever a physical quantity is signed but the magnitude is what matters: an electric field's strength is $|\\vec E|$, regardless of which direction the arrow points.`,
+This week, name one value you were handed — and say, honestly, whether it's still yours or just still with you.`,
   },
   {
-    slug: "subscripts-indexing",
-    title: "Subscripts: x₀, xᵢ, vₜ",
+    slug: "self-story",
+    title: "The story you tell about yourself",
     weekNumber: 1,
-    blurb: "Naming members of a family of related quantities.",
-    lectureTitle: "1.7 Subscripts: x₀, xᵢ, vₜ",
-    body: `# Subscripts
+    blurb: "How you narrate your own life — and what the narration hides.",
+    lectureTitle: "1.7 The story you tell about yourself",
+    body: `# The story you tell about yourself
 
-A **subscript** — a small symbol *below* the line — turns one variable into a whole family.
+When someone asks how your life has gone, you don't recite facts — you tell a *story*, with a shape: a rise, a fall, a comeback, a long wait, a series of near-misses. Psychologists who study **narrative identity** find that this story is one of the truest things about a person, because the shape you give your life reveals what you believe it means.
 
-Common roles:
+## The same facts, different stories
 
-- **Indices**: $x_1, x_2, x_3, \\dots, x_n$ — the entries of a list.
-- **Initial values**: $v_0$ ("vee-nought") — the value of $v$ at time zero.
-- **Labels**: $F_{\\text{net}}$ — the net force, as opposed to any particular component.
-- **Coordinates**: $v_x, v_y, v_z$ — the $x$-, $y$-, $z$-components of $\\vec v$.
-- **Time steps**: $x_t, x_{t-1}, x_{t+1}$ — values at successive moments.
+The same events can be told as "I overcame" or "I was failed," as "I was lucky" or "I earned it," as comedy or tragedy. Notice which mode comes naturally to you. People who tell **redemption** stories — bad turning to good — tend to be more generative and resilient; people stuck in **contamination** stories — good turning to bad — often feel that way about the future too.
 
-## A science example
+## The narrator is not neutral
 
-**Kinematics** uses subscripts everywhere:
+Your inner narrator has habits: who it casts as the hero, who gets blamed, what it leaves out. Those habits are choices, even when they don't feel like choices.
 
-$$v_f = v_0 + a t.$$
-
-Here $v_0$ is the velocity at the start of the motion and $v_f$ is the velocity at the end. Without the subscripts, "$v$" would be ambiguous — *which* velocity? Subscripts let one Greek letter or Latin variable do the work of a whole vocabulary.
-
-In economics, $Y_t$ vs. $Y_{t-1}$ distinguishes this year's GDP from last year's, and the difference $Y_t - Y_{t-1}$ *is* economic growth.`,
+This week, tell your life as a short story — a few sentences with a shape — and then notice what kind of story you reached for, and who you left on the cutting-room floor.`,
   },
 
   // ───────────────────────────────────────────────────────────────
-  // Week 2 — Calculus, change, and accumulation
+  // Week 2 — The Self You Enact
   // ───────────────────────────────────────────────────────────────
   {
-    slug: "sigma-summation",
-    title: "Sigma summation: Σ",
+    slug: "unwatched-self",
+    title: "What you do unwatched",
     weekNumber: 2,
-    blurb: "A compact way to add many terms.",
-    lectureTitle: "2.1 Σ — summation notation",
-    body: `# Sigma summation
+    blurb: "Character is what's left when no one is keeping score.",
+    lectureTitle: "2.1 What you do unwatched",
+    body: `# What you do unwatched
 
-$\\Sigma$ (capital Greek sigma) is the **summation** symbol. It says "add everything you get by stepping the index through this range."
+There's the self you perform for others and the self that runs when nobody's looking — late at night, alone in the car, on a free afternoon no one will ask about. The gap between them is one of the most honest measurements of character you can take.
 
-$$\\sum_{i=1}^{n} a_i \\;=\\; a_1 + a_2 + \\cdots + a_n$$
+## The ring of Gyges
 
-The bottom tells you the **index** and its starting value; the top tells you where to stop. The expression to the right is what gets summed.
+In Plato's *Republic*, the character Glaucon imagines a ring that makes its wearer invisible, and asks: would anyone stay just if they could never be caught? The thought experiment cuts to the bone. The unwatched self isn't the "bad" self — it's the *undefended* one. What you reach for when there's nothing to prove and no one to impress tells you what you actually want, as opposed to what you want to be seen wanting.
 
-## A science example
+## Reading the evidence
 
-The **mean** of a dataset of $n$ measurements is
+The clues are mundane: how you spend genuinely free time, what you do with a private windfall of an hour, whether your standards hold when they cost you nothing and no one would know. There's no judgment built into this — escapism and discipline can both be honest. The question is only what's *true*.
 
-$$\\bar x = \\frac{1}{n}\\sum_{i=1}^{n} x_i.$$
-
-In an experiment with 1000 trials, you do not want to write $x_1 + x_2 + \\cdots + x_{1000}$. The $\\sum$ packages the whole sum into four characters.
-
-Sigma also runs every dot product, every Fourier coefficient, every partition function in thermodynamics — anywhere science adds many small contributions to get one big number, you will find a $\\Sigma$.`,
+This week, look at your unwatched self plainly, and report what you find without dressing it up.`,
   },
   {
-    slug: "pi-product",
-    title: "Product notation: Π",
+    slug: "avoidances",
+    title: "What you avoid",
     weekNumber: 2,
-    blurb: "Σ's multiplicative cousin.",
-    lectureTitle: "2.2 Π — product notation",
-    body: `# Product notation
+    blurb: "The shape of your fears, read from what you won't approach.",
+    lectureTitle: "2.2 What you avoid",
+    body: `# What you avoid
 
-$\\Pi$ (capital Greek pi) is to multiplication what $\\Sigma$ is to addition.
+You can map a person's fears without ever asking about fear — just watch what they steer around. The unopened mail, the conversation perpetually postponed, the medical appointment, the dream too risky to attempt, the feeling you stay too busy to feel. **Avoidance** is fear with the volume turned down low enough to ignore.
 
-$$\\prod_{i=1}^{n} a_i \\;=\\; a_1 \\cdot a_2 \\cdots a_n$$
+## The cost of the detour
 
-Note: this is **not** the same $\\pi$ as $3.14159\\dots$ Capital $\\Pi$ in product context, lowercase $\\pi$ for the circle constant.
+Avoidance works in the short term, which is exactly why it's so durable. The relief of *not* doing the hard thing is immediate; the cost is deferred and diffuse. Over years, though, a life can quietly organise itself around its avoidances — a whole route planned to skip a single street.
 
-## A science example
+## What the detour protects
 
-In probability, the likelihood of $n$ **independent** observations $x_1, \\dots, x_n$ from a distribution with density $f$ is
+Behind most avoidances is something you're protecting: a self-image ("I'm not the kind of person who fails at this"), a comfort, a relationship you fear testing. Naming what you avoid usually means naming what you're afraid to find out.
 
-$$L(\\theta) = \\prod_{i=1}^{n} f(x_i \\mid \\theta).$$
-
-This is the foundation of **maximum likelihood estimation** — the workhorse of modern statistics and machine learning. Every parameter fit in your favorite stats package is, under the hood, finding the $\\theta$ that maximizes one of these $\\prod$ expressions (or, equivalently, the $\\sum$ of its logarithm).
-
-A second example: $n! = \\prod_{k=1}^{n} k$ — factorial is just a special product.`,
+The aim here isn't to shame yourself into action. It's just to see clearly. This week, name one thing you've been avoiding, and — more revealingly — what you think you're protecting by avoiding it.`,
   },
   {
-    slug: "delta-change",
-    title: "Delta: Δ and δ",
+    slug: "energy-map",
+    title: "What drains you, what restores you",
     weekNumber: 2,
-    blurb: "Capital Δ for finite change, lowercase δ for an infinitesimal nudge.",
-    lectureTitle: "2.3 Δ and δ — change",
-    body: `# Delta — the change operator
+    blurb: "Your energy is an honest compass; most people ignore it.",
+    lectureTitle: "2.3 What drains you, what restores you",
+    body: `# What drains you, what restores you
 
-The Greek letter delta is the universal symbol for *change*.
+Forget for a moment what you *should* enjoy. Notice instead what actually leaves you lighter and what leaves you hollowed out. Your energy is one of the few signals that's very hard to fake to yourself — you can talk yourself into liking something, but you can't talk yourself out of being exhausted by it.
 
-- $\\Delta x$ (capital) — a **finite, measurable change** in $x$: $\\Delta x = x_2 - x_1$.
-- $\\delta x$ (lowercase) — an **infinitesimal** or **virtual** change. Used in calculus of variations, physics, and informal calculus.
-- $\\partial x$ — a **partial** change (we will meet $\\partial$ properly soon).
+## Restoration isn't always rest
 
-By convention, $\\Delta$ is always read "*change in*" or "*difference of*."
+What restores you isn't always "relaxing." For some people a hard climb or a long conversation is restorative while a quiet evening is draining. The psychologist Mihály Csíkszentmihályi's work on **flow** found that people are often most alive during effortful, absorbing activity — and oddly flat during the leisure they thought they craved.
 
-## A science example
+## Drains hide in plain sight
 
-**Average velocity** is just the ratio of two deltas:
+Some drains are obvious; others are smuggled in as things you "enjoy" — the social event you always agree to and always leave depleted, the scrolling that promises rest and delivers fog. Telling true restoration from mere numbing is a real skill, and a revealing one.
 
-$$\\bar v = \\frac{\\Delta x}{\\Delta t} = \\frac{x_2 - x_1}{t_2 - t_1}.$$
-
-Shrink $\\Delta t$ all the way down and you get the instantaneous velocity $\\mathrm{d}x/\\mathrm{d}t$ — the derivative. So $\\Delta$ is calculus' starting point: every derivative is a limit of a $\\Delta$.
-
-In chemistry, $\\Delta H$ is the enthalpy change of a reaction, $\\Delta G$ is the change in Gibbs free energy, and the sign of $\\Delta G$ tells you whether the reaction proceeds spontaneously.`,
+This week, name one thing that reliably restores you and one that reliably drains you — and be honest about anything you keep choosing that quietly belongs in the second column.`,
   },
   {
-    slug: "limits-infinity",
-    title: "Limits and infinity: lim, →, ∞",
+    slug: "work-and-effort",
+    title: "Your relationship to work",
     weekNumber: 2,
-    blurb: "Approaching, but not necessarily reaching.",
-    lectureTitle: "2.4 lim, →, ∞",
-    body: `# Limits and infinity
+    blurb: "What effort means to you, beneath the job itself.",
+    lectureTitle: "2.4 Your relationship to work",
+    body: `# Your relationship to work
 
-Three notations conspire to express the central idea of calculus: getting arbitrarily close.
+Underneath the particular job you do is a deeper, older relationship to **effort** itself. For some, work is identity — to stop is to disappear. For others it's an exchange, hours for money, with the real life happening elsewhere. For others it's a proving ground, or a refuge from things harder than work.
 
-- $\\to$ — "approaches" or "tends to." Read $x \\to 3$ as "$x$ goes to 3."
-- $\\lim$ — the **limit** operator. $\\lim_{x \\to a} f(x)$ is the value $f(x)$ approaches as $x$ approaches $a$.
-- $\\infty$ — **infinity**. Not a number you can plug in; a shorthand for "grows without bound."
+## Where the relationship was formed
 
-Together:
+Much of this was set early. A child praised only for achievement learns that worth must be earned, repeatedly, forever. A child who watched a parent's life consumed by work may have sworn never to repeat it — or may repeat it exactly. The sociologist Max Weber traced how a whole culture turned diligence into a sign of virtue, even of salvation; you may be running a private version of that script.
 
-$$\\lim_{x \\to \\infty} \\frac{1}{x} = 0 \\qquad \\lim_{x \\to 0^+} \\frac{1}{x} = +\\infty.$$
+## The tell
 
-## A science example
+Watch what happens when you're *forced* to rest. Do you feel free, or guilty, or anxious, or strangely worthless? The discomfort is the relationship showing itself. So is the opposite — the pull to avoid effort even when the thing matters to you.
 
-The **terminal velocity** of a falling object with linear drag is reached only in the limit:
-
-$$v_{\\text{terminal}} = \\lim_{t \\to \\infty} v(t) = \\frac{mg}{b}.$$
-
-A skydiver never *quite* hits terminal velocity in finite time — they get exponentially close to it. The $\\lim$ is the only honest way to write the asymptote.
-
-Limits also define the derivative ($\\lim_{h \\to 0}$) and the definite integral (a limit of Riemann sums). The arrow is calculus' most-used punctuation mark.`,
+This week, say in plain terms what work really means to you — not what it's supposed to mean — and where you think that came from.`,
   },
   {
-    slug: "derivative-notation",
-    title: "Derivative notation: d/dx, ∂/∂x",
+    slug: "money-and-security",
+    title: "Money and security",
     weekNumber: 2,
-    blurb: "Two different 'd's for two different jobs.",
-    lectureTitle: "2.5 d/dx and ∂/∂x",
-    body: `# Derivative notation
+    blurb: "Money is rarely about money; it's about what you fear and want.",
+    lectureTitle: "2.5 Money and security",
+    body: `# Money and security
 
-The derivative — instantaneous rate of change — has two spelling families.
+Few subjects are as loaded and as poorly examined as money. We talk about it in numbers, but we *feel* it as safety, freedom, status, love, control, or fear. Your relationship to money is rarely about the money. It's about what you're afraid will happen without it, and what you imagine it would finally let you do or be.
 
-## $\\dfrac{\\mathrm{d}}{\\mathrm{d}x}$ — ordinary derivative
+## The scripts we run
 
-Used when $f$ is a function of **one** variable. Equivalent notations:
+Behaviourally, people run remarkably consistent **money scripts** — often formed by what they saw at home. Some hoard against a catastrophe that already happened to someone before them. Some spend to feel, briefly, like the lack is over. Some avoid looking at it entirely, because looking means feeling something they'd rather not. None of these are really financial strategies; they're emotional ones wearing a financial costume.
 
-$$\\frac{\\mathrm{d}f}{\\mathrm{d}x} \\;\\equiv\\; f'(x) \\;\\equiv\\; \\dot f \\;\\text{(when the variable is time)}.$$
+## What "enough" means
 
-The dot $\\dot f$ is Newton's notation, still used in physics for time derivatives. The fraction $\\mathrm{d}f/\\mathrm{d}x$ is Leibniz's, still used by everyone.
+A revealing question is what *enough* would look like — and whether any number ever feels like enough, or whether the goalpost moves the moment you reach it. The answer usually points at the real hunger underneath.
 
-## $\\dfrac{\\partial}{\\partial x}$ — partial derivative
-
-Used when $f$ depends on **several** variables and you want the rate of change holding the others fixed. The "curly d" $\\partial$ is read "del" or "partial."
-
-$$\\frac{\\partial f}{\\partial x}\\bigg|_{y \\text{ fixed}}$$
-
-## A science example
-
-The **heat equation** governs how temperature spreads through a material:
-
-$$\\frac{\\partial T}{\\partial t} = \\alpha \\, \\frac{\\partial^2 T}{\\partial x^2}.$$
-
-$T$ depends on **both** position $x$ and time $t$, so both derivatives are partial. Using a straight $\\mathrm{d}/\\mathrm{d}t$ would be a notational lie — it would claim $T$ has no spatial dependence, gutting the entire equation.`,
+This week, name what money actually represents to you — security, freedom, worth, escape, something else — and notice the feeling that comes up when you imagine having much less of it.`,
   },
   {
-    slug: "integral-notation",
-    title: "Integrals: ∫, ∫∫, ∮",
+    slug: "risk-and-failure",
+    title: "Risk, ambition, failure",
     weekNumber: 2,
-    blurb: "The 'long S' that adds up infinitely many infinitesimal pieces.",
-    lectureTitle: "2.6 Integral signs: ∫, ∫∫, ∮",
-    body: `# Integral notation
+    blurb: "Your appetite for risk reveals what you're really optimising for.",
+    lectureTitle: "2.6 Risk, ambition, failure",
+    body: `# Risk, ambition, failure
 
-The integral sign $\\int$ is a stretched **S** — for *sum*. It is the continuous limit of $\\sum$.
+How much are you willing to risk, and for what? Some people will gamble comfort for a shot at something bigger; others will trade almost any upside for the certainty of not losing what they have. Neither is wrong — but which one you are says a great deal about what you're really optimising for.
 
-- $\\displaystyle\\int_a^b f(x)\\,\\mathrm{d}x$ — **definite integral**: the signed area under $f$ from $a$ to $b$.
-- $\\displaystyle\\int f(x)\\,\\mathrm{d}x$ — **indefinite integral**: an antiderivative.
-- $\\displaystyle\\iint_D f\\,\\mathrm{d}A$ — **double integral** over a region $D$ in the plane.
-- $\\displaystyle\\oint_C \\vec F \\cdot \\mathrm{d}\\vec r$ — **contour integral**: the little circle means "around a closed loop."
+## Loss looms larger than gain
 
-The $\\mathrm{d}x$ at the end is **not** decorative — it tells the reader *which variable* is being integrated.
+Research on decision-making by Kahneman and Tversky found that, for most people, **losses hurt about twice as much as equivalent gains feel good**. We are built to protect what we hold. That instinct keeps us safe and also keeps us small; a life perfectly defended against loss is also defended against most of its possibilities.
 
-## A science example
+## The relationship with failure
 
-**Faraday's law** of electromagnetic induction, in integral form, uses a contour integral:
+Ambition is inseparable from your relationship to **failure** — because to reach for more is to risk falling short in front of yourself and others. Some people treat failure as information; others as a verdict. The difference shapes how much they'll ever attempt.
 
-$$\\oint_C \\vec E \\cdot \\mathrm{d}\\vec\\ell \\;=\\; -\\frac{\\mathrm{d}\\Phi_B}{\\mathrm{d}t}.$$
-
-The $\\oint$ insists the loop be closed: you walk all the way around a wire loop and sum the electric field along the way. Replacing it with a plain $\\int$ would be physically wrong — the law is about *circulation*, which only makes sense around a loop.`,
+This week, be honest about your appetite for risk, and about what failure means to you — a lesson, or a sentence. Name one risk you didn't take, and what stopped you.`,
   },
   {
-    slug: "e-ln-log",
-    title: "e, ln, and log",
+    slug: "anger",
+    title: "What you do with anger",
     weekNumber: 2,
-    blurb: "Euler's number and its two favorite inverses.",
-    lectureTitle: "2.7 e, ln, log",
-    body: `# e, natural log, and log
+    blurb: "Anger always points at something you value or fear.",
+    lectureTitle: "2.7 What you do with anger",
+    body: `# What you do with anger
 
-Three of the most-used symbols in all of science.
+Anger is one of the most informative emotions and one of the most mishandled. It tends to fire when a boundary is crossed, a value is violated, or something you care about is threatened. The feeling itself is a kind of signal — the trouble is what we do with it.
 
-- $e \\approx 2.71828\\dots$ — **Euler's number**, the natural base. Defined by $\\lim_{n \\to \\infty}(1 + 1/n)^n$, and uniquely characterized by $\\dfrac{\\mathrm{d}}{\\mathrm{d}x} e^x = e^x$.
-- $\\ln x$ — the **natural logarithm**, $\\log$ base $e$. By definition $\\ln(e^x) = x$.
-- $\\log x$ — context-dependent! In math: usually $\\log_{10}$. In computer science: $\\log_2$. In statistics and most of physics: $\\ln$. Read carefully.
+## The styles of anger
 
-Key identities:
+People develop characteristic styles. Some **explode** — fast, loud, over quickly. Some **suppress** — swallowing it until it leaks out sideways as sarcasm, withdrawal, or a body that aches. Some turn it **inward**, where it curdles into self-criticism or depression. The style you learned was usually modelled at home, where you watched how anger was or wasn't allowed.
 
-$$\\ln(ab) = \\ln a + \\ln b, \\qquad e^{\\ln x} = x, \\qquad \\log_b x = \\frac{\\ln x}{\\ln b}.$$
+## Reading the signal
 
-## A science example
+Because anger points at what you value, it's worth decoding rather than just managing. What kinds of things reliably anger you? Injustice? Being dismissed? Incompetence? Being controlled? The pattern is a map of your values and your sore spots at once.
 
-**Radioactive decay** follows
-
-$$N(t) = N_0\\, e^{-\\lambda t}.$$
-
-Solving for the half-life ($N = N_0/2$) requires the natural log:
-
-$$t_{1/2} = \\frac{\\ln 2}{\\lambda}.$$
-
-Carbon-14 dating ($t_{1/2} \\approx 5{,}730$ years) inverts this equation every time an archaeologist puts a sample in the spectrometer. Without $e$ and $\\ln$, you cannot even write down the model, let alone solve it.`,
+This week, look at your anger honestly — how it shows up, what you do with it, and what it tends to be protecting. Naming the thing under the anger is usually more revealing than the anger itself.`,
   },
 
   // ───────────────────────────────────────────────────────────────
-  // Week 3 — Probability and statistics notation
+  // Week 3 — The Self Among Others
   // ───────────────────────────────────────────────────────────────
   {
-    slug: "greek-parameters",
-    title: "Greek parameters: μ, σ, σ²",
+    slug: "attachment",
+    title: "How you attach",
     weekNumber: 3,
-    blurb: "Population mean, standard deviation, and variance.",
-    lectureTitle: "3.1 μ, σ, σ² — population parameters",
-    body: `# Greek letters for population parameters
+    blurb: "Your earliest bonds set a template you still use.",
+    lectureTitle: "3.1 How you attach",
+    body: `# How you attach
 
-Statistics reserves **Greek letters for unknown population parameters** and Roman letters for the sample quantities used to estimate them.
+The way you connect to the people closest to you has a shape, and that shape is older than any of those relationships. Decades of research on **attachment**, beginning with John Bowlby and Mary Ainsworth, found that our earliest bonds lay down a template for what we expect from intimacy: whether others are reliable, whether needing them is safe, whether closeness is a comfort or a threat.
 
-- $\\mu$ — **mu**, the population mean (expected value).
-- $\\sigma$ — **sigma**, the population standard deviation.
-- $\\sigma^2$ — the population variance.
+## The rough patterns
 
-By convention:
+The patterns are usually sketched as **secure** (closeness feels safe, distance is tolerable), **anxious** (closeness is craved, its loss is feared, reassurance never quite lasts), and **avoidant** (independence feels safer than depending on anyone). Most people are a blend, and the pattern can shift with a steady relationship or shake loose under stress.
 
-$$\\mu = E[X], \\qquad \\sigma^2 = E[(X - \\mu)^2], \\qquad \\sigma = \\sqrt{\\sigma^2}.$$
+## Why it's worth naming
 
-Variance is in squared units; standard deviation has the same units as the data, which is why it is more often reported.
+You can't choose your starting template, but you can stop mistaking it for the truth about love. Much of what feels like *how relationships simply are* is really how *your* relationships have been, generalised.
 
-## A science example
-
-In **quality control**, a manufacturing process produces parts whose diameters are modeled as drawn from a population with mean $\\mu = 10.00$ mm and standard deviation $\\sigma = 0.05$ mm. A "six-sigma" process keeps the spec limits at least $6\\sigma$ from $\\mu$ — here, $\\pm 0.30$ mm. The Greek letters are not just symbols; the entire industrial vocabulary ("six sigma") is built on naming $\\sigma$.
-
-## Common confusion
-
-$\\sigma$ is also the symbol for surface charge density (physics), electrical conductivity (engineering), and the Stefan–Boltzmann constant (thermodynamics). Context decides; the keyboard key is the same.`,
+This week, describe how you tend to attach — what you do when you want closeness, and what you do when closeness frightens you. The honest version, not the flattering one.`,
   },
   {
-    slug: "sample-stats-hats",
-    title: "Sample statistics: x̄, p̂, s",
+    slug: "love",
+    title: "How you love",
     weekNumber: 3,
-    blurb: "Bars for averages, hats for estimators.",
-    lectureTitle: "3.2 x̄, p̂, s — sample statistics",
-    body: `# Sample statistics: bars and hats
+    blurb: "Who you love, and how, reveals what you're seeking.",
+    lectureTitle: "3.2 How you love",
+    body: `# How you love
 
-The diacritics on these letters carry as much meaning as the letters themselves.
+Who you're drawn to, and how you behave once you're in it, is not random. We tend to love in patterns — repeating types, repeating dynamics, sometimes repeating the exact unresolved situation we grew up inside, as if trying to win an old argument with new people.
 
-- $\\bar x$ — read "**x-bar**." The **sample mean**: $\\bar x = \\tfrac{1}{n}\\sum x_i$. Estimates $\\mu$.
-- $\\hat p$ — read "**p-hat**." A **sample proportion** or, more generally, an **estimator** of an unknown parameter.
-- $s$ — the **sample standard deviation**. Estimates $\\sigma$. (And $s^2$ is the sample variance.)
+## Love as a mirror
 
-The general rule:
+The philosopher and writer Alain de Botton argues that we're often attracted not to what's good for us but to what's *familiar* — and that the familiar, for many, includes a particular kind of difficulty. We may chase the unavailable, or the people who let us play rescuer, or the ones who reproduce a parent's warmth or coldness. None of this is a flaw to be ashamed of; it's a pattern to be seen.
 
-> **Bars** denote averages of a sample. **Hats** denote estimators (educated guesses) of an unknown parameter.
+## What you offer and what you seek
 
-## A science example
+It helps to separate two questions: what you *seek* in love (to be seen? rescued? safe? admired? not alone?) and what you actually *offer* (steadiness? intensity? distance dressed as cool?). The gap between them is often where the trouble lives.
 
-In a **clinical trial**, the true effectiveness $p$ of a vaccine in the entire population is unknown — it cannot be measured directly. We can only run the trial on a sample of $n$ volunteers, count the number protected, and report
-
-$$\\hat p = \\frac{\\text{number protected}}{n}.$$
-
-A vaccine reported as "95% effective" is really reporting $\\hat p = 0.95$ for some particular trial. The true $p$ is what we want; $\\hat p$ is the best guess we have. Confidence intervals (next week's territory) quantify how close they are likely to be.`,
+This week, describe how you love — the type you reach for, the role you tend to play, and what you're really hoping love will do for you. Brief and honest beats long and impressive.`,
   },
   {
-    slug: "probability-notation",
-    title: "Probability: P(A), P(A|B)",
+    slug: "recurring-conflicts",
+    title: "Your recurring conflicts",
     weekNumber: 3,
-    blurb: "Probabilities and conditional probabilities.",
-    lectureTitle: "3.3 P(A) and P(A|B)",
-    body: `# Probability notation
+    blurb: "The same fight, different faces — what's it really about?",
+    lectureTitle: "3.3 Your recurring conflicts",
+    body: `# Your recurring conflicts
 
-- $P(A)$ — the **probability** of event $A$. A number in $[0, 1]$.
-- $P(A \\cap B)$ — probability that **both** $A$ and $B$ happen.
-- $P(A \\cup B)$ — probability that **either** happens (or both).
-- $P(A \\mid B)$ — read "the probability of $A$ **given** $B$." The vertical bar means "conditional on."
+If you've had the same fight with three different people, the common factor deserves a look. Most of us have a **recurring conflict** — a theme that surfaces again and again across relationships: feeling unappreciated, feeling controlled, feeling abandoned, feeling not listened to, feeling taken advantage of.
 
-The conditional is defined by
+## The argument under the argument
 
-$$P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}, \\qquad P(B) > 0,$$
+Couples researcher John Gottman found that the *content* of a fight (the dishes, the money, the lateness) is usually a stand-in for something deeper and older: a need for respect, for security, for autonomy, for care. The same hidden need can dress itself in a hundred different surface arguments. That's why solving the surface problem rarely ends the pattern.
 
-and is the engine behind **Bayes' theorem**:
+## Your part in it
 
-$$P(A \\mid B) = \\frac{P(B \\mid A)\\, P(A)}{P(B)}.$$
+The uncomfortable, useful move is to look for *your* contribution — not to take all the blame, but to find the part that travels with you from relationship to relationship. The part that's the same no matter who you're with is the part you can actually work on.
 
-## A science example
-
-In **epidemiology**, the **positive predictive value** of a test is exactly a conditional probability:
-
-$$P(\\text{disease} \\mid \\text{positive test}).$$
-
-This is *not* the same as the test's **sensitivity**, which is $P(\\text{positive test} \\mid \\text{disease})$ — and confusing the two is the single most common error in interpreting medical results. The vertical bar is doing decisive work here: swap what's left and right of it, and you have answered a completely different question.`,
+This week, name a conflict that keeps recurring in your relationships, and take an honest guess at the deeper need or fear underneath it. The bravest answers include your own role.`,
   },
   {
-    slug: "expectation-variance",
-    title: "Expectation and variance: E(X), Var(X)",
+    slug: "envy-admiration",
+    title: "Envy and admiration",
     weekNumber: 3,
-    blurb: "Operators that take a random variable and return a number.",
-    lectureTitle: "3.4 E(X) and Var(X)",
-    body: `# Expectation and variance
+    blurb: "Envy is a clumsy messenger pointing at what you want.",
+    lectureTitle: "3.4 Envy and admiration",
+    body: `# Envy and admiration
 
-$X$ (capital, italic) denotes a **random variable**. Two operators act on it:
+Envy is socially shameful and therefore rarely examined, which is a waste — because envy is one of the most accurate compasses you own. You don't envy everyone who has more than you. You envy specifically, and the specificity is the signal.
 
-- $E[X]$ — the **expected value**, or long-run average, of $X$. Also written $\\mathbb{E}[X]$ or $\\mu_X$.
-- $\\mathrm{Var}(X)$ — the **variance**, equal to $E[(X - E[X])^2]$. Also written $\\sigma_X^2$.
+## Envy as data
 
-Both are *numbers*, not random variables. Useful rules (for constants $a, b$):
+The philosopher Alain de Botton suggests treating envy not as a sin to suppress but as a **clue**: the people who provoke it are showing you, in concentrated form, something you want and don't have. The discomfort is just the wanting, embarrassed. Whose life, exactly, makes you bristle? It's usually not the billionaire or the celebrity — it's the peer, the near-twin, the person whose path you could imagine having taken.
 
-$$E[aX + b] = aE[X] + b, \\qquad \\mathrm{Var}(aX + b) = a^2 \\mathrm{Var}(X).$$
+## Admiration, the gentler twin
 
-Notice variance is unaffected by the shift $b$ — it measures spread, not location — and squares the scaling $a$.
+Admiration points the same way with less sting. Who you look up to — and *for what* — describes the person you'd like to become. Read together, your envies and your admirations sketch an outline of your unlived ideals.
 
-## A science example
-
-In **quantum mechanics**, every observable corresponds to an operator, and the *expected* outcome of a measurement on a state $\\psi$ is written
-
-$$\\langle X \\rangle_\\psi = E[X].$$
-
-The bra-ket $\\langle \\cdot \\rangle$ is just the physicist's spelling of $E[\\cdot]$. The **uncertainty** $\\Delta X$ from Heisenberg's principle is the standard deviation $\\sqrt{\\mathrm{Var}(X)}$. The Greek $\\Delta$ and the statistical $\\sigma$ are, in this context, the same quantity dressed in two notations.`,
+This week, name one person you quietly envy and what exactly the envy is *about*. Done honestly, this points at a value or ambition you may not have admitted you hold.`,
   },
   {
-    slug: "distribution-notation",
-    title: "Distributions: N(μ,σ²), ~",
+    slug: "unspoken-needs",
+    title: "What you need but won't ask for",
     weekNumber: 3,
-    blurb: "Saying 'X is distributed as ...' in symbols.",
-    lectureTitle: "3.5 X ~ N(μ, σ²)",
-    body: `# Distribution notation
+    blurb: "The needs you hide, and the cost of hiding them.",
+    lectureTitle: "3.5 What you need but won't ask for",
+    body: `# What you need but won't ask for
 
-The squiggle $\\sim$ in statistics is read "**is distributed as**." It connects a random variable to its distribution.
+There are things you need from other people that you find very hard to ask for — reassurance, help, attention, affection, to be told you did well. Often the needs we hide most carefully are the ones we were taught, early, were too much, or shameful, or unsafe to show.
 
-$$X \\sim N(\\mu, \\sigma^2)$$
+## The strategy of not asking
 
-means "$X$ is a normal random variable with mean $\\mu$ and variance $\\sigma^2$."
+Not asking has a logic: you can't be rejected for a request you never made, and you can't be disappointed by a need you've pretended not to have. But the strategy backfires. Unspoken needs don't disappear; they go underground and come out distorted — as resentment that the other person didn't *guess*, as testing, as withdrawal, as a quiet tally of all the times they failed you without knowing the game was on.
 
-Other common families:
+## Naming the hunger
 
-- $X \\sim \\text{Bernoulli}(p)$ — coin flip with success probability $p$.
-- $X \\sim \\text{Binomial}(n, p)$ — number of successes in $n$ flips.
-- $X \\sim \\text{Poisson}(\\lambda)$ — rare-event counts with rate $\\lambda$.
-- $X \\sim \\text{Exp}(\\lambda)$ — waiting time between Poisson events.
+Bringing a hidden need into daylight is uncomfortable precisely because it makes you vulnerable. But a need you can name is a need you can actually have met. A need you can't name can only be missed.
 
-The parameters in parentheses uniquely determine the distribution.
-
-## A science example
-
-**Measurement error** in a well-calibrated instrument is typically modeled as
-
-$$\\varepsilon \\sim N(0, \\sigma^2),$$
-
-with mean zero (no bias) and variance $\\sigma^2$ (the instrument's precision). When a physicist reports $g = 9.812 \\pm 0.003 \\ \\text{m/s}^2$, the implicit model is $\\text{measured } g = \\text{true } g + \\varepsilon$ with $\\varepsilon \\sim N(0, 0.003^2)$. The $\\sim$ does a lot of compact work: distribution family, location, spread — all in five characters.`,
+This week, name one thing you genuinely need from others but rarely or never ask for — and, if you can, why asking feels dangerous.`,
   },
   {
-    slug: "test-statistics",
-    title: "Test statistics: z, t, χ²",
+    slug: "being-seen",
+    title: "Being seen",
     weekNumber: 3,
-    blurb: "The standardized scores that drive hypothesis tests.",
-    lectureTitle: "3.6 z, t, χ² — test statistics",
-    body: `# Test statistics
+    blurb: "How you handle attention, praise, and exposure.",
+    lectureTitle: "3.6 Being seen",
+    body: `# Being seen
 
-Hypothesis testing standardizes a sample result into a single number whose distribution under the null hypothesis is known.
+There's a particular vulnerability in being *seen* — not just looked at, but accurately perceived. Some people crave it and wilt without it; others find it almost unbearable and work hard to stay slightly hidden, even from the people closest to them.
 
-- $z$ — the **z-score**, $z = \\dfrac{\\bar x - \\mu_0}{\\sigma/\\sqrt{n}}$. Used when $\\sigma$ is known. Under the null, $z \\sim N(0, 1)$.
-- $t$ — **Student's t-statistic**, $t = \\dfrac{\\bar x - \\mu_0}{s/\\sqrt n}$. Used when $\\sigma$ is estimated by $s$. Heavier tails than $z$ for small $n$.
-- $\\chi^2$ — **chi-squared statistic**, used for goodness-of-fit and independence tests. The Greek letter is "chi," pronounced "kai."
+## The double bind
 
-Each comes with its own table (or computer routine) that turns the statistic into a **p-value**.
+Most of us want to be known and fear being known at the same time. To be truly seen is to risk being seen *and rejected*, which is far worse than being rejected behind a mask. So we manage our visibility carefully: curating, deflecting praise, hiding the parts we're unsure of, keeping a gap between the self we show and the self we are.
 
-## A science example
+## Praise, criticism, and the spotlight
 
-A **chi-squared goodness-of-fit test** is how geneticists check whether observed offspring ratios match a Mendelian prediction. Mendel's classic 9:3:3:1 ratio for two traits would predict, in 160 offspring, counts of 90:30:30:10. The actual experiment might yield 88:31:32:9. The statistic
+How you handle praise is as telling as how you handle criticism. Do you absorb a compliment or bat it away? Does attention energise you or expose you? The psychologist Carl Rogers argued that growth requires being received with **unconditional positive regard** — being seen *and* accepted. Most of us never quite trust that's on offer, so we hedge.
 
-$$\\chi^2 = \\sum \\frac{(\\text{observed} - \\text{expected})^2}{\\text{expected}}$$
-
-quantifies the disagreement, and the $\\chi^2$ distribution turns it into a probability. The Greek letter is, in effect, the verdict.`,
+This week, describe how you handle being seen — attention, praise, exposure — and what you tend to keep hidden even from people who love you.`,
   },
   {
-    slug: "alpha-beta-stats",
-    title: "Significance and power: α, β",
+    slug: "solitude",
+    title: "Solitude and loneliness",
     weekNumber: 3,
-    blurb: "The two error rates of a hypothesis test.",
-    lectureTitle: "3.7 α, β — the two error rates",
-    body: `# α and β: the two error rates
+    blurb: "The difference between being alone and feeling alone.",
+    lectureTitle: "3.7 Solitude and loneliness",
+    body: `# Solitude and loneliness
 
-Every hypothesis test has two ways to be wrong, each named with a Greek letter.
+Being alone and feeling lonely are not the same thing, and the relationship between them is intimate and revealing. Some people are alone often and rarely lonely; others are surrounded and lonely most of the time. Which describes you says a lot about how you relate to yourself.
 
-- $\\alpha$ — **alpha**, the **significance level** or Type I error rate. Probability of rejecting the null hypothesis when it is true. Conventionally $\\alpha = 0.05$.
-- $\\beta$ — **beta**, the Type II error rate. Probability of *failing* to reject the null when it is false.
-- $1 - \\beta$ — the **power** of the test.
+## Solitude as a skill
 
-By choice, $\\alpha$ is fixed before looking at the data. $\\beta$ depends on the true effect size, the sample size, and the variability — and you only get to make it small by collecting enough data.
+The psychiatrist Anthony Storr argued that the **capacity to be alone** is a sign of emotional maturity — that solitude, far from being mere deprivation, is where much creativity, integration, and self-contact happen. People who can't tolerate it often can't tolerate their own company, and stay busy or connected partly to avoid the silence in which uncomfortable thoughts surface.
 
-## A science example
+## Loneliness as a signal
 
-A **drug trial** with $\\alpha = 0.05$ accepts a 5% risk of "discovering" that an inert pill works. If $\\beta = 0.20$, the trial has only $1 - \\beta = 80\\%$ power to detect a real effect of the assumed size. Underpowered trials are *the* reason so much biomedical research fails to replicate.
+Loneliness, meanwhile, is not a character flaw; it's a signal, like hunger or thirst, that a real need isn't being met. The painful version is loneliness *in company* — the sense of being unmet even when you're not alone. That points at the quality of your connections, not their quantity.
 
-In other branches of science:
-- $\\alpha$ also denotes the fine-structure constant ($\\approx 1/137$) and angular acceleration.
-- $\\beta$ denotes velocity as a fraction of $c$ in relativity, or a regression coefficient.
-
-Same keys; different meanings. The reader decides from context.`,
+This week, describe your relationship to solitude and to loneliness. When are you most at peace alone, and when does being alone tip into something harder? The honest map is the useful one.`,
   },
 
   // ───────────────────────────────────────────────────────────────
-  // Week 4 — Logic, sets, and the foundations
+  // Week 4 — The Self You're Becoming
   // ───────────────────────────────────────────────────────────────
   {
-    slug: "set-membership",
-    title: "Set membership: ∈, ∉",
+    slug: "strengths",
+    title: "What you're unusually good at",
     weekNumber: 4,
-    blurb: "Is this thing in that set?",
-    lectureTitle: "4.1 ∈ and ∉",
-    body: `# Set membership
+    blurb: "Real strengths often hide because they feel effortless.",
+    lectureTitle: "4.1 What you're unusually good at",
+    body: `# What you're unusually good at
 
-$\\in$ is the most-used symbol in all of higher mathematics. It means "**is an element of**."
+Your real strengths are often invisible to you, for a strange reason: they're easy. The thing you do well without strain doesn't feel like a talent — it feels like *nothing*, like something everyone can do. So you discount it, and chase competence at things that come hard while ignoring the gift sitting in plain sight.
 
-- $x \\in A$ — $x$ is in the set $A$.
-- $x \\notin A$ — $x$ is **not** in the set $A$.
+## The trouble with self-assessment
 
-Examples: $3 \\in \\{1, 2, 3\\}$, $\\pi \\notin \\mathbb{Z}$, $0.5 \\in [0, 1]$.
+We're poor judges of our own abilities, and the direction of the error varies. The research of Dunning and Kruger is usually quoted to mock overconfidence, but it cuts the other way too: genuinely skilled people often *underestimate* themselves, because what's easy for them looks easy for everyone. Other people frequently see your strengths more clearly than you do.
 
-The symbol is a stylized lowercase Greek $\\varepsilon$ (epsilon, for "element"), introduced by Peano in 1889.
+## Looking for the effortless
 
-## A science example
+To find a real strength, look for what others come to *you* for, what you lose time in, what you can do tired and distracted and still do well. Those are clues to a capacity that's truly yours rather than borrowed or forced.
 
-In **machine learning**, a classification problem is stated by saying the label $y$ belongs to a finite set of classes:
-
-$$y \\in \\{\\text{cat, dog, bird}\\}.$$
-
-In particle physics, a particle's quantum state lives in a Hilbert space $\\mathcal{H}$:
-
-$$|\\psi\\rangle \\in \\mathcal{H}.$$
-
-Both sentences read "the thing on the left lives in the world on the right." That world might be finite or infinite-dimensional, but $\\in$ doesn't care — it asserts membership, full stop.`,
+This week, name something you're genuinely, unusually good at — and resist the urge to downplay it. Owning a strength plainly is harder and more honest than performing modesty.`,
   },
   {
-    slug: "subset-superset",
-    title: "Subsets: ⊂, ⊆, ⊄",
+    slug: "weaknesses",
+    title: "What you're reliably bad at",
     weekNumber: 4,
-    blurb: "When one set sits inside another.",
-    lectureTitle: "4.2 ⊂, ⊆, ⊄",
-    body: `# Subsets
+    blurb: "Knowing your limits clearly is its own kind of strength.",
+    lectureTitle: "4.2 What you're reliably bad at",
+    body: `# What you're reliably bad at
 
-- $A \\subseteq B$ — $A$ is a **subset** of $B$: every element of $A$ is also in $B$. Equality $A = B$ is *allowed*.
-- $A \\subset B$ — depending on author, either the same as $\\subseteq$ or the strictly **proper** subset (i.e., $A \\subseteq B$ and $A \\neq B$). When in doubt, write $\\subsetneq$ for "proper" or $\\subseteq$ for "possibly equal."
-- $A \\not\\subset B$ — there exists at least one element of $A$ that is not in $B$.
+Just as some abilities come easily, some difficulties come reliably — the same kind of mistake, the same blind spot, the same thing you keep resolving to fix and keep not fixing. Knowing these clearly, without either excusing or flogging yourself, is a quiet form of maturity.
 
-Don't confuse $\\in$ (single element of) with $\\subseteq$ (whole set inside another). $\\{1\\} \\subseteq \\{1, 2\\}$ but $\\{1\\} \\notin \\{1, 2\\}$.
+## Two kinds of weakness
 
-## A science example
+It's worth separating **trait** weaknesses (things that may simply be how you're built — you're disorganised, or impatient, or bad with detail) from **avoidable** ones (things you could change but haven't, often because changing them would cost something you're unwilling to pay). The first you work *around*; the second you actually choose, even if you pretend you don't.
 
-In biology, taxonomic ranks are nested subsets:
+## The honesty test
 
-$$\\text{species} \\subsetneq \\text{genus} \\subsetneq \\text{family} \\subsetneq \\text{order}.$$
+The tell is the story you tell about the weakness. "I'm just not a numbers person" can be true — or it can be a comfortable exemption you grant yourself. Distinguishing the real limits from the convenient excuses is most of the work, and it's uncomfortable precisely because it removes some excuses.
 
-Every species belongs to exactly one genus, every genus to exactly one family, and the $\\subsetneq$ at each level reminds you the larger rank strictly contains more.
-
-In linear algebra, the column space of a matrix $A$ is a subspace of the whole space: $\\text{Col}(A) \\subseteq \\mathbb{R}^m$. Whether the inclusion is proper tells you whether $A$ is surjective.`,
+This week, name something you're reliably bad at, and be honest about which kind it is: a true limit to design around, or a choice you've been dressing up as a limit.`,
   },
   {
-    slug: "set-operations",
-    title: "Set operations: ∪, ∩, ∅, Aᶜ",
+    slug: "work-for-free",
+    title: "What you'd do for free",
     weekNumber: 4,
-    blurb: "Building new sets from old ones.",
-    lectureTitle: "4.3 ∪, ∩, ∅, Aᶜ",
-    body: `# Set operations
+    blurb: "Strip away pay and status — what's left is a clue to meaning.",
+    lectureTitle: "4.3 What you'd do for free",
+    body: `# What you'd do for free
 
-Four symbols, four ways to combine or modify a set.
+Imagine your needs were met — money handled, status irrelevant, no one to impress. What would you still *do*? Not lie on a beach forever; that gets old fast. What activity would you return to for its own sake, because the doing itself is the reward?
 
-- $A \\cup B$ — **union**, "$A$ or $B$" (inclusive). $\\{1,2\\} \\cup \\{2,3\\} = \\{1,2,3\\}$.
-- $A \\cap B$ — **intersection**, "$A$ and $B$." $\\{1,2\\} \\cap \\{2,3\\} = \\{2\\}$.
-- $\\emptyset$ (or $\\{\\}$) — the **empty set**, with no elements.
-- $A^c$ — the **complement** of $A$, everything in the universe *not* in $A$. Sometimes written $\\bar A$.
+## Intrinsic motivation
 
-Two sets are **disjoint** when $A \\cap B = \\emptyset$. **De Morgan's laws** are notational gems:
+Psychologists call this **intrinsic motivation** — doing something because the activity is inherently satisfying, not for any reward it brings. Self-determination theory, developed by Deci and Ryan, finds that the most durable motivation comes from activities that give us a sense of competence, autonomy, and connection. The things you'd do unpaid usually hit at least one of those nerves directly.
 
-$$(A \\cup B)^c = A^c \\cap B^c, \\qquad (A \\cap B)^c = A^c \\cup B^c.$$
+## The signal in the noise
 
-## A science example
+Most of us have buried this signal under decades of "shoulds" — what's practical, what pays, what others respect. Clearing that away, even hypothetically, lets the older preference surface. The answer is rarely a job title. It's more often a *kind of activity*: making things, solving puzzles, helping people, performing, understanding, organising, tending.
 
-In **probability**, set notation *is* event notation. For independent events $A$ and $B$:
-
-$$P(A \\cap B) = P(A) \\cdot P(B), \\qquad P(A \\cup B) = P(A) + P(B) - P(A \\cap B).$$
-
-A genetic risk study asking "what fraction of patients have *both* mutation X *and* environmental exposure Y?" is computing $P(X \\cap Y)$. "*Either*" is $P(X \\cup Y)$. The wrong symbol gives the wrong answer — and, in a clinical setting, the wrong recommendation.`,
+This week, name what you'd do even if you were never paid or praised for it — and notice what that points to about where your meaning actually lives.`,
   },
   {
-    slug: "quantifiers",
-    title: "Quantifiers: ∀, ∃, ∄",
+    slug: "authority",
+    title: "Authority and rules",
     weekNumber: 4,
-    blurb: "'For all', 'there exists', 'there does not exist'.",
-    lectureTitle: "4.4 ∀, ∃, ∄",
-    body: `# Quantifiers
+    blurb: "How you respond to power says who taught you about it.",
+    lectureTitle: "4.4 Authority and rules",
+    body: `# Authority and rules
 
-These symbols turn a *property* into a *claim about a whole set*.
+Watch yourself in the presence of authority — a boss, an official, an institution, a rule — and you'll see an old pattern run. Some people comply almost automatically; some bristle and resist on principle; some charm; some go quiet and seethe. The reflex is usually older than the present situation.
 
-- $\\forall$ — **for all** (an upside-down A, for "All").
-- $\\exists$ — **there exists** (a backward E, for "Exists").
-- $\\exists !$ — there exists a **unique**.
-- $\\nexists$ — there does **not** exist.
+## Where the reflex was set
 
-Read $\\forall x \\in \\mathbb{R},\\ x^2 \\ge 0$ as: "for every real $x$, $x^2$ is non-negative." Read $\\exists x \\in \\mathbb{Z}\\ \\text{such that}\\ x^2 = 4$ as: "there is at least one integer whose square is 4."
+How you relate to authority was largely shaped by your first authorities — parents, teachers, whoever held power over you when you were small and couldn't push back. A child who could never win an argument may have become an adult who either submits too easily or fights every rule on reflex. Neither is freedom; both are reactions.
 
-**Order matters.** $\\forall x \\exists y$ (for each $x$ a possibly different $y$) is a completely different statement from $\\exists y \\forall x$ (one $y$ that works for every $x$).
+## Rules as a mirror
 
-## A science example
+Your relationship to **rules** is part of the same story. Do they feel like protection, or like a cage? Do you follow them out of agreement, fear, habit, or a wish to be good? Do you break them quietly, loudly, or never? The philosopher Hannah Arendt warned about how much harm comes from people who follow rules without ever asking whether they should — obedience mistaken for virtue.
 
-The **definition of a limit** uses both quantifiers and is the gateway statement of analysis:
-
-$$\\lim_{x \\to a} f(x) = L \\iff \\forall \\varepsilon > 0,\\ \\exists \\delta > 0 : |x - a| < \\delta \\Rightarrow |f(x) - L| < \\varepsilon.$$
-
-Reading aloud: "for every error tolerance $\\varepsilon$ you demand, there exists a closeness $\\delta$ that guarantees it." Swap the quantifiers and you get a stronger, false claim. The two upside-down letters are doing more conceptual work here than the entire English language could do in a paragraph.`,
+This week, describe how you respond to authority and rules, and take a guess at who first taught you that response.`,
   },
   {
-    slug: "logical-connectives",
-    title: "Logical connectives: ∧, ∨, ¬",
+    slug: "feared-truths",
+    title: "What you fear is true",
     weekNumber: 4,
-    blurb: "AND, OR, NOT — the three building blocks of logic.",
-    lectureTitle: "4.5 ∧, ∨, ¬",
-    body: `# Logical connectives
+    blurb: "The fear you'd least like confirmed — and what it protects.",
+    lectureTitle: "4.5 What you fear is true",
+    body: `# What you fear is true
 
-Three symbols build every truth-functional sentence.
+Most people carry a quiet, specific dread about themselves — a thing they're afraid might be true and work hard never to test. *That I'm fundamentally unlovable. That I'm a fraud. That I'm not as good as I pretend. That I'm selfish. That I'll end up alone. That I've wasted it.* The fear runs underground and shapes a surprising amount from there.
 
-- $\\wedge$ — **AND** (conjunction). $P \\wedge Q$ is true only when both $P$ and $Q$ are true.
-- $\\vee$ — **OR** (inclusive disjunction). $P \\vee Q$ is true when at least one is.
-- $\\neg$ — **NOT** (negation). $\\neg P$ is true exactly when $P$ is false.
+## The fear that organises a life
 
-Visually, $\\wedge$ looks like an "A" (for "And"); $\\vee$ is its mirror image.
+These **core fears** are powerful precisely because we don't examine them; we just arrange our lives to avoid ever finding out. The person afraid they're a fraud overworks to keep the verdict at bay. The person afraid they're unlovable tests everyone or leaves first. Whole personalities can be built as elaborate defences against a single unexamined sentence.
 
-**De Morgan's laws** in logic (same shape as for sets):
+## The relief of saying it
 
-$$\\neg(P \\wedge Q) \\equiv \\neg P \\vee \\neg Q, \\qquad \\neg(P \\vee Q) \\equiv \\neg P \\wedge \\neg Q.$$
+Counterintuitively, naming the feared truth tends to *reduce* its power. Said out loud, it usually turns out to be less a fact than an old, frightened hypothesis — often inherited from a specific time and voice. Unsaid, it gets to run the show from backstage.
 
-## A science example
-
-**Digital electronics** is literal propositional logic baked into silicon: an AND gate computes $\\wedge$, an OR gate computes $\\vee$, an inverter computes $\\neg$. Any circuit you can describe with these three can be built from NAND gates alone, because $P \\wedge Q$, $P \\vee Q$, and $\\neg P$ are all expressible in NAND. The whole edifice of computing rests on these three symbols and the truth tables behind them.
-
-In databases, the SQL clause "WHERE age >= 18 AND country = 'US'" is the SQL spelling of $(\\text{age} \\ge 18) \\wedge (\\text{country} = \\text{US})$.`,
+This is the most vulnerable prompt in the course, so meet it at your own pace. Name, as honestly as you dare, one thing you're afraid is true about you.`,
   },
   {
-    slug: "implication",
-    title: "Implication: →, ↔",
+    slug: "keep-and-change",
+    title: "What you'd keep, what you'd change",
     weekNumber: 4,
-    blurb: "If-then and if-and-only-if.",
-    lectureTitle: "4.6 → and ↔",
-    body: `# Implication
+    blurb: "Self-acceptance and the will to change, held together.",
+    lectureTitle: "4.6 What you'd keep, what you'd change",
+    body: `# What you'd keep, what you'd change
 
-- $P \\to Q$ — **implication**, read "if $P$ then $Q$" or "$P$ implies $Q$." Equivalent to $\\neg P \\vee Q$.
-- $P \\leftrightarrow Q$ — **biconditional**, read "$P$ if and only if $Q$" (often abbreviated **iff**). True when $P$ and $Q$ have the same truth value.
-- $P \\Rightarrow Q$ — usually identical to $\\to$, sometimes reserved for "$P$ logically entails $Q$."
+Two truths have to be held at once for any real growth: that you are, in important ways, fine as you are — and that some things genuinely need to change. Lean too far toward acceptance and you stagnate; too far toward change and you wage permanent war on yourself. Maturity lives in the tension.
 
-The truth table of $P \\to Q$ has one surprising row: when $P$ is **false**, $P \\to Q$ is **true** regardless of $Q$ (a vacuous truth). "If the moon is made of cheese, then $2 + 2 = 5$" is, formally, a true sentence.
+## The paradox of change
 
-## Two notorious fallacies
+The psychologist Carl Rogers noticed a paradox: people change most readily once they feel *accepted as they are*. Self-attack, it turns out, is a poor engine for growth — it tends to produce shame, defensiveness, and paralysis rather than movement. The firmest ground for change is a basic, non-negotiable okayness underneath it.
 
-- **Affirming the consequent**: from $P \\to Q$ and $Q$, you cannot conclude $P$.
-- **Denying the antecedent**: from $P \\to Q$ and $\\neg P$, you cannot conclude $\\neg Q$.
+## Sorting the two piles
 
-The only valid moves are **modus ponens** ($P \\to Q$, $P$, therefore $Q$) and **modus tollens** ($P \\to Q$, $\\neg Q$, therefore $\\neg P$).
+So it's worth sorting deliberately. What would you *keep* — the traits, values, and quirks you'd protect even if you could trade them away? And what would you actually change, not to become someone else, but to become more fully yourself? The keep pile matters as much as the change pile; people often can't name a single thing they'd keep, which is its own diagnosis.
 
-## A science example
-
-A **scientific hypothesis** is a conditional: "$H \\to D$" — if hypothesis $H$ is true, we should observe data $D$. Observing $D$ does **not** prove $H$ (affirming the consequent); but observing $\\neg D$ refutes $H$ by modus tollens. This is exactly the **asymmetry** that Popper called *falsifiability*. The whole philosophy of science can be read off the truth table of $\\to$.`,
+This week, name one thing about yourself you'd keep no matter what, and one thing you'd genuinely change.`,
   },
   {
-    slug: "number-sets",
-    title: "Number sets: ℕ, ℤ, ℚ, ℝ, ℂ",
+    slug: "becoming",
+    title: "Who you're becoming",
     weekNumber: 4,
-    blurb: "The five most-named sets in mathematics.",
-    lectureTitle: "4.7 ℕ, ℤ, ℚ, ℝ, ℂ",
-    body: `# The blackboard-bold number sets
+    blurb: "You are a direction, not just a fixed point.",
+    lectureTitle: "4.7 Who you're becoming",
+    body: `# Who you're becoming
 
-These five double-struck letters name the most-used number systems.
+It's tempting to treat the self as a fixed thing to be discovered, like a statue under marble. But you're less a noun than a verb — not only who you *are* but who you're *becoming*, the direction you're travelling whether or not you chose it on purpose.
 
-- $\\mathbb{N}$ — **natural numbers**: $\\{1, 2, 3, \\dots\\}$ (or $\\{0, 1, 2, \\dots\\}$, depending on convention).
-- $\\mathbb{Z}$ — **integers**: $\\{\\dots, -2, -1, 0, 1, 2, \\dots\\}$. From German *Zahlen* ("numbers").
-- $\\mathbb{Q}$ — **rationals**: ratios $p/q$ with $p, q \\in \\mathbb{Z}$, $q \\neq 0$. From *Quotient*.
-- $\\mathbb{R}$ — **real numbers**: every point on the number line.
-- $\\mathbb{C}$ — **complex numbers**: $a + bi$ with $a, b \\in \\mathbb{R}$ and $i^2 = -1$.
+## The trajectory question
 
-They nest:
+The philosopher Søren Kierkegaard wrote that "the self is a relation that relates itself to itself" — a clumsy phrase pointing at something real: you are partly made by the stance you take toward your own life. Drift, and you still become someone — usually more of whatever you already were, amplified by habit. Choose, and you get a say.
 
-$$\\mathbb{N} \\subsetneq \\mathbb{Z} \\subsetneq \\mathbb{Q} \\subsetneq \\mathbb{R} \\subsetneq \\mathbb{C}.$$
+## Reading your own direction
 
-Each enlargement was historically driven by an equation the previous system couldn't solve: $x + 1 = 0$ (need $\\mathbb{Z}$), $2x = 1$ (need $\\mathbb{Q}$), $x^2 = 2$ (need $\\mathbb{R}$), $x^2 = -1$ (need $\\mathbb{C}$).
+Look at the last few years as a vector, not a snapshot. Are you becoming more open or more closed, more generous or more guarded, more yourself or more performance? The honest answer isn't always flattering, and that's exactly why it's useful — a trajectory, unlike a fixed trait, can still be turned.
 
-## A science example
+This week, describe the direction you're currently heading — who you're becoming if nothing changes — and whether that's who you want to be. Name one small turn you could make.`,
+  },
+  {
+    slug: "capstone-portrait",
+    title: "Capstone: your self-portrait",
+    weekNumber: 4,
+    blurb: "Gather four weeks of looking into one honest picture.",
+    lectureTitle: "4.8 Capstone: your self-portrait",
+    body: `# Capstone: your self-portrait
 
-A **quantum wavefunction** maps spacetime to the complex numbers:
+For four weeks you've examined the self you inherited, the self you enact, the self you are among others, and the self you're becoming. The final task is to step back and let the pieces become a picture — not a flattering one, not a brutal one, just a *true* one.
 
-$$\\psi: \\mathbb{R}^4 \\to \\mathbb{C}.$$
+## What a self-portrait is
 
-The reals model space and time; the codomain $\\mathbb{C}$ is where the wavefunction's amplitude and phase both live. Squaring the modulus, $|\\psi|^2 \\in \\mathbb{R}_{\\ge 0}$, recovers a probability density on $\\mathbb{R}^3$. Quantum mechanics is essentially a sentence whose subject is in $\\mathbb{C}$ and whose verb projects back to $\\mathbb{R}$.`,
+A good self-portrait, in painting, isn't a list of features; it's a likeness that captures something essential while admitting it can't capture everything. Rembrandt painted himself dozens of times across his life, hiding nothing — the ageing, the failure, the stubbornness — and the honesty is exactly what makes the portraits feel alive. Your written version works the same way: it should be recognisably *you*, contradictions included.
+
+## Holding the contradictions
+
+You are not one consistent thing. You're brave in some rooms and cowardly in others, generous and petty, certain and lost. The aim isn't to resolve that into a tidy summary but to hold it — to know yourself well enough to include the parts that don't fit.
+
+For your final reflection, write a short, honest self-portrait: who you are, as best you can now see, having looked this closely. Let it be brief, and let it be true.`,
   },
 ];
+
+// ───────────────────────────────────────────────────────────────
+// Assignments
+// ───────────────────────────────────────────────────────────────
+// For this course there are NO correct answers. The `correctAnswer` field below
+// holds a short, plausible first-person "model reflection" — a reference for the
+// depth a sincere answer tends to reach. It is used internally by the grader, the
+// synthetic-student diagnostic, and content audits; it is NEVER shown to the
+// student as "the correct answer." Students are graded on sincerity and depth.
 
 type SeedAssignment = {
   kind: "homework" | "test" | "midterm" | "final";
@@ -825,133 +644,142 @@ type SeedAssignment = {
   }>;
 };
 
+const HONEST_INSTRUCTIONS =
+  "Answer honestly and briefly — a sentence or two is plenty. There are no right answers here; you're graded on sincerity and depth, not length or correctness. Everything you write feeds your evolving self-portrait in Analytics, so the more honest you are, the truer that picture becomes.";
+
+const TIMED_INSTRUCTIONS =
+  "This is timed to keep you from over-editing — answer from the gut. Keep each answer short and honest. There are no right answers; you're graded on sincerity and depth, and your answers build your evolving self-portrait.";
+
 const ASSIGNMENTS: SeedAssignment[] = [
   // ───────────── Week 1 ─────────────
   {
     kind: "homework",
-    title: "Homework 1.1 — Equality, inequality, ±, ∝",
+    title: "Homework 1.1 — The self you inherited (I)",
     weekNumber: 1,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions:
-      "Use the math keyboard to type the requested symbols. Each answer should be written in proper mathematical notation, not English.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "equality-family",
+        topicSlug: "self-concept",
         prompt:
-          "Using the correct symbol from {=, ≠, ≈, ≡}, write a true statement comparing π and 22/7. Then write a second statement comparing the values $2 + 2$ and $4$ using the correct symbol.",
-        correctAnswer: "π ≈ 22/7 and 2 + 2 = 4",
+          "In one or two sentences, finish this: 'The way I'd describe myself to a stranger is ___.' Then add one word you'd use about yourself that you'd never say out loud to them.",
+        correctAnswer:
+          "I'd say I'm easy-going and dependable. The word I'd never say out loud is: tired — or maybe scared.",
         explanation:
-          "$\\pi$ and $22/7$ are not exactly equal but are close, so $\\pi \\approx 22/7$. The two sides of $2 + 2$ and $4$ name the same value, so $=$ is correct.",
+          "The gap between your public description and the private word is where the real self-concept lives. Notice which one came easier to write.",
+        hint: "The private word matters more than the public sentence.",
       },
       {
-        topicSlug: "inequalities-notation",
+        topicSlug: "earliest-memory",
         prompt:
-          "Write a single inequality (using <, >, ≤, or ≥) expressing the condition that a temperature T in Celsius is at or below freezing.",
-        correctAnswer: "T ≤ 0",
-        explanation: "At-or-below freezing means $T \\le 0\\,°\\text{C}$. The non-strict $\\le$ includes the exact freezing point.",
-      },
-      {
-        topicSlug: "plus-minus-proportional",
-        prompt:
-          "Using ± and √, write both solutions of $x^2 = 49$ in a single expression.",
-        correctAnswer: "x = ±√49 = ±7",
-        explanation: "$x^2 = 49 \\Rightarrow x = \\pm\\sqrt{49} = \\pm 7$. The $\\pm$ captures both roots.",
-      },
-      {
-        topicSlug: "plus-minus-proportional",
-        prompt:
-          "Using the ∝ symbol, write the statement: 'The area A of a circle is proportional to the square of its radius r.'",
-        correctAnswer: "A ∝ r²",
+          "Describe one of your earliest memories in two or three sentences. Then, in one line, name the lesson about the world it seems to have taught you.",
+        correctAnswer:
+          "I remember waiting at a window for someone who was late, watching the street. The lesson: people don't always come when you need them, so don't count on it.",
         explanation:
-          "$A \\propto r^2$. The constant of proportionality is $\\pi$ (so $A = \\pi r^2$), but $\\propto$ states only the shape of the relationship.",
+          "The memory that survived was kept for a reason. The lesson you draw from it is often a belief you still quietly carry.",
+      },
+      {
+        topicSlug: "family-system",
+        prompt:
+          "What role did you play in your family growing up (e.g. peacemaker, achiever, scapegoat, invisible one)? Name it in a few words, and say where you still play it today.",
+        correctAnswer:
+          "I was the peacemaker — the one who smoothed things over. I still do it at work, defusing conflict that isn't mine to manage.",
+        explanation:
+          "The role you were handed often follows you into rooms your family will never see. Spotting it is the first step to choosing it freely or setting it down.",
       },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 1.2 — Powers, roots, |x|, subscripts",
+    title: "Homework 1.2 — The self you inherited (II)",
     weekNumber: 1,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use the math keyboard for every symbol.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "exponents-notation",
+        topicSlug: "formative-wounds",
         prompt:
-          "Using exponent notation, write the formula for kinetic energy of a mass m moving at speed v.",
-        correctAnswer: "KE = (1/2) m v²",
+          "Name one early hurt that shaped you, and the protective habit it left behind. A sentence or two — you don't need to relive it, just name it.",
+        correctAnswer:
+          "Being mocked for getting excited about things taught me to play it cool. The habit: I hide how much I care, even when I care a lot.",
         explanation:
-          "$\\text{KE} = \\tfrac{1}{2} m v^2$. The exponent on $v$ is what makes a doubling of speed quadruple the energy.",
+          "A defence is intelligent — it solved a real problem once. Naming it lets you ask whether it's still solving a problem you actually have.",
+        hint: "Look for a small thing that still produces a big reaction.",
       },
       {
-        topicSlug: "roots-notation",
+        topicSlug: "abandoned-selves",
         prompt:
-          "Using √, write the formula for the period T of a pendulum of length L (assume g is the gravitational acceleration).",
-        correctAnswer: "T = 2π √(L/g)",
-        explanation: "$T = 2\\pi \\sqrt{L/g}$.",
+          "Name something you once wanted to be or do but set aside. In one line, say when or why that changed.",
+        correctAnswer:
+          "I wanted to write. I set it aside in my twenties when a job got serious and 'someday' kept getting later.",
+        explanation:
+          "An abandoned self can linger as a faint ache. Whether it was dropped by choice or by fear tells you something either way.",
       },
       {
-        topicSlug: "abs-factorial-notation",
+        topicSlug: "inherited-values",
         prompt:
-          "Using |·|, write the statement that x is within 2 units of 5 (i.e., the distance from x to 5 is at most 2). Then, using factorial notation, write the number of ways to order 6 distinct books on a shelf.",
-        correctAnswer: "|x − 5| ≤ 2 and 6! = 720",
+          "Name one value you were handed by your family or upbringing. Say honestly whether it's still truly yours, or just still with you.",
+        correctAnswer:
+          "I was raised to believe rest must be earned. It's still with me, but I don't think I'd choose it from scratch — it mostly makes me feel guilty.",
         explanation:
-          "Distance from $x$ to $5$ is $|x - 5|$, so $|x-5| \\le 2$. Orderings of 6 distinct items: $6! = 720$.",
+          "The phrase 'of course' often marks an unexamined inheritance. Auditing one value is how you start getting a vote in what you believe.",
       },
       {
-        topicSlug: "subscripts-indexing",
+        topicSlug: "self-story",
         prompt:
-          "Using subscripts, write the kinematic formula for the final velocity of an object with initial velocity v₀ under constant acceleration a after time t.",
-        correctAnswer: "v_f = v_0 + a t",
+          "Tell your life so far as a very short story with a shape (e.g. a rise, a comeback, a long wait). Two or three sentences. Then name the shape you reached for.",
+        correctAnswer:
+          "I drifted for years, then found something that mattered and have been quietly building since. It's a slow-bloom story — a long wait turning into a rise.",
         explanation:
-          "$v_f = v_0 + a t$. The subscripts distinguish the initial ($v_0$) and final ($v_f$) velocities.",
+          "The shape you give your life reveals what you believe it means. Notice who you cast as the hero, and who you left out.",
       },
     ],
   },
   {
     kind: "test",
-    title: "Week 1 Test — Foundational notation",
+    title: "Test 1 — The Self You Inherited",
     weekNumber: 1,
     isTimed: true,
-    timeLimitMinutes: 30,
-    instructions:
-      "Timed. 30 minutes. Math keyboard available; pasting is disabled. Every answer must use the relevant symbol explicitly.",
+    timeLimitMinutes: 20,
+    instructions: TIMED_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "equality-family",
+        topicSlug: "self-concept",
         prompt:
-          "Using one of {=, ≠, ≈, ≡}, write a true statement of the form '$\\sin^2\\theta + \\cos^2\\theta \\,?\\, 1$'. Pick the symbol that says 'true for every θ.'",
-        correctAnswer: "sin²θ + cos²θ ≡ 1",
-        explanation: "$\\sin^2\\theta + \\cos^2\\theta \\equiv 1$ — a Pythagorean identity, true for all $\\theta$.",
+          "One belief about yourself that you suspect is no longer true — but that you keep acting as if it were. Name it in a sentence.",
+        correctAnswer:
+          "That I'm 'the shy one.' I haven't been for years, but I still hang back as if it were a fixed fact.",
+        explanation:
+          "Some self-concept stays true only because you keep behaving as if it is. Catching one of those is real progress.",
       },
       {
-        topicSlug: "inequalities-notation",
+        topicSlug: "family-system",
         prompt:
-          "State the second law of thermodynamics for an isolated system using ΔS and the correct inequality symbol.",
-        correctAnswer: "ΔS ≥ 0",
-        explanation: "$\\Delta S \\ge 0$, with equality for reversible processes only.",
+          "What felt completely 'normal' in your family that you later realised was specific to it? One or two sentences.",
+        correctAnswer:
+          "That you never discuss feelings directly. I assumed everyone lived that way until I saw families who actually talk.",
+        explanation:
+          "The hardest patterns to see are the ones you mistook for reality itself. Naming one loosens its grip.",
       },
       {
-        topicSlug: "exponents-notation",
+        topicSlug: "formative-wounds",
         prompt:
-          "Using exponent notation, write the surface area S of a sphere of radius r.",
-        correctAnswer: "S = 4π r²",
-        explanation: "$S = 4\\pi r^2$.",
+          "What kind of criticism or tone of voice still floods you out of proportion to the moment? Name it briefly.",
+        correctAnswer:
+          "Being told I'm 'too much.' Even a hint of it can sink my whole day.",
+        explanation:
+          "Disproportion marks the seam of an old wound — the size of the reaction usually belongs to the past, not the present.",
       },
       {
-        topicSlug: "roots-notation",
+        topicSlug: "self-story",
         prompt:
-          "Using √, write the Pythagorean expression for the hypotenuse c of a right triangle with legs a and b.",
-        correctAnswer: "c = √(a² + b²)",
-        explanation: "$c = \\sqrt{a^2 + b^2}$.",
-      },
-      {
-        topicSlug: "subscripts-indexing",
-        prompt:
-          "Using subscripts to denote time steps, write the difference equation that expresses 'this year's GDP equals last year's GDP plus growth G.'",
-        correctAnswer: "Y_t = Y_{t-1} + G",
-        explanation: "$Y_t = Y_{t-1} + G$. Subscripts distinguish the time periods.",
+          "In your life story, who tends to get the blame — yourself, others, or circumstance? Answer honestly in a line.",
+        correctAnswer:
+          "Mostly circumstance — bad timing, bad luck. If I'm honest, that lets me off the hook a little too neatly.",
+        explanation:
+          "Where you assign blame in your own narrative is a habit, not a fact. Seeing the habit is what gives you a choice about it.",
       },
     ],
   },
@@ -959,138 +787,195 @@ const ASSIGNMENTS: SeedAssignment[] = [
   // ───────────── Week 2 ─────────────
   {
     kind: "homework",
-    title: "Homework 2.1 — Σ, Π, Δ",
+    title: "Homework 2.1 — The self you enact (I)",
     weekNumber: 2,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use Σ and Π keys from the math keyboard.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "sigma-summation",
+        topicSlug: "unwatched-self",
         prompt:
-          "Using Σ, write the formula for the sample mean x̄ of n data points x₁, …, xₙ.",
-        correctAnswer: "x̄ = (1/n) Σ_{i=1}^{n} x_i",
-        explanation: "$\\bar x = \\tfrac{1}{n} \\sum_{i=1}^{n} x_i$.",
+          "What do you actually do with a genuinely free, private hour that no one will ask you about? Be honest, not aspirational. One or two sentences.",
+        correctAnswer:
+          "I usually scroll, half-watching something, telling myself I'll do the meaningful thing later. Sometimes later comes; mostly it doesn't.",
+        explanation:
+          "The undefended self — what you reach for with nothing to prove — shows what you actually want versus what you want to be seen wanting.",
+        hint: "Aim for what's true, not what sounds good.",
       },
       {
-        topicSlug: "pi-product",
+        topicSlug: "avoidances",
         prompt:
-          "Using Π, write the definition of n! as a product over an index.",
-        correctAnswer: "n! = Π_{k=1}^{n} k",
-        explanation: "$n! = \\prod_{k=1}^{n} k$.",
+          "Name one thing you've been avoiding. Then, more revealingly, what do you think you're protecting by avoiding it? A sentence or two.",
+        correctAnswer:
+          "I'm avoiding a real conversation with a friend that's overdue. I think I'm protecting the version of the friendship where nothing's wrong.",
+        explanation:
+          "Behind most avoidances is something you're protecting — an image, a comfort, a relationship you fear testing. Naming it is the point.",
       },
       {
-        topicSlug: "delta-change",
+        topicSlug: "energy-map",
         prompt:
-          "Using Δ, write the formula for average velocity over an interval [t₁, t₂] given positions x₁ and x₂ at those times.",
-        correctAnswer: "v̄ = Δx / Δt = (x₂ − x₁)/(t₂ − t₁)",
-        explanation: "$\\bar v = \\tfrac{\\Delta x}{\\Delta t} = \\tfrac{x_2 - x_1}{t_2 - t_1}$.",
+          "Name one thing that reliably restores you and one that reliably drains you. Include anything you keep choosing that secretly belongs in the 'drains' column.",
+        correctAnswer:
+          "Walking alone restores me. Big social events drain me — but I keep saying yes to them and leaving hollow.",
+        explanation:
+          "Energy is hard to fake to yourself. The thing you 'enjoy' but always leave depleted by is worth a closer look.",
       },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 2.2 — lim, →, ∞, d/dx, ∂, ∫, e, ln",
+    title: "Homework 2.2 — The self you enact (II)",
     weekNumber: 2,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use the Calculus tab of the math keyboard.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "limits-infinity",
+        topicSlug: "work-and-effort",
         prompt:
-          "Using lim, →, and ∞, write the statement that 1/x approaches 0 as x grows without bound.",
-        correctAnswer: "lim_{x → ∞} 1/x = 0",
-        explanation: "$\\lim_{x \\to \\infty} \\tfrac{1}{x} = 0$.",
-      },
-      {
-        topicSlug: "derivative-notation",
-        prompt:
-          "Using ∂, write the heat equation for temperature T(x, t) with diffusivity α (one-dimensional case).",
-        correctAnswer: "∂T/∂t = α ∂²T/∂x²",
-        explanation: "$\\partial T/\\partial t = \\alpha\\, \\partial^2 T/\\partial x^2$.",
-      },
-      {
-        topicSlug: "integral-notation",
-        prompt:
-          "Using ∫, write the definite integral that gives the area under f(x) from a to b. Include the dx.",
-        correctAnswer: "∫_a^b f(x) dx",
-        explanation: "$\\int_a^b f(x)\\,\\mathrm{d}x$. The $\\mathrm{d}x$ is required.",
-      },
-      {
-        topicSlug: "e-ln-log",
-        prompt:
-          "Using e and ln, write (a) the formula for radioactive decay starting from N₀ with decay constant λ, and (b) the resulting expression for the half-life t_{1/2}.",
-        correctAnswer: "N(t) = N₀ e^{−λt}, t_{1/2} = ln(2)/λ",
+          "What does work really mean to you — identity, exchange, proving ground, refuge, something else? Name it, and where you think it came from. A sentence or two.",
+        correctAnswer:
+          "Work is how I prove I'm worth keeping around. It comes from a childhood where attention only arrived after achievement.",
         explanation:
-          "$N(t) = N_0 e^{-\\lambda t}$. Setting $N = N_0/2$ gives $t_{1/2} = \\ln 2/\\lambda$.",
+          "Watch what happens when you're forced to rest — freedom, guilt, or anxiety? The discomfort is the real relationship showing itself.",
+      },
+      {
+        topicSlug: "money-and-security",
+        prompt:
+          "What does money actually represent to you — safety, freedom, worth, escape, control? Name it, and the feeling that comes up when you imagine having much less.",
+        correctAnswer:
+          "Money means safety — proof I won't be at anyone's mercy. Imagining much less brings a tight, almost panicky feeling.",
+        explanation:
+          "Money is rarely about money. The feeling underneath points at the real hunger — and often at something you saw at home.",
+      },
+      {
+        topicSlug: "risk-and-failure",
+        prompt:
+          "Name one risk you didn't take, and what actually stopped you. One or two sentences.",
+        correctAnswer:
+          "I didn't apply for a job I wanted abroad. What stopped me was the fear of looking foolish if it didn't work out.",
+        explanation:
+          "What stopped you usually reveals what you're really optimising for — and whether failure reads to you as a lesson or a verdict.",
+      },
+      {
+        topicSlug: "anger",
+        prompt:
+          "What kind of thing reliably makes you angry, and what do you tend to do with the anger? Name both, briefly.",
+        correctAnswer:
+          "Being dismissed or talked over. I rarely show it — I go quiet and cold, then stew about it for hours.",
+        explanation:
+          "Anger points at what you value or fear. The thing under the anger is usually more revealing than the anger itself.",
+      },
+    ],
+  },
+  {
+    kind: "test",
+    title: "Test 2 — The Self You Enact",
+    weekNumber: 2,
+    isTimed: true,
+    timeLimitMinutes: 20,
+    instructions: TIMED_INSTRUCTIONS,
+    problems: [
+      {
+        topicSlug: "unwatched-self",
+        prompt:
+          "Would the people who admire you most be surprised by how you spend your private time? Answer honestly in a sentence.",
+        correctAnswer:
+          "A little — they think I'm disciplined, and my private hours are softer and lazier than that picture.",
+        explanation:
+          "The gap between your performed self and your unwatched self is one of the most honest measures of character you can take.",
+      },
+      {
+        topicSlug: "energy-map",
+        prompt:
+          "Name one activity you call 'rest' that actually leaves you more depleted. One line.",
+        correctAnswer:
+          "Doom-scrolling in bed. I call it winding down, but I get up feeling foggier than before.",
+        explanation:
+          "Telling true restoration from mere numbing is a real and revealing skill. The difference is in how you feel afterward.",
+      },
+      {
+        topicSlug: "money-and-security",
+        prompt:
+          "What would 'enough' money look like for you — and does any number ever actually feel like enough? Answer briefly.",
+        correctAnswer:
+          "I tell myself a specific number, but honestly the goalpost moves every time I get close. Nothing's quite felt like enough yet.",
+        explanation:
+          "If 'enough' keeps moving, the hunger underneath probably isn't really about money at all.",
+      },
+      {
+        topicSlug: "anger",
+        prompt:
+          "Whose anger did you grow up around, and how do you think it shaped what you do with your own? One or two sentences.",
+        correctAnswer:
+          "My father's — loud and sudden. I learned to make myself small and swallow mine, which I still do.",
+        explanation:
+          "Your style of anger was usually modelled at home. Seeing the source helps you choose a different response now.",
       },
     ],
   },
   {
     kind: "midterm",
-    title: "Midterm — Weeks 1 & 2",
+    title: "Midterm — The Inherited and Enacted Self",
     weekNumber: 2,
     isTimed: true,
-    timeLimitMinutes: 60,
-    instructions:
-      "Cumulative midterm covering basic notation and calculus symbols. 60 minutes. Math keyboard available; pasting disabled.",
+    timeLimitMinutes: 40,
+    instructions: TIMED_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "equality-family",
+        topicSlug: "self-concept",
         prompt:
-          "Write a true statement using ≈ that gives e to four decimal places.",
-        correctAnswer: "e ≈ 2.7183",
-        explanation: "$e \\approx 2.7183$. (Exact value is irrational.)",
+          "Two weeks in: name one thing about your self-image that you now see differently than you did before this course. A sentence or two.",
+        correctAnswer:
+          "I always called myself low-maintenance. I'm starting to see that I just don't ask for things — which isn't the same.",
+        explanation:
+          "Self-concept shifts when you examine it. Catching one piece in motion is the whole point of looking.",
       },
       {
-        topicSlug: "inequalities-notation",
+        topicSlug: "family-system",
         prompt:
-          "Write a single inequality saying 'the probability p is between 0 and 1, inclusive.'",
-        correctAnswer: "0 ≤ p ≤ 1",
-        explanation: "$0 \\le p \\le 1$. Both endpoints are allowed for a probability.",
+          "Connect a pattern from your family to something you still do today. Name the link in one or two sentences.",
+        correctAnswer:
+          "In my family, love was shown through worry, not words. Now I show care by fretting over people, then wonder why it lands as nagging.",
+        explanation:
+          "The lathe of the family system shows up in adult habits. Naming the link is how you start to revise it.",
       },
       {
-        topicSlug: "exponents-notation",
+        topicSlug: "abandoned-selves",
         prompt:
-          "Using exponent notation, write Einstein's rest-energy equation for a particle of mass m.",
-        correctAnswer: "E = m c²",
-        explanation: "$E = mc^2$.",
+          "Is there a set-aside dream you're now wondering whether you abandoned out of fear rather than genuine change of heart? Answer honestly.",
+        correctAnswer:
+          "Yes — I told myself I 'grew out of' performing music, but really I got scared of not being good enough.",
+        explanation:
+          "Distinguishing 'I stopped wanting it' from 'I got scared' changes what the memory means — and what's still possible.",
       },
       {
-        topicSlug: "subscripts-indexing",
+        topicSlug: "avoidances",
         prompt:
-          "Using subscripts, write the second component of a 3-vector v in coordinate form. (Use v_x, v_y, v_z notation.)",
-        correctAnswer: "v_y",
-        explanation: "$v_y$ — the $y$-component of $\\vec v = (v_x, v_y, v_z)$.",
+          "What's the cost, over years, of one thing you habitually avoid? Name it in a sentence or two.",
+        correctAnswer:
+          "Avoiding conflict has cost me honesty in my closest relationships — people don't fully know what I think or want.",
+        explanation:
+          "Avoidance defers its cost, which is why it lasts. Naming the long bill makes the trade visible.",
       },
       {
-        topicSlug: "sigma-summation",
+        topicSlug: "work-and-effort",
         prompt:
-          "Using Σ, write the sum of the first 100 positive integers in compact form.",
-        correctAnswer: "Σ_{i=1}^{100} i",
-        explanation: "$\\sum_{i=1}^{100} i$. (Its value is $5050$.)",
+          "When you rest, what feeling actually shows up — relief, guilt, anxiety, emptiness? Name it and what it tells you.",
+        correctAnswer:
+          "Guilt, mostly, like I'm getting away with something. It tells me I've tied my worth to output more than I admit.",
+        explanation:
+          "The feeling that arrives in forced rest is the clearest readout of your real relationship to effort.",
       },
       {
-        topicSlug: "delta-change",
+        topicSlug: "risk-and-failure",
         prompt:
-          "Using Δ, write the chemistry expression for the enthalpy change of a reaction.",
-        correctAnswer: "ΔH",
-        explanation: "$\\Delta H$ — change in enthalpy.",
-      },
-      {
-        topicSlug: "derivative-notation",
-        prompt:
-          "Using d/dx, write the derivative of x³ with respect to x as an equation.",
-        correctAnswer: "d/dx (x³) = 3x²",
-        explanation: "$\\dfrac{\\mathrm{d}}{\\mathrm{d}x}(x^3) = 3x^2$.",
-      },
-      {
-        topicSlug: "e-ln-log",
-        prompt:
-          "Using ln, solve the equation e^x = 7 for x.",
-        correctAnswer: "x = ln(7)",
-        explanation: "$x = \\ln 7 \\approx 1.9459$.",
+          "Does failure read to you as information or as a verdict on your worth? Answer honestly, with one example.",
+        correctAnswer:
+          "A verdict, if I'm honest. When a project flopped last year I didn't think 'lesson learned' — I thought 'I knew I wasn't good enough.'",
+        explanation:
+          "Whether failure is a lesson or a sentence quietly decides how much you'll ever let yourself attempt.",
       },
     ],
   },
@@ -1098,117 +983,131 @@ const ASSIGNMENTS: SeedAssignment[] = [
   // ───────────── Week 3 ─────────────
   {
     kind: "homework",
-    title: "Homework 3.1 — μ, σ, x̄, p̂",
+    title: "Homework 3.1 — The self among others (I)",
     weekNumber: 3,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use the Statistics tab of the math keyboard.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "greek-parameters",
+        topicSlug: "attachment",
         prompt:
-          "Using μ and σ, write the formula that says 'about 95% of values from a normal distribution lie within two standard deviations of the mean,' as an interval.",
-        correctAnswer: "[μ − 2σ, μ + 2σ]",
-        explanation: "$[\\mu - 2\\sigma,\\ \\mu + 2\\sigma]$ — the 95% interval under the empirical rule.",
+          "When you want closeness from someone, what do you actually do? And when closeness starts to frighten you, what do you do then? The honest version, in a sentence or two.",
+        correctAnswer:
+          "When I want closeness I get extra helpful, hoping they'll come closer. When it scares me, I go quiet and find reasons to need space.",
+        explanation:
+          "Your attachment pattern is older than any current relationship. Naming what you do in both directions makes the template visible.",
       },
       {
-        topicSlug: "sample-stats-hats",
+        topicSlug: "love",
         prompt:
-          "A clinical trial of 200 patients records 190 successes. Using p̂, write the sample proportion and give its decimal value.",
-        correctAnswer: "p̂ = 190/200 = 0.95",
-        explanation: "$\\hat p = 190/200 = 0.95$.",
+          "Describe the 'type' you tend to fall for, or the role you tend to play in love. What do you secretly hope love will do for you? One or two sentences.",
+        correctAnswer:
+          "I fall for slightly unavailable people and play the patient one. I think I'm hoping to finally be chosen by someone who's hard to win.",
+        explanation:
+          "We often love what's familiar rather than what's good for us. The hope underneath the pattern is the revealing part.",
       },
       {
-        topicSlug: "probability-notation",
+        topicSlug: "recurring-conflicts",
         prompt:
-          "Using P(·) and P(·|·), write the definition of conditional probability for P(A | B).",
-        correctAnswer: "P(A | B) = P(A ∩ B) / P(B)",
-        explanation: "$P(A \\mid B) = \\dfrac{P(A \\cap B)}{P(B)}$.",
+          "Name a conflict that keeps recurring across your relationships, and take a guess at the deeper need or fear underneath it. Include your own role if you can.",
+        correctAnswer:
+          "I keep feeling unappreciated and end up keeping score. Underneath is a fear I only matter for what I do, not who I am — and I rarely just say I feel unseen.",
+        explanation:
+          "The content of a recurring fight usually stands in for an older need. The part that travels with you is the part you can work on.",
       },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 3.2 — E(X), Var(X), N(μ,σ²), z, t, χ², α, β",
+    title: "Homework 3.2 — The self among others (II)",
     weekNumber: 3,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use the Statistics tab freely.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "expectation-variance",
+        topicSlug: "envy-admiration",
         prompt:
-          "Using E(·) and Var(·), write the linearity rule: for constants a and b, what are E(aX + b) and Var(aX + b)?",
-        correctAnswer: "E(aX + b) = a E(X) + b; Var(aX + b) = a² Var(X)",
+          "Name one person you quietly envy, and say exactly what the envy is about. One or two sentences.",
+        correctAnswer:
+          "A former colleague who left to do her own thing. The envy isn't about money — it's about her nerve to bet on herself.",
         explanation:
-          "$E[aX + b] = aE[X] + b$; $\\mathrm{Var}(aX + b) = a^2 \\mathrm{Var}(X)$. The shift drops out of variance; the scaling squares.",
+          "Envy is specific, and the specificity is the signal. It usually points at a value or ambition you haven't admitted you hold.",
+        hint: "It's usually a peer, not a celebrity.",
       },
       {
-        topicSlug: "distribution-notation",
+        topicSlug: "unspoken-needs",
         prompt:
-          "Using ~ and N(μ, σ²), write the statement that measurement error ε is normally distributed with mean 0 and variance 0.04.",
-        correctAnswer: "ε ~ N(0, 0.04)",
-        explanation: "$\\varepsilon \\sim N(0,\\, 0.04)$.",
-      },
-      {
-        topicSlug: "test-statistics",
-        prompt:
-          "Using x̄, μ₀, σ, and n, write the formula for the z-statistic used to test H₀: μ = μ₀ when σ is known.",
-        correctAnswer: "z = (x̄ − μ₀) / (σ / √n)",
-        explanation: "$z = \\dfrac{\\bar x - \\mu_0}{\\sigma/\\sqrt n}$.",
-      },
-      {
-        topicSlug: "alpha-beta-stats",
-        prompt:
-          "Using α and β, define (a) the Type I error rate and (b) the power of a hypothesis test.",
-        correctAnswer: "α = P(reject H₀ | H₀ true); power = 1 − β",
+          "Name one thing you genuinely need from others but rarely or never ask for — and, if you can, why asking feels dangerous.",
+        correctAnswer:
+          "Reassurance that I'm wanted. Asking feels dangerous because if I have to ask, the answer wouldn't count.",
         explanation:
-          "$\\alpha$ is the Type I error rate, $\\beta$ is the Type II rate, and the power is $1 - \\beta$.",
+          "Unspoken needs don't vanish; they come out sideways as resentment or testing. A named need is one that can actually be met.",
+      },
+      {
+        topicSlug: "being-seen",
+        prompt:
+          "How do you handle being truly seen — praise, attention, exposure? And what do you keep hidden even from people who love you? A sentence or two.",
+        correctAnswer:
+          "I deflect praise with a joke. What I keep hidden is how unsure I am underneath the competent act.",
+        explanation:
+          "How you handle praise is as telling as how you handle criticism. The gap you maintain between shown and real self is the thing to notice.",
+      },
+      {
+        topicSlug: "solitude",
+        prompt:
+          "When are you most at peace alone, and when does being alone tip into loneliness? Name both, briefly.",
+        correctAnswer:
+          "I'm at peace alone when I'm absorbed in making something. It tips into loneliness in the evenings, when there's no one to tell about my day.",
+        explanation:
+          "Being alone and feeling lonely aren't the same. Where the line falls for you says a lot about how you relate to yourself.",
       },
     ],
   },
   {
     kind: "test",
-    title: "Week 3 Test — Statistics notation",
+    title: "Test 3 — The Self Among Others",
     weekNumber: 3,
     isTimed: true,
-    timeLimitMinutes: 40,
-    instructions: "Timed. 40 minutes. Math keyboard available; pasting disabled.",
+    timeLimitMinutes: 20,
+    instructions: TIMED_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "greek-parameters",
+        topicSlug: "attachment",
         prompt:
-          "Using μ and σ, write the formula for the standardized z-score of a data value x drawn from a population.",
-        correctAnswer: "z = (x − μ) / σ",
-        explanation: "$z = \\dfrac{x - \\mu}{\\sigma}$.",
+          "Under stress in a close relationship, do you move toward the person, away, or against them? Answer in a line, with an example if you can.",
+        correctAnswer:
+          "Away. When things get tense I go cold and busy myself, then resent that they didn't chase me.",
+        explanation:
+          "Stress reveals the attachment template most clearly. The move you make under pressure is the honest one.",
       },
       {
-        topicSlug: "probability-notation",
+        topicSlug: "recurring-conflicts",
         prompt:
-          "Using P(·), P(·|·), and ∩, write Bayes' theorem.",
-        correctAnswer: "P(A | B) = P(B | A) P(A) / P(B)",
-        explanation: "$P(A \\mid B) = \\dfrac{P(B \\mid A) P(A)}{P(B)}$.",
+          "What's the part of your recurring conflict that's the same no matter who you're with? Name it honestly.",
+        correctAnswer:
+          "I withdraw instead of saying what I need, then blame the other person for not noticing.",
+        explanation:
+          "The constant across different partners is the part that's yours to change — uncomfortable, but workable.",
       },
       {
-        topicSlug: "expectation-variance",
+        topicSlug: "unspoken-needs",
         prompt:
-          "Using E(·), write the definition of Var(X) (in terms of expectations).",
-        correctAnswer: "Var(X) = E[(X − E(X))²]",
-        explanation: "$\\mathrm{Var}(X) = E[(X - E[X])^2]$.",
+          "When a need of yours goes unmet, how does it usually come out instead of as a direct request? One line.",
+        correctAnswer:
+          "As sulking, or a sharp comment that I pretend is a joke.",
+        explanation:
+          "Hidden needs leak out distorted. Spotting your particular distortion lets you trace it back to the need underneath.",
       },
       {
-        topicSlug: "distribution-notation",
+        topicSlug: "solitude",
         prompt:
-          "Using ~, write a sentence in symbols asserting that a Bernoulli random variable Y has success probability p.",
-        correctAnswer: "Y ~ Bernoulli(p)",
-        explanation: "$Y \\sim \\text{Bernoulli}(p)$.",
-      },
-      {
-        topicSlug: "test-statistics",
-        prompt:
-          "Using χ², write the goodness-of-fit statistic in terms of observed (O) and expected (E) cell counts.",
-        correctAnswer: "χ² = Σ (O − E)² / E",
-        explanation: "$\\chi^2 = \\sum \\dfrac{(O - E)^2}{E}$.",
+          "Have you ever felt lonely while surrounded by people? When, and what was missing? Answer briefly.",
+        correctAnswer:
+          "Often, at family gatherings — everyone's there but no one really asks anything real, so I feel unseen in a full room.",
+        explanation:
+          "Loneliness in company points at the quality of your connections, not their number.",
       },
     ],
   },
@@ -1216,170 +1115,158 @@ const ASSIGNMENTS: SeedAssignment[] = [
   // ───────────── Week 4 ─────────────
   {
     kind: "homework",
-    title: "Homework 4.1 — ∈, ⊆, ∪, ∩, ∅",
+    title: "Homework 4.1 — The self you're becoming (I)",
     weekNumber: 4,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use the Logic & Sets tab of the math keyboard.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "set-membership",
+        topicSlug: "strengths",
         prompt:
-          "Using ∈ and ∉, write two true statements: one about 3 and the set {1, 2, 3, 4}, and one about π and the set ℤ of integers.",
-        correctAnswer: "3 ∈ {1,2,3,4} and π ∉ ℤ",
-        explanation: "$3 \\in \\{1,2,3,4\\}$ (3 is in the set); $\\pi \\notin \\mathbb{Z}$ (π is irrational).",
+          "Name something you're genuinely, unusually good at — and resist downplaying it. What do people come to you for? One or two sentences.",
+        correctAnswer:
+          "I'm unusually good at making people feel at ease. People come to me to talk things through; I just thought everyone could do it.",
+        explanation:
+          "Real strengths often feel effortless, so we discount them. Owning one plainly is harder and more honest than performing modesty.",
+        hint: "Look for what's easy for you but hard for others.",
       },
       {
-        topicSlug: "subset-superset",
+        topicSlug: "weaknesses",
         prompt:
-          "Using ⊆, write the nested chain of inclusions from the integers up through the complex numbers (use the standard blackboard-bold letters).",
-        correctAnswer: "ℤ ⊆ ℚ ⊆ ℝ ⊆ ℂ",
-        explanation: "$\\mathbb{Z} \\subseteq \\mathbb{Q} \\subseteq \\mathbb{R} \\subseteq \\mathbb{C}$.",
+          "Name something you're reliably bad at. Be honest about which it is: a true limit to design around, or a choice you've dressed up as a limit.",
+        correctAnswer:
+          "Follow-through on long projects. I've called it 'not being a detail person,' but really I avoid the boring middle because it's hard.",
+        explanation:
+          "The story you tell about a weakness reveals whether it's a real limit or a convenient exemption.",
       },
       {
-        topicSlug: "set-operations",
+        topicSlug: "work-for-free",
         prompt:
-          "Using ∪, ∩, and either Aᶜ or A\\B notation, write De Morgan's law for the complement of a union.",
-        correctAnswer: "(A ∪ B)ᶜ = Aᶜ ∩ Bᶜ",
-        explanation: "$(A \\cup B)^c = A^c \\cap B^c$.",
+          "What would you still do even if you were never paid or praised for it? Name it, and what it points to about where your meaning lives.",
+        correctAnswer:
+          "I'd still fix and build things with my hands. It points to a need to make something real and see it work.",
+        explanation:
+          "Strip away pay and status and what's left is intrinsic motivation — usually a kind of activity, not a job title.",
       },
     ],
   },
   {
     kind: "homework",
-    title: "Homework 4.2 — ∀, ∃, ∧, ∨, ¬, →, ↔",
+    title: "Homework 4.2 — The self you're becoming (II)",
     weekNumber: 4,
     isTimed: false,
     timeLimitMinutes: null,
-    instructions: "Use the Logic & Sets tab.",
+    instructions: HONEST_INSTRUCTIONS,
     problems: [
       {
-        topicSlug: "quantifiers",
+        topicSlug: "authority",
         prompt:
-          "Using ∀ and ∈, write the universal statement: 'For every real x, x² is at least 0.'",
-        correctAnswer: "∀ x ∈ ℝ, x² ≥ 0",
-        explanation: "$\\forall x \\in \\mathbb{R},\\ x^2 \\ge 0$.",
+          "How do you respond to authority and rules — comply, resist, charm, seethe? Name your reflex and take a guess at who first taught it. One or two sentences.",
+        correctAnswer:
+          "I comply on the surface and resent quietly. I think I learned it with a father you couldn't argue with — you just waited him out.",
+        explanation:
+          "Your reflex toward authority is usually older than the present situation. Tracing it to its source loosens the automatic part.",
       },
       {
-        topicSlug: "logical-connectives",
+        topicSlug: "feared-truths",
         prompt:
-          "Using ∧, ∨, and ¬, write De Morgan's logical law for the negation of (P ∧ Q).",
-        correctAnswer: "¬(P ∧ Q) ≡ ¬P ∨ ¬Q",
-        explanation: "$\\neg(P \\wedge Q) \\equiv \\neg P \\vee \\neg Q$.",
+          "As honestly as you dare, name one thing you're afraid is true about you. Go at your own pace — a few words is enough.",
+        correctAnswer:
+          "That underneath the competence, I'm a fraud who's just been lucky so far.",
+        explanation:
+          "Said out loud, a feared truth usually turns out to be an old, frightened hypothesis rather than a fact. Unsaid, it runs the show from backstage.",
       },
       {
-        topicSlug: "implication",
+        topicSlug: "keep-and-change",
         prompt:
-          "Using →, write modus tollens as an inference: from P → Q and ¬Q, what can be concluded?",
-        correctAnswer: "From (P → Q) and ¬Q, conclude ¬P",
-        explanation: "Modus tollens: $(P \\to Q) \\wedge \\neg Q \\Rightarrow \\neg P$.",
-      },
-      {
-        topicSlug: "number-sets",
-        prompt:
-          "Using ∈ and the blackboard-bold number sets, write a single sentence asserting that i (the imaginary unit) is in ℂ but not in ℝ.",
-        correctAnswer: "i ∈ ℂ and i ∉ ℝ",
-        explanation: "$i \\in \\mathbb{C}$ and $i \\notin \\mathbb{R}$, since $i^2 = -1$ has no real solution.",
+          "Name one thing about yourself you'd keep no matter what, and one thing you'd genuinely change. A sentence or two.",
+        correctAnswer:
+          "I'd keep my curiosity — it's never let me down. I'd change how much I let fear of judgment shrink what I attempt.",
+        explanation:
+          "Growth needs both: acceptance and the will to change. Many people can't name a single thing they'd keep — which is its own diagnosis.",
       },
     ],
   },
   {
     kind: "final",
-    title: "Final Exam — All notation",
+    title: "Final — Your Self-Portrait",
     weekNumber: 4,
     isTimed: true,
-    timeLimitMinutes: 90,
+    timeLimitMinutes: 60,
     instructions:
-      "Cumulative final covering every symbol family. 90 minutes. Math keyboard available; pasting disabled.",
+      "This is the capstone. Answer from what you've learned over four weeks — honestly, and still briefly. There are no right answers; you're graded on sincerity and depth. These final answers complete your evolving self-portrait in Analytics.",
     problems: [
       {
-        topicSlug: "equality-family",
+        topicSlug: "becoming",
         prompt:
-          "Pick the right symbol from {=, ≠, ≈, ≡} and write a true statement about $\\sin(\\pi)$ and $0$, and another about $1/3$ and $0.333$.",
-        correctAnswer: "sin(π) = 0 and 1/3 ≈ 0.333",
-        explanation: "$\\sin(\\pi) = 0$ exactly; $1/3 \\approx 0.333$ (the decimal is rounded).",
-      },
-      {
-        topicSlug: "exponents-notation",
-        prompt:
-          "Using exponent notation, write Newton's law of gravitation with constant G, masses m₁ and m₂, and distance r.",
-        correctAnswer: "F = G m₁ m₂ / r²",
-        explanation: "$F = G\\dfrac{m_1 m_2}{r^2}$.",
-      },
-      {
-        topicSlug: "sigma-summation",
-        prompt:
-          "Using Σ, write the formula for the dot product of two n-vectors a and b.",
-        correctAnswer: "a · b = Σ_{i=1}^{n} a_i b_i",
-        explanation: "$\\vec a \\cdot \\vec b = \\sum_{i=1}^{n} a_i b_i$.",
-      },
-      {
-        topicSlug: "integral-notation",
-        prompt:
-          "Using ∫, write the integral form of work done by a force F(x) moving an object from x = a to x = b along the x-axis.",
-        correctAnswer: "W = ∫_a^b F(x) dx",
-        explanation: "$W = \\int_a^b F(x)\\,\\mathrm{d}x$.",
-      },
-      {
-        topicSlug: "e-ln-log",
-        prompt:
-          "Using e, write the compound-interest formula in its continuous-compounding form for principal P, annual rate r, after t years.",
-        correctAnswer: "A = P e^{rt}",
-        explanation: "$A = P e^{rt}$.",
-      },
-      {
-        topicSlug: "distribution-notation",
-        prompt:
-          "Using ~ and N(·,·), write that IQ scores X are normally distributed with mean 100 and standard deviation 15.",
-        correctAnswer: "X ~ N(100, 15²)",
-        explanation: "$X \\sim N(100,\\,15^2)$ — the second slot is the variance, $\\sigma^2 = 225$.",
-      },
-      {
-        topicSlug: "probability-notation",
-        prompt:
-          "Using P(·|·), write the conditional probability that a randomly tested patient has a disease (D) given a positive test result (T).",
-        correctAnswer: "P(D | T)",
-        explanation:
-          "$P(D \\mid T)$ — the positive predictive value of the test.",
-      },
-      {
-        topicSlug: "quantifiers",
-        prompt:
-          "Using ∀, ∃, and >, write the ε–δ definition of $\\lim_{x \\to a} f(x) = L$.",
+          "Describe the direction you're currently heading — who you're becoming if nothing changes. Is that who you want to be? Name one small turn you could make.",
         correctAnswer:
-          "∀ ε > 0, ∃ δ > 0 : |x − a| < δ ⇒ |f(x) − L| < ε",
+          "If nothing changes, I'm becoming safer and smaller — more guarded each year. That's not who I want to be. One turn: say the honest thing once a day instead of swallowing it.",
         explanation:
-          "$\\forall \\varepsilon > 0,\\ \\exists \\delta > 0$ such that $|x - a| < \\delta \\Rightarrow |f(x) - L| < \\varepsilon$.",
+          "A trajectory, unlike a fixed trait, can still be turned. Naming the direction and one small turn is how you get a say.",
       },
       {
-        topicSlug: "set-operations",
+        topicSlug: "feared-truths",
         prompt:
-          "For independent events A and B with P(A)=0.4 and P(B)=0.5, write the equation for P(A ∩ B) using ∩, and compute the value.",
-        correctAnswer: "P(A ∩ B) = P(A) · P(B) = 0.20",
-        explanation: "Independence: $P(A \\cap B) = P(A) P(B) = 0.4 \\times 0.5 = 0.20$.",
-      },
-      {
-        topicSlug: "number-sets",
-        prompt:
-          "Using ∈ and the blackboard-bold sets, classify each of $-7$, $2/3$, $\\sqrt{2}$, and $3 + 4i$ by writing four membership statements that place each number in its smallest standard set.",
+          "Having sat with it for a week: does the thing you fear is true about you read more like a fact, or like an old hypothesis you inherited? Answer honestly.",
         correctAnswer:
-          "-7 ∈ ℤ, 2/3 ∈ ℚ, √2 ∈ ℝ, 3+4i ∈ ℂ",
+          "More like an old hypothesis — it sounds a lot like things I was told young. It's lost some of its weight just from saying it plainly.",
         explanation:
-          "$-7 \\in \\mathbb{Z}$ (integer), $2/3 \\in \\mathbb{Q}$ (rational, not integer), $\\sqrt 2 \\in \\mathbb{R}$ (irrational), $3 + 4i \\in \\mathbb{C}$ (non-real complex).",
+          "Naming a feared truth tends to shrink it. Seeing it as inherited rather than factual is often where the relief lives.",
+      },
+      {
+        topicSlug: "strengths",
+        prompt:
+          "What's one strength you've come to own more honestly over this course? One or two sentences.",
+        correctAnswer:
+          "That I'm steady for other people in a crisis. I used to wave it off; now I see it's genuinely rare and mine.",
+        explanation:
+          "Owning a strength without flinching is its own milestone. Notice if it was easier to write than it would have been four weeks ago.",
+      },
+      {
+        topicSlug: "recurring-conflicts",
+        prompt:
+          "What's one pattern in how you relate to others that you understand better now than you did four weeks ago? Name it briefly.",
+        correctAnswer:
+          "That I withdraw and then punish people for not reading my mind. I can at least catch myself starting it now.",
+        explanation:
+          "Understanding a pattern doesn't end it, but it interrupts the automatic part — and that's where change starts.",
+      },
+      {
+        topicSlug: "keep-and-change",
+        prompt:
+          "After four weeks of looking, what's the single most important thing you'd keep about yourself? Answer in a line.",
+        correctAnswer:
+          "My willingness to keep looking honestly, even when what I find isn't flattering.",
+        explanation:
+          "The 'keep' pile matters as much as the 'change' pile. What you'd protect about yourself is a quiet statement of your values.",
+      },
+      {
+        topicSlug: "capstone-portrait",
+        prompt:
+          "Write a short, honest self-portrait: who you are, as best you can now see, contradictions included. Keep it brief and true — a few sentences.",
+        correctAnswer:
+          "I'm warm but guarded, curious but easily scared off, generous with others and stingy with myself. I want to be seen and I hide. I'm slowly choosing to hide a little less.",
+        explanation:
+          "A true self-portrait captures something essential while admitting it can't capture everything. Holding the contradictions is the achievement.",
       },
     ],
   },
 ];
 
-// A stable fingerprint of the seed content. If the database holds topics that
-// don't match this set, we wipe and re-seed instead of leaving stale content
-// from a previous version of the course.
 const EXPECTED_TOPIC_SLUGS = TOPICS.map((t) => t.slug).sort().join(",");
 
-// Bump this whenever lecture bodies, assignment problems, or correct answers
+// Bump this whenever lecture bodies, assignment problems, or model reflections
 // change in a way that should propagate to the database on the next boot.
 // The value is stored alongside topics and compared in seedIfEmpty.
-const CONTENT_REVISION = "2026-05-26.eq-mc2-fix.r1";
+const CONTENT_REVISION = "2026-05-29.know-thyself.r1";
+
+// A stable sentinel phrase that appears verbatim in the 1.1 lecture body. The
+// drift check below greps the seeded `self-concept` lecture for this phrase; if
+// it's missing (or the slug set changed), the content has drifted and we reseed.
+// Keep this in sync with the `self-concept` lecture body above.
+const REVISION_SENTINEL = "the slow work of turning the second one over in your hands";
 
 export async function seedIfEmpty(): Promise<void> {
   const existing = await db.execute(sql`select count(*)::int as n from topics`);
@@ -1392,20 +1279,16 @@ export async function seedIfEmpty(): Promise<void> {
       .map((r) => r.slug)
       .sort()
       .join(",");
-    // Persisted content revision marker — stored as a topic slug-prefixed row
-    // in a tiny KV table created on first reseed. We use a simple text file
-    // approach via the `meta` table if it exists; otherwise we fall back to
-    // checking the equality-family lecture body for the corrected wording.
     const slugsMatch = actualSlugs === EXPECTED_TOPIC_SLUGS;
+    // Confirm the seeded content matches the current revision by checking the
+    // `self-concept` lecture body for a stable sentinel phrase.
     let revisionMatches = false;
     try {
-      const eqLec = await db.execute(
-        sql`select l.body from lectures l join topics t on l.topic_id = t.id where t.slug = 'equality-family' limit 1`,
+      const lec = await db.execute(
+        sql`select l.body from lectures l join topics t on l.topic_id = t.id where t.slug = 'self-concept' limit 1`,
       );
-      const body = ((eqLec.rows[0] ?? {}) as { body?: string }).body ?? "";
-      // The corrected lecture explicitly avoids calling E=mc^2 an identity.
-      revisionMatches =
-        body.includes("Einstein's famous **equation**") && !body.includes("famous **identity** $E \\equiv mc^2$");
+      const body = ((lec.rows[0] ?? {}) as { body?: string }).body ?? "";
+      revisionMatches = body.includes(REVISION_SENTINEL);
     } catch {
       revisionMatches = false;
     }

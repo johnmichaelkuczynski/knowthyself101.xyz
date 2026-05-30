@@ -17,7 +17,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-serif font-bold text-primary mb-2">
             {overview ? overview.title : <Skeleton className="h-9 w-64" />}
           </h1>
-          <p className="text-muted-foreground">Welcome to Teach Yourself Mathematical Notation.</p>
+          <p className="text-muted-foreground">A four-week practice in paying attention to yourself. There are no right answers — only honest ones.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -39,7 +39,7 @@ export default function Dashboard() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Practice Problems</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Reflections Written</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoadingOverview ? <Skeleton className="h-10 w-24" /> : (
@@ -88,7 +88,7 @@ export default function Dashboard() {
                       <div className="flex justify-between items-start">
                         <span className="font-medium text-sm">{item.title}</span>
                         {item.score !== undefined && item.score !== null && (
-                          <span className="text-xs font-bold px-2 py-0.5 bg-secondary rounded-full">{item.score}%</span>
+                          <span className="text-xs font-bold px-2 py-0.5 bg-secondary rounded-full">{Math.round(item.score)}%</span>
                         )}
                       </div>
                       <div className="text-xs text-muted-foreground">

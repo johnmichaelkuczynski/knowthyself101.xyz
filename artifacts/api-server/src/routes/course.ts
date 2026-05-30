@@ -18,24 +18,24 @@ const router: IRouter = Router();
 
 const WEEK_TITLES: Record<number, { title: string; summary: string }> = {
   1: {
-    title: "Week 1 — Foundations",
+    title: "The self you inherited",
     summary:
-      "Number sense, fractions and percents, ratios, units, expressions, and linear equations.",
+      "Where your sense of self came from: self-concept, earliest memories, family system, formative wounds, abandoned selves, inherited values, and the story you tell.",
   },
   2: {
-    title: "Week 2 — Functions and models",
+    title: "The self you enact",
     summary:
-      "Lines, systems, quadratics, exponentials, logs, modeling, inequalities.",
+      "How you actually move through the world: the unwatched self, avoidances, your energy map, work, money and security, risk and failure, and anger.",
   },
   3: {
-    title: "Week 3 — Statistics and probability",
+    title: "The self with others",
     summary:
-      "Summarizing data, distributions, probability, inference, regression.",
+      "Who you are in relationship: attachment, love, recurring conflicts, envy and admiration, unspoken needs, being seen, and solitude.",
   },
   4: {
-    title: "Week 4 — Reasoning and capstone",
+    title: "The self going forward",
     summary:
-      "Sets, logic, combinatorics, geometry, rates, finance, and the capstone.",
+      "Where you're headed: strengths, weaknesses, what you'd do for free, authority, feared truths, what to keep and change, becoming, and a closing self-portrait.",
   },
 };
 
@@ -124,7 +124,7 @@ router.get("/course/overview", async (_req, res) => {
 
   res.json(
     GetCourseOverviewResponse.parse({
-      title: "Teach Yourself Mathematical Notation",
+      title: "Know Thyself",
       weeks,
       totals: { assignmentsCompleted, assignmentsTotal, practiceCount },
     }),

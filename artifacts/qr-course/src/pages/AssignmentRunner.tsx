@@ -59,20 +59,6 @@ export default function AssignmentRunner() {
     }
   };
 
-  const _handleInsertSymbol = (symbol: string) => {
-    const problem = assignment?.problems[currentProblemIdx];
-    if (!problem) return;
-    const currentVal = answers[problem.id] || "";
-    const newVal = currentVal + symbol;
-    
-    // Fake trace for keyboard insert
-    const trace: KeystrokeTrace = {
-      keystrokeCount: 1, eraseCount: 0, durationMs: 0
-    };
-    
-    handleAnswerChange(problem.id, newVal, trace);
-  };
-
   const handleSubmit = () => {
     if (!attemptId) return;
     submitAttempt.mutate({ attemptId }, {
@@ -99,8 +85,8 @@ export default function AssignmentRunner() {
         <div className="p-8 max-w-4xl mx-auto w-full flex flex-col gap-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-serif font-bold text-primary mb-2">{assignment.title} - Results</h1>
-              <p className="text-muted-foreground">Score: {result.percent}% ({result.score}/{result.total})</p>
+              <h1 className="text-3xl font-serif font-bold text-primary mb-2">{assignment.title} — Reflections</h1>
+              <p className="text-muted-foreground">You answered {result.total} {result.total === 1 ? "prompt" : "prompts"}. There are no scores here — only what your words reveal.</p>
             </div>
             <Link href={`/assignments`}>
               <Button variant="outline">Back to Assignments</Button>
@@ -109,28 +95,22 @@ export default function AssignmentRunner() {
           
           <div className="flex flex-col gap-6">
             {result.perProblem.map((pr, idx) => (
-              <div key={pr.problemId} className={`p-6 rounded-lg border ${pr.correct ? 'border-chart-2/50 bg-chart-2/5' : 'border-destructive/50 bg-destructive/5'}`}>
-                <h3 className="font-medium mb-2">Problem {idx + 1}</h3>
+              <div key={pr.problemId} className="p-6 rounded-lg border border-border bg-card">
+                <h3 className="font-medium mb-2">Reflection {idx + 1}</h3>
                 <div className="mb-4">
-                  <span className="text-sm font-semibold">Your Answer:</span>
-                  <div className="font-mono mt-1">{pr.userAnswer || "No answer"}</div>
+                  <span className="text-sm font-semibold">What you wrote:</span>
+                  <div className="mt-1 whitespace-pre-wrap">{pr.userAnswer || "No answer"}</div>
                 </div>
-                {!pr.correct && pr.correctAnswer && (
-                  <div className="mb-4 text-primary">
-                    <span className="text-sm font-semibold">Correct Answer:</span>
-                    <div className="font-mono mt-1">{pr.correctAnswer}</div>
-                  </div>
-                )}
                 <div>
-                  <span className="text-sm font-semibold">Explanation:</span>
+                  <span className="text-sm font-semibold">What it reveals:</span>
                   <div className="mt-1 text-sm"><MarkdownRenderer content={pr.explanation} /></div>
                 </div>
                 
                 {/* AI Flags */}
                 {result.detection.find(d => d.problemId === pr.problemId)?.aiFlagged && (
                   <div className="mt-4 p-3 bg-secondary rounded-md text-sm border border-secondary-border">
-                    <strong className="text-chart-4">Flagged content accepted — no penalty during initial phase.</strong>
-                    <p className="text-muted-foreground mt-1">{result.detection.find(d => d.problemId === pr.problemId)?.rationale}</p>
+                    <strong className="text-chart-4">This reads as if it may not be in your own words.</strong>
+                    <p className="text-muted-foreground mt-1">The point of this course is to hear from you. {result.detection.find(d => d.problemId === pr.problemId)?.rationale}</p>
                   </div>
                 )}
               </div>

@@ -325,15 +325,15 @@ export default function Diagnostics() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="font-serif text-xl flex items-center gap-2">
-                <Activity className="w-5 h-5" /> Diagnostic 3 — Content auditor (OpenAI fact-check)
+                <Activity className="w-5 h-5" /> Diagnostic 3 — Content auditor (OpenAI review)
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                Sends every lecture body and every stored "correct answer" to OpenAI and asks for
-                an independent verdict on whether each is actually correct. Flags wrong physics,
-                misuse of notation (e.g. calling an equation an identity), wrong formulas, and
-                answers that don't actually satisfy their prompt. This is the audit you run before
-                shipping; it takes several minutes because every lecture and every problem is an
-                LLM call.
+                Sends every lecture body and every stored model reflection to OpenAI for an
+                independent review. Flags factual errors in the lectures (misattributed ideas,
+                misstated psychology or philosophy) and model reflections that don't fit their
+                prompt, aren't first-person, or read as generic and evasive. This is the audit you
+                run before shipping; it takes several minutes because every lecture and every
+                prompt is an LLM call.
               </p>
             </div>
             <button

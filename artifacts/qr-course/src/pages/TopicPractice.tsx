@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { AnswerInput } from "@/components/AnswerInput";
-import { ArrowLeft, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
 
 function difficultyFromAccuracy(attempts: number, accuracy: number): {
   value: number;
@@ -24,35 +24,35 @@ function difficultyFromAccuracy(attempts: number, accuracy: number): {
   if (attempts === 0) {
     return {
       value: 2.0,
-      label: "easy",
-      rationale: "You haven't practiced this topic yet — starting at an easy level.",
+      label: "gentle",
+      rationale: "You haven't reflected on this topic yet — starting with a gentle prompt.",
     };
   }
   if (accuracy < 40) {
     return {
       value: 1.5,
-      label: "very easy",
-      rationale: `Your accuracy on this topic is ${accuracy}% — starting with foundational problems.`,
+      label: "very gentle",
+      rationale: `You've engaged this topic lightly so far — starting with an inviting prompt.`,
     };
   }
   if (accuracy < 70) {
     return {
       value: 2.5,
-      label: "easy-medium",
-      rationale: `Your accuracy on this topic is ${accuracy}% — starting at a comfortable level to build confidence.`,
+      label: "gentle-deeper",
+      rationale: `You've begun opening up here — starting at a comfortable depth to keep going.`,
     };
   }
   if (accuracy < 90) {
     return {
       value: 3.5,
-      label: "medium-hard",
-      rationale: `You're doing well on this topic (${accuracy}%) — pushing into harder problems.`,
+      label: "deeper",
+      rationale: `You've been candid on this topic — going a little deeper.`,
     };
   }
   return {
     value: 4.5,
-    label: "challenging",
-    rationale: `You've mastered the basics here (${accuracy}%) — going to challenging problems.`,
+    label: "searching",
+    rationale: `You've reflected honestly here — moving to more searching prompts.`,
   };
 }
 
@@ -147,8 +147,6 @@ export default function TopicPractice() {
     );
   }
 
-  const sessionCorrect = history.filter((h) => h.correct).length;
-
   return (
     <Layout>
       <div className="p-6 md:p-8 max-w-3xl mx-auto w-full flex flex-col gap-5">
@@ -171,8 +169,8 @@ export default function TopicPractice() {
           </h1>
           {topic && (
             <div className="text-sm text-muted-foreground">
-              Week {topic.weekNumber} · {topic.attempts} prior attempt
-              {topic.attempts === 1 ? "" : "s"} · {topic.accuracy}% accuracy ·{" "}
+              Week {topic.weekNumber} · {topic.attempts} prior reflection
+              {topic.attempts === 1 ? "" : "s"} ·{" "}
               <span className="uppercase tracking-wider font-semibold">
                 {topic.strengthLabel}
               </span>
@@ -181,8 +179,8 @@ export default function TopicPractice() {
           {tuning && (
             <div className="mt-2 text-sm bg-secondary/60 border rounded-md p-3">
               <span className="font-semibold">Starting at {tuning.label}</span> ·{" "}
-              {tuning.rationale} Difficulty will adapt as you go — right answers push it
-              up, wrong ones bring it down.
+              {tuning.rationale} The depth adapts as you go — the more candid your
+              reflections, the deeper the prompts become.
             </div>
           )}
         </div>
@@ -195,7 +193,7 @@ export default function TopicPractice() {
           </div>
           <div className="flex items-center gap-3">
             <div className="text-xs text-muted-foreground">
-              Session score: {sessionCorrect}/{history.length}
+              Reflections this session: {history.length}
             </div>
             <Button
               size="sm"
@@ -238,20 +236,16 @@ export default function TopicPractice() {
             className={`rounded-md border p-3 ${
               grade.correct
                 ? "bg-emerald-50 border-emerald-300"
-                : "bg-red-50 border-red-300"
+                : "bg-amber-50 border-amber-300"
             }`}
           >
             <div
               className={`flex items-center gap-2 font-semibold mb-2 ${
-                grade.correct ? "text-emerald-800" : "text-red-800"
+                grade.correct ? "text-emerald-800" : "text-amber-800"
               }`}
             >
-              {grade.correct ? (
-                <CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <XCircle className="w-4 h-4" />
-              )}
-              {grade.correct ? "Correct" : "Not quite"}
+              <CheckCircle2 className="w-4 h-4" />
+              {grade.correct ? "What this reveals" : "An invitation to go deeper"}
             </div>
             <div className="text-sm prose prose-sm max-w-none">
               <MarkdownRenderer content={grade.explanation} />

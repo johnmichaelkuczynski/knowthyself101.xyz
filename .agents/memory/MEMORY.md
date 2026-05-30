@@ -1,0 +1,1 @@
+- [QuantReason runtime reskins](quantreason-reskin.md) — cloning qr-course/api-server into a no-right-answers domain: drop optional `correctAnswer` from API responses, sweep correctness copy in TopicPractice/Assignments/Analytics, relax brevity penalties in grading.

@@ -16,7 +16,7 @@ import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { AnswerInput } from "@/components/AnswerInput";
 import { StarterQuestionCard } from "@/components/StarterQuestionCard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2 } from "lucide-react";
 
 type ChatMsg = { role: "user" | "tutor"; text: string };
 
@@ -132,7 +132,7 @@ export default function LectureView() {
               <div className="bg-card border shadow-sm rounded-lg p-6 md:p-8" ref={articleRef}>
                 <MarkdownRenderer content={activeBody} />
                 <div className="mt-6 pt-4 border-t border-dashed border-border text-xs text-muted-foreground italic">
-                  Tip: highlight any passage above to ask the tutor about it, or to generate practice problems specifically on what you selected.
+                  Tip: highlight any passage above to reflect on it with the guide, or to generate practice prompts specifically on what you selected.
                 </div>
               </div>
             </article>
@@ -153,7 +153,7 @@ export default function LectureView() {
                 data-testid="tab-tutor"
               >
                 <MessageSquare className="w-4 h-4" />
-                Ask the tutor
+                Talk it through
               </button>
               <button
                 onClick={() => setTab("practice")}
@@ -244,8 +244,8 @@ function TutorPane({
   }, [history.length, ask.isPending]);
 
   const placeholder = selectedText
-    ? "Ask about the highlighted passage…"
-    : "Ask anything about this lecture… (Shift+Enter for newline)";
+    ? "Reflect on the highlighted passage…"
+    : "Think out loud about this lecture, or about yourself… (Shift+Enter for newline)";
 
   function sendMessage(msg: string) {
     const text = msg.trim();
@@ -285,13 +285,13 @@ function TutorPane({
     const a = attempt.trim();
     if (!a) return;
     const prompt =
-      `I'm trying to answer this starter question myself before you explain.\n\n` +
+      `I'm reflecting on this starter question before you respond.\n\n` +
       `QUESTION: ${question}\n\n` +
-      `MY ANSWER: ${a}\n\n` +
-      `Please (1) tell me clearly whether my answer is correct, partly correct, or wrong; ` +
-      `(2) point to the specific part of my reasoning that's right or off; ` +
-      `(3) then give the full correct answer with a brief worked example. ` +
-      `Keep it tight — don't restate the lecture.`;
+      `MY REFLECTION: ${a}\n\n` +
+      `There is no right answer here. Please (1) reflect back what my words seem to reveal about me; ` +
+      `(2) gently name any tension, avoidance, or pattern you notice; ` +
+      `(3) ask me one deeper follow-up question that would help me see myself more clearly. ` +
+      `Be warm and non-judgmental. Keep it tight — don't restate the lecture.`;
     sendMessage(prompt);
   }
 
@@ -352,10 +352,10 @@ function TutorPane({
                       onSubmitAttempt={(attempt) => submitAttempt(q, attempt)}
                       onShowAnswer={() =>
                         sendMessage(
-                          `The student clicked "Just show me the answer" — they do NOT want Socratic hints. ` +
-                            `Provide the complete, direct, factually correct answer to the question below, ` +
-                            `in 3–6 sentences, with a one-line worked example or formula where it helps. ` +
-                            `Use $...$ for any math.\n\nQUESTION: ${q}`,
+                          `The student clicked "Show me an example reflection" — they want to see how someone might honestly respond, not a lecture. ` +
+                            `Write a short, sincere, first-person example reflection (3–6 sentences) to the question below, ` +
+                            `the kind of candid, specific answer that shows real self-awareness. ` +
+                            `Make clear it's just one example and there's no right answer.\n\nQUESTION: ${q}`,
                         )
                       }
                       onDismiss={() =>
@@ -375,7 +375,7 @@ function TutorPane({
 
         {history.length === 0 && !showSuggestions && (
           <div className="m-auto text-center text-sm text-muted-foreground italic max-w-sm">
-            Ask the tutor for an explanation, a worked example, or a hint. Highlight a passage on the left to ground the question in that text.
+            Use this space to think aloud. Share a reflection and the guide will help you notice what it reveals. Highlight a passage on the left to ground it in the lecture.
           </div>
         )}
 
@@ -497,7 +497,7 @@ function PracticePane({
             Practice · {problem?.topicTitle ?? "this lecture"}
             {problem?.difficulty != null && (
               <span className="ml-2 normal-case font-normal">
-                · difficulty {problem.difficulty.toFixed(1)}/5
+                · depth {problem.difficulty.toFixed(1)}/5
               </span>
             )}
           </div>
@@ -543,27 +543,17 @@ function PracticePane({
         </div>
 
         {grade ? (
-          <div
-            className={`rounded-md border p-3 ${
-              grade.correct
-                ? "bg-emerald-50 border-emerald-300"
-                : "bg-red-50 border-red-300"
-            }`}
-          >
-            <div
-              className={`flex items-center gap-2 font-semibold mb-2 ${
-                grade.correct ? "text-emerald-800" : "text-red-800"
-              }`}
-            >
-              {grade.correct ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-              {grade.correct ? "Correct" : "Not quite"}
+          <div className="rounded-md border p-3 bg-primary/5 border-primary/30">
+            <div className="flex items-center gap-2 font-semibold mb-2 text-primary">
+              {grade.correct ? <CheckCircle2 className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+              {grade.correct ? "What this reveals" : "Worth going a little deeper"}
             </div>
             <div className="text-sm prose prose-sm max-w-none">
               <MarkdownRenderer content={grade.explanation} />
             </div>
             {grade.tutorTip && (
               <div className="mt-2 pt-2 border-t border-border/60 text-sm italic text-muted-foreground">
-                Tutor tip: {grade.tutorTip}
+                Something to sit with: {grade.tutorTip}
               </div>
             )}
             <div className="mt-3 flex justify-end">

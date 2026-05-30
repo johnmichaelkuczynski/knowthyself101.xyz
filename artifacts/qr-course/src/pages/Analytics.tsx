@@ -33,19 +33,19 @@ export default function Analytics() {
       <div className="p-8 max-w-6xl mx-auto w-full flex flex-col gap-8 pb-24">
         <div className="flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-serif font-bold text-primary mb-2">Analytics</h1>
-            <p className="text-muted-foreground">Track your progress and identify areas for improvement.</p>
+            <h1 className="text-3xl font-serif font-bold text-primary mb-2">Your Self-Portrait</h1>
+            <p className="text-muted-foreground">An evolving picture of you, drawn from everything you've written so far.</p>
           </div>
           <Button onClick={handleGenerateReport} disabled={generateReport.isPending}>
-            {generateReport.isPending ? "Generating..." : "Generate Narrative Report"}
+            {generateReport.isPending ? "Reflecting..." : "Update My Self-Portrait"}
           </Button>
         </div>
 
         {report && (
           <Card className="border-primary bg-primary/5">
             <CardHeader>
-              <CardTitle>AI Performance Report</CardTitle>
-              <div className="text-xs text-muted-foreground">Generated {new Date(report.generatedAt).toLocaleString()}</div>
+              <CardTitle>Your Self-Portrait</CardTitle>
+              <div className="text-xs text-muted-foreground">Drawn {new Date(report.generatedAt).toLocaleString()}</div>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
               <div>
@@ -53,27 +53,35 @@ export default function Analytics() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold text-chart-2 mb-2">Strengths</h4>
+                  <h4 className="font-semibold text-chart-2 mb-2">Patterns I noticed</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
                     {report.strengths.map((s: string, i: number) => <li key={i}>{s}</li>)}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-destructive mb-2">Areas for Improvement</h4>
+                  <h4 className="font-semibold text-chart-4 mb-2">Tensions worth sitting with</h4>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
                     {report.weaknesses.map((w: string, i: number) => <li key={i}>{w}</li>)}
                   </ul>
                 </div>
               </div>
+              {Array.isArray(report.recommendations) && report.recommendations.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-primary mb-2">Questions to carry forward</h4>
+                  <ul className="list-disc pl-5 space-y-1 text-sm">
+                    {report.recommendations.map((r: string, i: number) => <li key={i}>{r}</li>)}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <StatCard title="Course Average" value={summary?.officialAverage ? `${summary.officialAverage}%` : '-'} loading={isLoadingSummary} />
-          <StatCard title="Practice Accuracy" value={summary?.practiceAccuracy ? `${summary.practiceAccuracy}%` : '-'} loading={isLoadingSummary} />
+          <StatCard title="Depth Read" value={summary?.officialAverage ? `${summary.officialAverage}%` : '-'} loading={isLoadingSummary} />
+          <StatCard title="Practice Depth" value={summary?.practiceAccuracy ? `${summary.practiceAccuracy}%` : '-'} loading={isLoadingSummary} />
           <StatCard title="Assignments" value={summary?.attemptsCount} loading={isLoadingSummary} />
-          <StatCard title="Practice Count" value={summary?.practiceCount} loading={isLoadingSummary} />
+          <StatCard title="Reflections" value={summary?.practiceCount} loading={isLoadingSummary} />
           <StatCard title="Streak (Days)" value={summary?.streakDays} loading={isLoadingSummary} />
         </div>
 
@@ -89,8 +97,8 @@ export default function Analytics() {
                         <tr>
                           <th className="p-3 font-medium">Topic</th>
                           <th className="p-3 font-medium">Week</th>
-                          <th className="p-3 font-medium text-right">Attempts</th>
-                          <th className="p-3 font-medium text-right">Accuracy</th>
+                          <th className="p-3 font-medium text-right">Reflections</th>
+                          <th className="p-3 font-medium text-right">Sincerity</th>
                           <th className="p-3 font-medium text-center">Status</th>
                         </tr>
                       </thead>
@@ -143,7 +151,7 @@ export default function Analytics() {
                     <div className="flex justify-between items-start">
                       <div className="font-medium">{item.title}</div>
                       {item.score !== undefined && item.score !== null && (
-                        <div className="font-mono text-sm font-bold bg-secondary px-2 py-0.5 rounded">{item.score}%</div>
+                        <div className="font-mono text-sm font-bold bg-secondary px-2 py-0.5 rounded">{Math.round(item.score)}%</div>
                       )}
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground">

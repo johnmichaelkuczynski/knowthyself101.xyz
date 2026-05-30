@@ -23,8 +23,8 @@ router.get("/tutor/suggestions/:lectureId", async (req, res): Promise<void> => {
 
   try {
     const out = await chatJson<{ questions: string[] }>(
-      'You are an encouraging college quantitative-reasoning tutor. Reply as strict JSON of the form {"questions": string[]} with NO other keys.',
-      `From the lecture below, generate 6 short, concrete starter questions a student might want to ask after reading it. Cover every major idea in the reading (not just the first one). Each question must be one sentence, under ~18 words, in the student's voice (e.g. "Why does ...?", "Can you show me ...?", "What's the difference between ...?").\n\nMATH NOTATION RULES (strict):\n- ANY math symbol, variable, formula, or expression — including simple ones like $E$, $mc^2$, $\\pi$, $x^2$, $\\Delta S \\ge 0$ — MUST be wrapped in $...$ (LaTeX inline math).\n- NEVER write raw exponents like mc^2, x^2, or H_2O. ALWAYS wrap: $mc^2$, $x^2$, $H_2O$.\n- Greek letters and special symbols (\\pi, \\sigma, \\Delta, \\equiv, \\approx, \\sum, \\int, \\to, \\forall, \\in, \\mathbb{R}, ...) MUST be inside $...$.\n- Plain English words ("identity", "limit", "set") stay outside the math delimiters.\n\nLECTURE TITLE: ${lecture.title}\n\nLECTURE BODY:\n"""\n${lecture.body}\n"""`,
+      'You are a warm, perceptive guide on a self-knowledge course. Reply as strict JSON of the form {"questions": string[]} with NO other keys.',
+      `From the reflective lecture below, generate 6 short starter questions a person might want to explore with a thoughtful guide after reading it. Mix two kinds: (a) questions about the ideas in the lecture ("Why do we...?", "What's the difference between...?") and (b) gentle questions that turn the lecture inward and invite self-examination ("How would I know if I...?", "Where might this show up in my own life?"). Cover the major ideas in the reading, not just the first one. Each question must be one sentence, under ~18 words, in the reader's own voice. Plain language, no jargon.\n\nLECTURE TITLE: ${lecture.title}\n\nLECTURE BODY:\n"""\n${lecture.body}\n"""`,
       FAST_MODEL,
     );
     const questions = Array.isArray(out?.questions)
@@ -45,9 +45,13 @@ router.post("/tutor/ask", async (req, res): Promise<void> => {
   const { message, selectedLectureText } = parsed.data;
 
   const sys =
-    "You are an encouraging college quantitative-reasoning tutor. Explain step by step, prefer concrete numbers, and write inline math as $...$ (LaTeX). Keep replies short (3-6 sentences) unless the student asks for more detail. By default, guide rather than hand over the answer — BUT if the student explicitly asks you to 'just give the answer', 'show me the answer', 'tell me the answer', or otherwise asks for a direct answer, then give the complete, correct answer plainly without Socratic dodging.";
+    "You are a warm, perceptive guide on a self-knowledge course — part thoughtful teacher, part wise friend. " +
+    "There are no right answers here; your role is to help the person understand the ideas AND understand themselves. " +
+    "When they ask about a concept, explain it clearly and plainly in 3-6 sentences, grounding it in everyday life. " +
+    "When they share something personal, respond with curiosity and care: reflect back what you notice, ask one gentle follow-up question, and never judge, diagnose, or label them. " +
+    "Draw on real psychology and philosophy where useful, but stay accessible and free of jargon. Keep replies short unless they ask for more.";
   const user = selectedLectureText
-    ? `Context from the lecture the student is reading:\n"""\n${selectedLectureText}\n"""\n\nStudent question: ${message}`
+    ? `Context from the lecture the person is reading:\n"""\n${selectedLectureText}\n"""\n\nTheir message: ${message}`
     : message;
 
   let text = "";

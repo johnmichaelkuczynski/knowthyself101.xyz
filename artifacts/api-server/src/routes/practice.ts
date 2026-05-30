@@ -148,6 +148,22 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
       : "challenging";
 
   const userRequest = parsed.data.request?.trim() || "";
+  // On a self-knowledge course, "difficulty" maps to how DEEP/vulnerable the
+  // reflective prompt asks the person to go — gentle and surface at low levels,
+  // searching and tender at high levels. There are no correct answers; the
+  // `correctAnswer` field holds a short first-person MODEL REFLECTION showing the
+  // kind of depth a sincere answer can reach (used by the grader, never shown as
+  // a key). `explanation` notes what the question tends to reveal.
+  const depthLabel =
+    difficulty <= 1.7
+      ? "gentle and easy to answer"
+      : difficulty <= 2.5
+      ? "lightly probing"
+      : difficulty <= 3.3
+      ? "honestly searching"
+      : difficulty <= 4.1
+      ? "deep and a little vulnerable"
+      : "deeply searching and tender";
   let generated: { prompt: string; correctAnswer: string; explanation: string };
   try {
     generated = await chatJson<{
@@ -155,20 +171,22 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
       correctAnswer: string;
       explanation: string;
     }>(
-      `You generate a single quantitative-reasoning practice problem for a college freshman. The problem MUST be on the topic "${topic.title}" and at difficulty "${difficultyLabel}" (${difficulty.toFixed(
+      `You generate a single short reflective prompt for a self-knowledge course. The prompt MUST be on the topic "${topic.title}" and should be ${depthLabel} (depth ${difficulty.toFixed(
         1,
-      )}/5). Use $...$ for inline LaTeX where helpful. The answer must be a short string (a number, fraction, expression, or short word) — never multi-paragraph. Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Avoid these recent prompts: ${JSON.stringify(
-        lastProblems.map((p) => p.prompt),
-      )}.`,
-      userRequest || `Generate a new ${difficultyLabel} problem on ${topic.title}.`,
+      )}/5). It must invite a SHORT, honest, first-person answer (a sentence or two) about the person's own life — there are NO correct answers. ` +
+        `Return: "prompt" (the reflective question, plain language, no jargon), "correctAnswer" (a short, plausible first-person MODEL REFLECTION showing the kind of depth a sincere answer reaches — this is a reference, never shown to the user as correct), and "explanation" (one sentence on what this question tends to reveal). ` +
+        `Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Avoid these recent prompts: ${JSON.stringify(
+          lastProblems.map((p) => p.prompt),
+        )}.`,
+      userRequest || `Generate a new ${depthLabel} reflective prompt on ${topic.title}.`,
     );
   } catch {
     generated = {
-      prompt: `Practice (${topic.title}): If $x + ${Math.round(
-        difficulty * 3,
-      )} = ${Math.round(difficulty * 7)}$, what is $x$?`,
-      correctAnswer: String(Math.round(difficulty * 7) - Math.round(difficulty * 3)),
-      explanation: "Subtract from both sides.",
+      prompt: `Reflecting on ${topic.title.toLowerCase()}: in a sentence or two, what's the most honest thing you can say about this in your own life right now?`,
+      correctAnswer:
+        "The honest answer is that I haven't looked at this closely before, and what comes up first is discomfort I usually move past quickly.",
+      explanation:
+        "What you reach for first — and whether you let yourself stay with it — is itself revealing.",
     };
   }
 
@@ -257,10 +275,9 @@ router.post("/practice/sessions/:sessionId/grade", async (req, res): Promise<voi
     try {
       tutorTip = (
         await chatJson<{ tip: string }>(
-          "You are a kind, concise math tutor. Given a problem, the correct answer, and the student's wrong attempt, give ONE focused next-step tip (2 sentences max). Respond as strict JSON: {\"tip\": string}.",
+          "You are a warm, gentle guide on a self-knowledge course. The person gave an answer that dodged the reflective question rather than meeting it honestly. Without scolding, offer ONE kind, encouraging nudge (2 sentences max) inviting them to try a more honest, specific answer. There are no right answers — only honest ones. Respond as strict JSON: {\"tip\": string}.",
           JSON.stringify({
             prompt: problem.prompt,
-            correctAnswer: problem.correctAnswer,
             studentAnswer: answer,
           }),
         )
@@ -274,7 +291,6 @@ router.post("/practice/sessions/:sessionId/grade", async (req, res): Promise<voi
     GradePracticeAnswerResponse.parse({
       problemId,
       correct: graded.correct,
-      correctAnswer: problem.correctAnswer,
       explanation: graded.explanation || problem.explanation,
       newDifficulty,
       tutorTip,

@@ -63,7 +63,7 @@ router.get("/diagnostics/system", async (_req, res) => {
       const l = await db.select().from(lecturesTable);
       const a = await db.select().from(assignmentsTable);
       const p = await db.select().from(problemsTable);
-      if (t.length < 28) throw new Error(`only ${t.length} topics`);
+      if (t.length < 29) throw new Error(`only ${t.length} topics`);
       if (l.length < 1) throw new Error("no lectures");
       if (a.length < 1) throw new Error("no assignments");
       if (p.length < 1) throw new Error("no problems");
@@ -111,14 +111,23 @@ router.get("/diagnostics/system", async (_req, res) => {
   );
 
   steps.push(
-    await run("Grader: equivalence check", async () => {
-      const g = await gradeAnswer({
-        prompt: "What is 2 + 2?",
-        correctAnswer: "4",
-        userAnswer: "four",
+    await run("Grader: sincerity & depth check", async () => {
+      // A sincere, specific reflection should pass; an evasive non-answer should not.
+      const sincere = await gradeAnswer({
+        prompt: "What role did you play in your family growing up?",
+        correctAnswer:
+          "I was the peacemaker — the one who smoothed things over before they boiled.",
+        userAnswer:
+          "I was the quiet one who tried to keep the peace, and I still do that at work.",
       });
-      if (!g.correct) throw new Error('"four" should equal "4"');
-      return "semantic equivalence ok";
+      if (!sincere.correct) throw new Error("a sincere reflection should pass");
+      const evasive = await gradeAnswer({
+        prompt: "What role did you play in your family growing up?",
+        correctAnswer: "I was the peacemaker.",
+        userAnswer: "idk",
+      });
+      if (evasive.correct) throw new Error('"idk" should not pass the sincerity bar');
+      return "sincerity grading ok (sincere passes, evasive fails)";
     }),
   );
 
@@ -317,8 +326,8 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
           correctAnswer: string;
           explanation: string;
         }>(
-          `You generate a single quantitative-reasoning practice problem on "${topic.title}" at easy difficulty. Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}.`,
-          `New problem on ${topic.title}.`,
+          `You generate a single short reflective prompt for a self-knowledge course on "${topic.title}". It invites a SHORT, honest, first-person answer; there are no correct answers. "correctAnswer" is a short first-person MODEL REFLECTION (a depth reference, never shown as correct). Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}.`,
+          `New reflective prompt on ${topic.title}.`,
         );
         const [stored] = await db
           .insert(practiceProblemsTable)
@@ -366,7 +375,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
   steps.push(
     await run("AI detection scan (pasted-style text should flag)", async () => {
       const r = await detect(
-        "In conclusion, the multifaceted tapestry of mathematical notation is paramount to navigating the landscape of modern academic discourse.",
+        "In conclusion, the multifaceted tapestry of self-discovery is paramount to navigating the landscape of one's authentic personal journey.",
         {
           keystrokeCount: 8,
           eraseCount: 0,
@@ -397,7 +406,7 @@ router.post("/diagnostics/synthetic-run", async (_req, res) => {
   steps.push(
     await run("Analytics report (LLM narrative)", async () => {
       const out = await chatJson<{ narrative: string; recommendations: string[] }>(
-        "You are an academic advisor. Reply as strict JSON.",
+        "You are a psychological portraitist. Reply as strict JSON.",
         'Return {"narrative": "ok", "recommendations": ["a","b","c"]}.',
       );
       if (!out.narrative) throw new Error("no narrative");
@@ -448,21 +457,21 @@ router.post("/diagnostics/expand-lectures", async (req, res) => {
   const ratio = level === "long" ? "roughly 2x to 3x the length of the SHORT version" : "roughly 1.5x to 2x the length of the SHORT version";
   const moreExamples =
     level === "long"
-      ? "At least TWO additional fully worked examples for every concept beyond what the short version has — pick contrasting cases (edge cases, common mistakes, larger numbers, real-world framings)."
-      : "At least ONE additional fully worked example for every concept beyond what the short version has.";
+      ? "At least TWO additional concrete illustrations for every idea beyond what the short version has — pick contrasting cases (different kinds of people, everyday situations, a relevant idea from psychology or philosophy, a common way the pattern hides)."
+      : "At least ONE additional concrete illustration for every idea beyond what the short version has.";
   const moreExplanation =
     level === "long"
-      ? "Considerably more explanation: motivate every rule, explain WHY it works, name common pitfalls, and add brief 'sanity check' notes after computations."
-      : "Noticeably more explanation: clarify each definition, motivate each rule, and add a short 'why this works' note where useful.";
+      ? "Considerably more explanation: motivate every idea, explain WHY it tends to be true, name common ways people miss it in themselves, and add brief reflective asides that invite the reader to notice it in their own life."
+      : "Noticeably more explanation: clarify each idea, motivate why it matters, and add a short 'notice this in yourself' aside where useful.";
 
   const sys =
-    `You are a college quantitative-reasoning lecturer producing the ${level.toUpperCase()} version of a lecture. ` +
+    `You are a thoughtful lecturer on a self-knowledge course producing the ${level.toUpperCase()} version of a reflective lecture. ` +
     "You are given the SHORT version of the lecture. Rewrite it as a longer teaching version. RULES, no exceptions:\n" +
-    "1. KEEP every heading and every concept from the SHORT version, in the same order, with the same names. You may add new sub-sections only when needed to introduce additional examples — but no new top-level topics.\n" +
+    "1. KEEP every heading and every idea from the SHORT version, in the same order, with the same names. You may add new sub-sections only when needed to introduce additional illustrations — but no new top-level topics.\n" +
     `2. ${moreExplanation}\n` +
-    `3. ${moreExamples} Use \`## Example\` / \`### Example 1\`, \`### Example 2\` headings, with numbered steps. Inline math \`$...$\`, display math \`$$...$$\` (escape backslashes in LaTeX commands).\n` +
+    `3. ${moreExamples} Use \`## Example\` / \`### In life\` style headings where helpful.\n` +
     `4. Length target: ${ratio}.\n` +
-    "5. Friendly, plain English. No filler, no hedging, no 'in conclusion'. Examples carry the load.\n" +
+    "5. Warm, plain English, free of jargon and clinical labels. No filler, no hedging, no 'in conclusion'. Concrete human detail carries the load, and the tone stays non-judgmental.\n" +
     "6. Return ONLY the rewritten Markdown lecture body. No preface, no commentary, no code fences around the whole thing.";
 
   let updated = 0;
@@ -520,9 +529,9 @@ async function auditLecture(
 ): Promise<LectureAuditRow> {
   try {
     const out = await chatJson<{ issues?: LectureIssue[] }>(
-      "You are a rigorous mathematics and physics fact-checker for a college-level course on mathematical notation. " +
-        "You scrutinize a single lecture body for FACTUAL ERRORS only — wrong definitions, wrong formulas, wrong physical laws, wrong worked examples, misuse of notation (e.g. calling an equation an identity when it isn't), incorrect numerical claims, or self-contradictions. " +
-        "Style, tone, completeness, and pedagogy are OUT OF SCOPE — do NOT flag them. " +
+      "You are a rigorous fact-checker for a self-knowledge course grounded in psychology and philosophy. " +
+        "You scrutinize a single reflective lecture body for FACTUAL ERRORS only — misattributed ideas or quotes, misstated psychology/philosophy concepts (e.g. wrongly describing attachment styles, the Dunning-Kruger effect, or a named thinker's actual argument), wrong names or dates, or self-contradictions. " +
+        "Style, tone, completeness, pedagogy, and the absence of citations are OUT OF SCOPE — do NOT flag them. Gentle generalizations about human nature that are broadly supported are NOT errors. " +
         'Respond as strict JSON: {"issues": [{"quote": string, "problem": string, "fix": string}]}. ' +
         '"quote" must be a short verbatim snippet from the lecture (<= 160 chars). "problem" states the error in one sentence. "fix" proposes the correction in one sentence. ' +
         'If the lecture contains no factual errors, respond with {"issues": []}.',
@@ -561,14 +570,14 @@ async function auditProblem(p: {
       issue?: string;
       betterAnswer?: string;
     }>(
-      "You are a rigorous grader for a college-level math-notation course. " +
-        "You are given a problem PROMPT and the STATED CORRECT ANSWER stored in the course database. " +
-        "Decide whether the stated answer is genuinely correct, fully sufficient, and notationally appropriate for the prompt. " +
-        "Minor stylistic differences (LaTeX vs unicode, spacing, equivalent algebraic forms) are NOT issues. Flag only true errors: wrong value, wrong formula, wrong symbol, wrong physics, missing a required part of the answer, or an answer that does not actually satisfy the prompt. " +
+      "You are a reviewer for a self-knowledge course. There are NO correct answers on this course. " +
+        "You are given a reflective PROMPT and a stored MODEL REFLECTION — a short, first-person example answer whose only job is to show the kind of SINCERITY and DEPTH a real answer can reach (it is never shown to students as a correct answer). " +
+        "Decide whether the model reflection is a good fit for its prompt: it should (a) actually respond to what the prompt asks, (b) be written in the first person, (c) be short, and (d) read as a sincere, specific, non-evasive human reflection rather than a generic platitude. " +
+        "Do NOT judge it for being 'wrong' — there is no right answer. Flag only true mismatches: it answers a different question, isn't first-person, is generic/evasive, or contradicts the prompt. " +
         'Respond as strict JSON: {"verdict": "correct" | "incorrect" | "ambiguous", "issue": string, "betterAnswer": string}. ' +
-        'If verdict is "correct", issue and betterAnswer may be empty strings. ' +
-        'If verdict is "incorrect" or "ambiguous", "issue" must explain the problem in one sentence and "betterAnswer" must give the answer you would store instead.',
-      `PROMPT:\n"""${p.prompt}"""\n\nSTATED CORRECT ANSWER:\n"""${p.correctAnswer}"""`,
+        'Use "correct" when the model reflection is a good fit. ' +
+        'If verdict is "incorrect" or "ambiguous", "issue" must explain the mismatch in one sentence and "betterAnswer" must give a better short first-person model reflection to store instead.',
+      `PROMPT:\n"""${p.prompt}"""\n\nSTORED MODEL REFLECTION:\n"""${p.correctAnswer}"""`,
       TEXT_MODEL,
     );
     const verdict = out?.verdict ?? "ambiguous";

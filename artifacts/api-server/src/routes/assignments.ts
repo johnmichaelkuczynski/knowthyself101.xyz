@@ -284,7 +284,6 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
       problemId: p.id,
       correct: graded.correct,
       userAnswer,
-      correctAnswer: p.correctAnswer,
       explanation: graded.explanation || p.explanation,
     });
 

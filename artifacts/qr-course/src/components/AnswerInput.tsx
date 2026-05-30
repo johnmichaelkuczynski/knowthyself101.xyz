@@ -1,18 +1,16 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { KeystrokeTrace } from "@workspace/api-client-react";
-import { MathKeyboard } from "@/components/MathKeyboard";
-import { QuickPickBar } from "@/components/QuickPickBar";
 
 interface AnswerInputProps {
   value: string;
   onChange: (val: string, trace: KeystrokeTrace) => void;
   placeholder?: string;
   disabled?: boolean;
-  /** Source text (the question prompt) used to derive the per-question quick-pick symbol bar. */
+  /** Unused on this course; kept for call-site compatibility. */
   promptSource?: string;
 }
 
-export function AnswerInput({ value, onChange, placeholder, disabled, promptSource }: AnswerInputProps) {
+export function AnswerInput({ value, onChange, placeholder, disabled }: AnswerInputProps) {
   const [sessionValue, setSessionValue] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -76,85 +74,8 @@ export function AnswerInput({ value, onChange, placeholder, disabled, promptSour
   const handlePaste = (e: React.ClipboardEvent) => e.preventDefault();
   const handleDrop = (e: React.DragEvent) => e.preventDefault();
 
-  const insertAtCursor = useCallback(
-    (text: string) => {
-      if (!text) return;
-      const ta = textareaRef.current;
-      const current = sessionValue;
-      let next: string;
-      let nextCaret: number;
-      if (ta && document.activeElement === ta) {
-        const start = ta.selectionStart ?? current.length;
-        const end = ta.selectionEnd ?? current.length;
-        next = current.slice(0, start) + text + current.slice(end);
-        nextCaret = start + text.length;
-      } else {
-        next = current + text;
-        nextCaret = next.length;
-      }
-      traceRef.current.keystrokeCount += text.length;
-      setSessionValue(next);
-      emitChange(next);
-      requestAnimationFrame(() => {
-        if (!ta) return;
-        ta.focus();
-        try {
-          ta.setSelectionRange(nextCaret, nextCaret);
-        } catch {}
-      });
-    },
-    [sessionValue, emitChange],
-  );
-
-  const backspaceAtCursor = useCallback(() => {
-    const ta = textareaRef.current;
-    const current = sessionValue;
-    let next: string;
-    let nextCaret: number;
-    if (ta && document.activeElement === ta) {
-      const start = ta.selectionStart ?? current.length;
-      const end = ta.selectionEnd ?? current.length;
-      if (start === end) {
-        if (start === 0) return;
-        next = current.slice(0, start - 1) + current.slice(end);
-        nextCaret = start - 1;
-      } else {
-        next = current.slice(0, start) + current.slice(end);
-        nextCaret = start;
-      }
-    } else {
-      if (current.length === 0) return;
-      next = current.slice(0, -1);
-      nextCaret = next.length;
-    }
-    traceRef.current.eraseCount += 1;
-    if (!lastKeyWasEraseRef.current) {
-      traceRef.current.rewriteSegments = (traceRef.current.rewriteSegments || 0) + 1;
-    }
-    lastKeyWasEraseRef.current = true;
-    setSessionValue(next);
-    emitChange(next);
-    requestAnimationFrame(() => {
-      if (!ta) return;
-      ta.focus();
-      try {
-        ta.setSelectionRange(nextCaret, nextCaret);
-      } catch {}
-    });
-  }, [sessionValue, emitChange]);
-
-  const clearAll = useCallback(() => {
-    traceRef.current.eraseCount += sessionValue.length;
-    setSessionValue("");
-    emitChange("");
-    requestAnimationFrame(() => textareaRef.current?.focus());
-  }, [sessionValue.length, emitChange]);
-
   return (
     <div className="flex flex-col gap-2 w-full">
-      {!disabled && promptSource ? (
-        <QuickPickBar source={promptSource} onInsert={insertAtCursor} />
-      ) : null}
       <textarea
         ref={textareaRef}
         value={sessionValue}
@@ -162,18 +83,13 @@ export function AnswerInput({ value, onChange, placeholder, disabled, promptSour
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
         onDrop={handleDrop}
-        placeholder={placeholder || "Type your answer here..."}
+        placeholder={placeholder || "Write your honest answer here — a sentence or two is plenty…"}
         disabled={disabled}
-        className="w-full min-h-[180px] p-5 bg-card border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary font-mono text-3xl leading-relaxed resize-y"
+        className="w-full min-h-[160px] p-5 bg-card border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-lg leading-relaxed resize-y"
       />
-      <span className="text-xs text-muted-foreground px-1">Pasting is disabled.</span>
-      {!disabled && (
-        <MathKeyboard
-          onInsert={insertAtCursor}
-          onBackspace={backspaceAtCursor}
-          onClear={clearAll}
-        />
-      )}
+      <span className="text-xs text-muted-foreground px-1">
+        Pasting is disabled — answer in your own words. There are no right answers; honesty is the whole point.
+      </span>
     </div>
   );
 }

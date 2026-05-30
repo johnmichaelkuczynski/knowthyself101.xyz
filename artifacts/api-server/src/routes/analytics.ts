@@ -6,6 +6,8 @@ import {
   attemptsTable,
   practiceAttemptsTable,
   assignmentsTable,
+  answersTable,
+  problemsTable,
 } from "@workspace/db";
 import {
   GetAnalyticsSummaryResponse,
@@ -159,58 +161,130 @@ router.get("/analytics/activity", async (_req, res) => {
   res.json(GetRecentActivityResponse.parse(items.slice(0, 30)));
 });
 
+// Build an evolving psychological self-portrait from EVERY reflection the student
+// has submitted. This is the heart of the course: the more they answer, the richer
+// and more specific the portrait becomes. We map it onto the shared report shape:
+//   narrative      -> the self-portrait (who you appear to be)
+//   strengths      -> recurring patterns / traits that come through
+//   weaknesses     -> tensions, contradictions, and blind spots
+//   recommendations-> questions worth sitting with next
 router.post("/analytics/report", async (_req, res) => {
-  const topics = await topicStats();
-  const submitted = await db
-    .select()
-    .from(attemptsTable)
-    .where(eq(attemptsTable.status, "submitted"));
-  const officialAverage =
-    submitted.length === 0
-      ? 0
-      : submitted.reduce((s, a) => s + (a.scorePercent ?? 0), 0) / submitted.length;
+  // Gather every submitted assignment answer, joined to its question and topic.
+  const submittedRows = await db
+    .select({
+      topicTitle: topicsTable.title,
+      weekNumber: topicsTable.weekNumber,
+      prompt: problemsTable.prompt,
+      answer: answersTable.answer,
+      submittedAt: attemptsTable.submittedAt,
+    })
+    .from(answersTable)
+    .innerJoin(attemptsTable, eq(answersTable.attemptId, attemptsTable.id))
+    .innerJoin(problemsTable, eq(answersTable.problemId, problemsTable.id))
+    .innerJoin(topicsTable, eq(problemsTable.topicId, topicsTable.id))
+    .where(eq(attemptsTable.status, "submitted"))
+    .orderBy(asc(attemptsTable.submittedAt));
 
-  const tested = topics.filter((t) => t.attempts > 0);
-  tested.sort((a, b) => a.accuracy - b.accuracy);
-  const weakest = tested.slice(0, 3).map((t) => t.topicTitle);
-  const strongest = tested.slice(-3).reverse().map((t) => t.topicTitle);
+  // Include practice reflections too — they're part of the same self.
+  const practiceRows = await db
+    .select({
+      topicTitle: topicsTable.title,
+      prompt: practiceAttemptsTable.answer,
+      answer: practiceAttemptsTable.answer,
+    })
+    .from(practiceAttemptsTable)
+    .innerJoin(topicsTable, eq(practiceAttemptsTable.topicId, topicsTable.id));
 
-  let narrative = "";
-  let recommendations: string[] = [];
-  try {
-    const out = await chatJson<{ narrative: string; recommendations: string[] }>(
-      "You are an academic advisor for a college quantitative-reasoning course. Write a 2-paragraph, encouraging but honest narrative summary, then list 3 concrete next-step recommendations. Strict JSON: {\"narrative\": string, \"recommendations\": string[]}.",
-      JSON.stringify({
-        officialAverage,
-        attempts: submitted.length,
-        weakestTopics: weakest,
-        strongestTopics: strongest,
-        perTopic: topics,
+  const reflections = submittedRows
+    .filter((r) => (r.answer ?? "").trim().length > 0)
+    .map((r) => ({
+      topic: r.topicTitle,
+      week: r.weekNumber,
+      question: r.prompt,
+      answer: r.answer,
+    }));
+  const answeredCount = reflections.length;
+  const practiceCount = practiceRows.filter((r) => (r.answer ?? "").trim().length > 0).length;
+
+  // Not enough material yet — return a gentle, honest placeholder.
+  if (answeredCount === 0) {
+    res.json(
+      GenerateReportResponse.parse({
+        generatedAt: new Date().toISOString(),
+        narrative:
+          "Your self-portrait is still blank — it's painted from your own words. Answer a few reflections in any homework, test, or practice session, then come back here. With each honest answer, this picture of you grows more detailed and more specific. Nothing here is a verdict; it's a mirror you fill in yourself.",
+        strengths: [],
+        weaknesses: [],
+        recommendations: [
+          "Start with Homework 1.1 — it asks who you think you are.",
+          "Answer honestly rather than impressively; the mirror only reflects what's real.",
+          "Return here after a few answers to watch your portrait take shape.",
+        ],
       }),
     );
-    narrative = out.narrative;
-    recommendations = out.recommendations ?? [];
-  } catch {
-    narrative =
-      tested.length === 0
-        ? "You haven't accumulated enough graded work yet to draw conclusions. Try a practice session or finish a homework, then regenerate this report."
-        : `You're averaging ${officialAverage.toFixed(
-            1,
-          )}% on official assignments. Your strongest area so far is ${
-            strongest[0] ?? "n/a"
-          }; your weakest is ${weakest[0] ?? "n/a"}.`;
-    recommendations =
-      weakest.length > 0
-        ? weakest.map((w) => `Run a focused practice session on ${w}.`)
-        : ["Open a homework and start with a small set of problems."];
+    return;
   }
+
+  let narrative = "";
+  let strengths: string[] = [];
+  let weaknesses: string[] = [];
+  let recommendations: string[] = [];
+  try {
+    const out = await chatJson<{
+      portrait: string;
+      patterns: string[];
+      tensions: string[];
+      questions: string[];
+    }>(
+      "You are a perceptive, warm, and honest psychological portraitist on a self-knowledge course. " +
+        "You are given a person's own short, honest answers to reflective questions about themselves (their inherited self, how they act, how they relate to others, and who they're becoming). " +
+        "From ONLY the evidence in their answers, build an evolving psychological self-portrait. Speak directly to them as 'you'. Be specific to what they actually wrote — quote or paraphrase their own words where it helps. " +
+        "Be insightful and compassionate, like a wise friend who has listened closely. Offer observations and hypotheses ('you seem to...', 'a thread running through your answers is...'), never clinical diagnoses, labels, or verdicts. Do not flatter and do not condemn; aim for true. " +
+        "Acknowledge that this is a portrait-in-progress that will deepen as they answer more.\n" +
+        "Produce strict JSON: {\"portrait\": string, \"patterns\": string[], \"tensions\": string[], \"questions\": string[]}.\n" +
+        "- portrait: 2-3 paragraphs describing who this person appears to be, the threads connecting their answers, what they value, fear, and seek.\n" +
+        "- patterns: 3-5 short phrases naming recurring traits or patterns that come through clearly.\n" +
+        "- tensions: 2-4 short phrases naming contradictions, blind spots, or unresolved tensions you notice between their answers.\n" +
+        "- questions: 3 gentle, specific questions worth sitting with next, drawn from what's still unexamined in their answers.",
+      JSON.stringify({
+        answersAnalyzed: answeredCount,
+        reflections,
+      }),
+    );
+    narrative = (out.portrait || "").trim();
+    strengths = Array.isArray(out.patterns) ? out.patterns.filter(Boolean) : [];
+    weaknesses = Array.isArray(out.tensions) ? out.tensions.filter(Boolean) : [];
+    recommendations = Array.isArray(out.questions) ? out.questions.filter(Boolean) : [];
+  } catch {
+    narrative = `Your self-portrait is being drawn from ${answeredCount} reflection${
+      answeredCount === 1 ? "" : "s"
+    } you've written so far. The portrait engine is briefly unavailable, but your answers are saved — every one of them adds to the picture. Try generating your portrait again in a moment.`;
+    strengths = [];
+    weaknesses = [];
+    recommendations = ["Try regenerating your portrait shortly.", "Answer a few more reflections to deepen it."];
+  }
+
+  if (!narrative) {
+    narrative = `Drawn from ${answeredCount} of your own reflections. Keep answering honestly and this portrait will sharpen.`;
+  }
+  // Note how many answers fed this portrait so its evolution is visible.
+  const provenance =
+    practiceCount > 0
+      ? `\n\n— Drawn from ${answeredCount} assignment reflection${
+          answeredCount === 1 ? "" : "s"
+        } and ${practiceCount} practice reflection${
+          practiceCount === 1 ? "" : "s"
+        }. This portrait deepens every time you answer.`
+      : `\n\n— Drawn from ${answeredCount} reflection${
+          answeredCount === 1 ? "" : "s"
+        } so far. This portrait deepens every time you answer.`;
 
   res.json(
     GenerateReportResponse.parse({
       generatedAt: new Date().toISOString(),
-      narrative,
-      strengths: strongest,
-      weaknesses: weakest,
+      narrative: narrative + provenance,
+      strengths,
+      weaknesses,
       recommendations,
     }),
   );

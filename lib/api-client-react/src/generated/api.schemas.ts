@@ -240,6 +240,24 @@ export interface ReanalyzeResult {
   items: ReanalyzeItem[];
 }
 
+export interface RebuttalInput {
+  /** The student's push-back on the app's reading of their answer */
+  message: string;
+}
+
+export interface Rebuttal {
+  id: number;
+  userMessage: string;
+  appResponse: string;
+  /** True when the app changed its reading in light of the push-back */
+  revised: boolean;
+  createdAt: string;
+}
+
+export interface RebuttalThread {
+  items: Rebuttal[];
+}
+
 export interface PracticeSessionInput {
   /** @nullable */
   weekNumber?: number | null;

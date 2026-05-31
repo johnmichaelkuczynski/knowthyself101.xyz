@@ -45,6 +45,9 @@ import type {
   ProfileReportHistory,
   ReanalyzeInput,
   ReanalyzeResult,
+  Rebuttal,
+  RebuttalInput,
+  RebuttalThread,
   SettingsInput,
   Topic,
   TopicAnalytics,
@@ -963,6 +966,162 @@ export const useReanalyzeAttempt = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getReanalyzeAttemptMutationOptions(options));
+    }
+
+export const getListRebuttalsUrl = (attemptId: number,
+    problemId: number,) => {
+
+
+
+
+  return `/api/assignments/attempts/${attemptId}/problems/${problemId}/rebuttals`
+}
+
+/**
+ * @summary List the back-and-forth where the student pushed back on a problem's feedback
+ */
+export const listRebuttals = async (attemptId: number,
+    problemId: number, options?: RequestInit): Promise<RebuttalThread> => {
+
+  return customFetch<RebuttalThread>(getListRebuttalsUrl(attemptId,problemId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListRebuttalsQueryKey = (attemptId: number,
+    problemId: number,) => {
+    return [
+    `/api/assignments/attempts/${attemptId}/problems/${problemId}/rebuttals`
+    ] as const;
+    }
+
+
+export const getListRebuttalsQueryOptions = <TData = Awaited<ReturnType<typeof listRebuttals>>, TError = ErrorType<unknown>>(attemptId: number,
+    problemId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listRebuttals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListRebuttalsQueryKey(attemptId,problemId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listRebuttals>>> = ({ signal }) => listRebuttals(attemptId,problemId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(attemptId && problemId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listRebuttals>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListRebuttalsQueryResult = NonNullable<Awaited<ReturnType<typeof listRebuttals>>>
+export type ListRebuttalsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List the back-and-forth where the student pushed back on a problem's feedback
+ */
+
+export function useListRebuttals<TData = Awaited<ReturnType<typeof listRebuttals>>, TError = ErrorType<unknown>>(
+ attemptId: number,
+    problemId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listRebuttals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListRebuttalsQueryOptions(attemptId,problemId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getAddRebuttalUrl = (attemptId: number,
+    problemId: number,) => {
+
+
+
+
+  return `/api/assignments/attempts/${attemptId}/problems/${problemId}/rebuttals`
+}
+
+/**
+ * @summary Push back on the app's reading of an answer; the app reconsiders (and may revise)
+ */
+export const addRebuttal = async (attemptId: number,
+    problemId: number,
+    rebuttalInput: RebuttalInput, options?: RequestInit): Promise<Rebuttal> => {
+
+  return customFetch<Rebuttal>(getAddRebuttalUrl(attemptId,problemId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      rebuttalInput,)
+  }
+);}
+
+
+
+
+export const getAddRebuttalMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addRebuttal>>, TError,{attemptId: number;problemId: number;data: BodyType<RebuttalInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof addRebuttal>>, TError,{attemptId: number;problemId: number;data: BodyType<RebuttalInput>}, TContext> => {
+
+const mutationKey = ['addRebuttal'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addRebuttal>>, {attemptId: number;problemId: number;data: BodyType<RebuttalInput>}> = (props) => {
+          const {attemptId,problemId,data} = props ?? {};
+
+          return  addRebuttal(attemptId,problemId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddRebuttalMutationResult = NonNullable<Awaited<ReturnType<typeof addRebuttal>>>
+    export type AddRebuttalMutationBody = BodyType<RebuttalInput>
+    export type AddRebuttalMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Push back on the app's reading of an answer; the app reconsiders (and may revise)
+ */
+export const useAddRebuttal = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addRebuttal>>, TError,{attemptId: number;problemId: number;data: BodyType<RebuttalInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof addRebuttal>>,
+        TError,
+        {attemptId: number;problemId: number;data: BodyType<RebuttalInput>},
+        TContext
+      > => {
+      return useMutation(getAddRebuttalMutationOptions(options));
     }
 
 export const getStartPracticeSessionUrl = () => {

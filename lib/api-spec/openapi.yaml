@@ -235,6 +235,54 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReanalyzeResult"
 
+  /assignments/attempts/{attemptId}/problems/{problemId}/rebuttals:
+    get:
+      operationId: listRebuttals
+      tags: [assignments]
+      summary: List the back-and-forth where the student pushed back on a problem's feedback
+      parameters:
+        - name: attemptId
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: problemId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RebuttalThread"
+    post:
+      operationId: addRebuttal
+      tags: [assignments]
+      summary: Push back on the app's reading of an answer; the app reconsiders (and may revise)
+      parameters:
+        - name: attemptId
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: problemId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RebuttalInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rebuttal"
+
   /practice/sessions:
     post:
       operationId: startPracticeSession
@@ -672,6 +720,33 @@ components:
         problemId: { type: integer }
         correct: { type: boolean }
         explanation: { type: string }
+
+    RebuttalInput:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          description: The student's push-back on the app's reading of their answer
+    Rebuttal:
+      type: object
+      required: [id, userMessage, appResponse, revised, createdAt]
+      properties:
+        id: { type: integer }
+        userMessage: { type: string }
+        appResponse: { type: string }
+        revised:
+          type: boolean
+          description: True when the app changed its reading in light of the push-back
+        createdAt: { type: string, format: date-time }
+    RebuttalThread:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rebuttal"
 
     PracticeSessionInput:
       type: object

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnswerInput } from "@/components/AnswerInput";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { RebuttalThreadView } from "@/components/RebuttalThreadView";
 import {
   Select,
   SelectContent,
@@ -61,6 +62,9 @@ export default function AssignmentRunner() {
   const [result, setResult] = useState<AttemptResult | null>(null);
 
   const isReview = reviewAttemptId != null && !result;
+  // The attempt being reviewed: the live one just submitted, or the saved one
+  // reopened for review. Push-back is keyed off this.
+  const effectiveAttemptId = attemptId ?? reviewAttemptId ?? null;
 
   // --- Re-read through a different lens (ephemeral preview) ---
   // On the review screen the student can re-run their already-submitted answers
@@ -332,6 +336,10 @@ export default function AssignmentRunner() {
                     <strong className="text-chart-4">This reads as if it may not be in your own words.</strong>
                     <p className="text-muted-foreground mt-1">The point of this course is to hear from you. {pr.rationale}</p>
                   </div>
+                )}
+
+                {effectiveAttemptId && pr.userAnswer.trim().length > 0 && pr.explanation && (
+                  <RebuttalThreadView attemptId={effectiveAttemptId} problemId={pr.problemId} />
                 )}
               </div>
             ))}

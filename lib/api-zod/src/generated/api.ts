@@ -298,6 +298,46 @@ export const ReanalyzeAttemptResponse = zod.object({
 
 
 /**
+ * @summary List the back-and-forth where the student pushed back on a problem's feedback
+ */
+export const ListRebuttalsParams = zod.object({
+  "attemptId": zod.coerce.number(),
+  "problemId": zod.coerce.number()
+})
+
+export const ListRebuttalsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number(),
+  "userMessage": zod.string(),
+  "appResponse": zod.string(),
+  "revised": zod.boolean().describe('True when the app changed its reading in light of the push-back'),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Push back on the app's reading of an answer; the app reconsiders (and may revise)
+ */
+export const AddRebuttalParams = zod.object({
+  "attemptId": zod.coerce.number(),
+  "problemId": zod.coerce.number()
+})
+
+export const AddRebuttalBody = zod.object({
+  "message": zod.string().describe('The student\'s push-back on the app\'s reading of their answer')
+})
+
+export const AddRebuttalResponse = zod.object({
+  "id": zod.number(),
+  "userMessage": zod.string(),
+  "appResponse": zod.string(),
+  "revised": zod.boolean().describe('True when the app changed its reading in light of the push-back'),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
  * @summary Start a new practice session (infinite, adaptive)
  */
 export const startPracticeSessionBodyFocusOnWeaknessesDefault = true;

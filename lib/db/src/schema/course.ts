@@ -109,6 +109,28 @@ export const answersTable = pgTable("answers", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// A turn in the back-and-forth where the student pushes back on the app's reading
+// of one of their answers. Persisted on purpose: it is real data about the person —
+// how they argue, what they defend, whether they reconsider — and feeds the evolving
+// self-portrait. Keyed by attempt + problem (matching how the UI addresses answers).
+export const rebuttalsTable = pgTable("rebuttals", {
+  id: serial("id").primaryKey(),
+  attemptId: integer("attempt_id")
+    .notNull()
+    .references(() => attemptsTable.id, { onDelete: "cascade" }),
+  problemId: integer("problem_id")
+    .notNull()
+    .references(() => problemsTable.id, { onDelete: "cascade" }),
+  // Owner of this exchange, for scoping + analytics. Nullable only for migration
+  // parity with the other owned tables; always set on insert.
+  userId: integer("user_id").references(() => usersTable.id, { onDelete: "cascade" }),
+  userMessage: text("user_message").notNull(),
+  appResponse: text("app_response").notNull(),
+  // True when the app changed its reading in light of this push-back.
+  revised: boolean("revised").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const practiceSessionsTable = pgTable("practice_sessions", {
   id: serial("id").primaryKey(),
   // Owner of this practice session (and, by cascade, its problems + attempts).

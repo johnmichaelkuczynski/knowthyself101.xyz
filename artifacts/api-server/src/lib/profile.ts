@@ -9,6 +9,7 @@ import {
   answersTable,
   problemsTable,
   profileReportsTable,
+  rebuttalsTable,
 } from "@workspace/db";
 import { chatJson, TEXT_MODEL } from "./ai";
 import { type AppSettings, activeFramework } from "./settings";
@@ -54,6 +55,7 @@ export async function generateProfileReport(
     .select({
       topicTitle: topicsTable.title,
       weekNumber: topicsTable.weekNumber,
+      attemptId: answersTable.attemptId,
       problemId: problemsTable.id,
       prompt: problemsTable.prompt,
       answer: answersTable.answer,
@@ -91,6 +93,7 @@ export async function generateProfileReport(
   const assignmentReflections = submittedRows
     .filter((r) => (r.answer ?? "").trim().length > 0)
     .map((r) => ({
+      attemptId: r.attemptId,
       problemId: r.problemId,
       topic: r.topicTitle,
       week: r.weekNumber,
@@ -147,6 +150,41 @@ export async function generateProfileReport(
     ...practiceReflections.slice(-25),
   ].slice(-70);
 
+  // Pull every push-back this user wrote against a reading of their answers and
+  // group it by the specific attempt+problem it belongs to. The dialogue is fresh
+  // signal — how they argue, what they defend, whether they engage or deflect — so
+  // it travels with the exact answer it was about (a retake's answer must never
+  // inherit a prior attempt's push-back) and is fed into the two-pass analysis below.
+  const rebuttalRows = await db
+    .select({
+      attemptId: rebuttalsTable.attemptId,
+      problemId: rebuttalsTable.problemId,
+      userMessage: rebuttalsTable.userMessage,
+      appResponse: rebuttalsTable.appResponse,
+      revised: rebuttalsTable.revised,
+    })
+    .from(rebuttalsTable)
+    .where(eq(rebuttalsTable.userId, userId))
+    .orderBy(asc(rebuttalsTable.createdAt), asc(rebuttalsTable.id));
+  const dialogueKey = (attemptId: number, problemId: number) => `${attemptId}:${problemId}`;
+  const dialogueByAttemptProblem = new Map<
+    string,
+    { pushBack: string; response: string; revised: boolean }[]
+  >();
+  for (const r of rebuttalRows) {
+    const key = dialogueKey(r.attemptId, r.problemId);
+    const arr = dialogueByAttemptProblem.get(key) ?? [];
+    arr.push({ pushBack: r.userMessage, response: r.appResponse, revised: r.revised });
+    dialogueByAttemptProblem.set(key, arr);
+  }
+  const analyzedForLlm = analyzed.map((r) => ({
+    ...r,
+    dialogue:
+      "attemptId" in r && "problemId" in r
+        ? dialogueByAttemptProblem.get(dialogueKey(r.attemptId, r.problemId)) ?? []
+        : [],
+  }));
+
   // Real memory across visits: the most recent saved reading for THIS user+mode,
   // used so the new one builds on it rather than starting from a blank page.
   const [priorReport] = await db
@@ -187,16 +225,18 @@ export async function generateProfileReport(
           "Analyze EACH answer individually. For each one, infer what it actually reveals about this specific person — their drives, fears, attachments, self-image, or coping style — and WHY their particular wording implies it. Do not restate the answer; read beneath it. " +
           "Also note any 'defense' visible in the answer: avoidance, intellectualizing, self-flattery, minimizing, contradiction with another answer, or none. ") +
         `Reason using these ${MODE_LABEL[settings.mode]} frameworks where the answer gives real signal; do not force a framework onto an answer that doesn't support it:\n${lensBrief}\n` +
+        "Some answers carry a 'dialogue': a back-and-forth where this person pushed back on an earlier reading of that answer. Treat it as extra signal — how they argue, what they defend, whether they engage honestly or deflect, and whether they can revise their view — and fold it into 'reveals' and 'defense'. " +
         "Return ONE entry per input answer, in the same order. Strict JSON: " +
         '{"perAnswer": [{"topic": string, "reveals": string, "defense": string}]}. ' +
         "Each 'reveals' is 1-2 sharp, specific sentences. 'defense' is a short phrase or 'none'.",
       JSON.stringify({
-        reflections: analyzed.map((r, i) => ({
+        reflections: analyzedForLlm.map((r, i) => ({
           n: i + 1,
           topic: r.topic,
           week: r.week,
           question: r.question,
           answer: r.answer,
+          dialogue: r.dialogue,
         })),
       }),
       TEXT_MODEL,
@@ -241,7 +281,7 @@ export async function generateProfileReport(
           "If the input includes a 'previousProfile', it is your earlier portrait of this same person. Treat it as memory: build on it — keep what the new answers still support, deepen it, and revise anything the latest answers contradict or that they've grown past. Do not simply repeat it; show how the picture has developed."),
       JSON.stringify({
         answersAnalyzed: analyzed.length,
-        reflections: analyzed,
+        reflections: analyzedForLlm,
         perAnswerAnalysis: perAnswer,
         previousProfile: priorContext,
       }),

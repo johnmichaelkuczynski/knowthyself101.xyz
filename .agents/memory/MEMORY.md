@@ -1,1 +1,2 @@
 - [Ephemeral lens re-analysis](ephemeral-reanalysis.md) — re-reading submitted answers through another lens is a read-only, submitted-only endpoint; never the global ModeSwitcher.
+- [Push-back / rebuttal feature](rebuttal-feature.md) — persisted counter-responses keyed by attempt+problem (NOT problemId alone, or retakes cross-contaminate); feeds the self-portrait.

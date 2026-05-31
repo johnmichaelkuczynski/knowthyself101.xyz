@@ -19,6 +19,74 @@ function wordCount(s: string): number {
   return s.trim().split(/\s+/).filter(Boolean).length;
 }
 
+// The student is pushing back on the app's reading of one of their answers. This is
+// valuable on two counts: the push-back itself is fresh signal (how they argue, what
+// they defend, whether they engage or deflect), AND it may be fair enough to warrant
+// genuinely revising the first reading. The reconsideration must be a mirror — neither
+// defensive nor a pushover: concede what is fair, hold what is not, and name what the
+// act of pushing back reveals.
+export async function reconsiderRebuttal(opts: {
+  prompt: string;
+  correctAnswer: string;
+  userAnswer: string;
+  originalFeedback: string;
+  priorTurns: { userMessage: string; appResponse: string }[];
+  userMessage: string;
+  mode?: Mode;
+  framework?: string;
+}): Promise<{ response: string; revised: boolean }> {
+  const message = (opts.userMessage ?? "").trim();
+  const mode: Mode = opts.mode === "career" ? "career" : "self_knowledge";
+
+  if (message.length === 0) {
+    return {
+      response:
+        "There's nothing here to respond to. Tell me, in your own words, where my reading of your answer is wrong or unfair — and why.",
+      revised: false,
+    };
+  }
+
+  try {
+    const out = await chatJson<{ response: string; revised: boolean }>(
+      "You are a perceptive, honest reader on a self-examination course. " +
+        `The current analysis mode is ${MODE_LABEL[mode]}. ` +
+        "Earlier you gave a student a reading of one of their short, first-person reflections. The student is now PUSHING BACK on that reading. " +
+        "You are given the QUESTION, the student's ORIGINAL_ANSWER, a MODEL_REFLECTION (a depth reference, NOT a key), your ORIGINAL_FEEDBACK, any PRIOR_TURNS of this same back-and-forth, and the student's new PUSH_BACK.\n\n" +
+        "Weigh the push-back honestly and decide:\n" +
+        "- If it is fair — you over-read, misread, projected, or were too harsh — say so plainly, correct yourself, and give the revised reading. Set revised=true.\n" +
+        "- If it is PARTLY fair, concede exactly the part that lands and hold the rest, explaining why. Set revised=true only if your substantive reading actually changes.\n" +
+        "- If it does not engage the substance — it deflects, attacks the framing, asserts without evidence, or simply restates the original answer louder — hold your ground respectfully, explain why your reading still stands, and gently name what the push-back ITSELF reveals (defensiveness, a sore spot, a need to be right). Set revised=false.\n\n" +
+        "Treat the push-back as new self-revealing data, not as an attack to win against. Be a mirror: not defensive, not a pushover, never sycophantic. Do not cave just because they object, and do not dig in just to save face. Address them directly as 'you', in 2-4 sentences. " +
+        'Respond as strict JSON: {"response": string, "revised": boolean}.',
+      JSON.stringify({
+        mode,
+        question: opts.prompt,
+        original_answer: opts.userAnswer,
+        model_reflection: opts.correctAnswer ?? "",
+        original_feedback: opts.originalFeedback,
+        prior_turns: opts.priorTurns.map((t) => ({
+          push_back: t.userMessage,
+          response: t.appResponse,
+        })),
+        push_back: message,
+      }),
+    );
+    const response = (out.response || "").trim();
+    return {
+      response:
+        response ||
+        "I've taken your point in. Say a little more about what specifically felt off, and I'll look again.",
+      revised: Boolean(out.revised),
+    };
+  } catch {
+    return {
+      response:
+        "I can't think this through with you just now — the analysis engine is briefly unavailable. Your push-back is saved; try again in a moment and I'll reconsider properly.",
+      revised: false,
+    };
+  }
+}
+
 // Clearly evasive non-answers — refusals to engage.
 const LOW_EFFORT = new Set([
   "idk",

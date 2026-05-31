@@ -7,6 +7,7 @@ import {
   attemptsTable,
   answersTable,
   topicsTable,
+  rebuttalsTable,
 } from "@workspace/db";
 import {
   GetAssignmentResponse,
@@ -17,8 +18,11 @@ import {
   SubmitAttemptResponse,
   ReanalyzeAttemptBody,
   ReanalyzeAttemptResponse,
+  AddRebuttalBody,
+  AddRebuttalResponse,
+  ListRebuttalsResponse,
 } from "@workspace/api-zod";
-import { gradeAnswer } from "../lib/grading";
+import { gradeAnswer, reconsiderRebuttal } from "../lib/grading";
 import { detect } from "../lib/detection";
 import { getSettings, activeFramework } from "../lib/settings";
 import { frameworksFor, type Mode } from "../lib/frameworks";
@@ -438,5 +442,158 @@ router.post("/assignments/attempts/:attemptId/reanalyze", async (req, res): Prom
 
   res.json(ReanalyzeAttemptResponse.parse({ mode, framework, items }));
 });
+
+// --- Push back on the app's reading of an answer ---------------------------
+// The student can challenge the critique of any one reflection. This is good in
+// itself, it gives the app a dynamic look at how the person argues and defends,
+// and — when the push-back is fair — it can move the app to revise its first
+// reading. Unlike re-analysis, the exchange IS persisted: it's real data about
+// the user and it feeds the evolving self-portrait. Keyed by attempt + problem.
+
+// Resolve an owner-scoped, submitted attempt and its answered problem in one go.
+async function loadRebuttalContext(attemptId: number, problemId: number) {
+  const userId = await getPrimaryUserId();
+  const [attempt] = await db
+    .select()
+    .from(attemptsTable)
+    .where(and(eq(attemptsTable.id, attemptId), eq(attemptsTable.userId, userId)));
+  if (!attempt) return { error: 404 as const };
+  const [problem] = await db
+    .select()
+    .from(problemsTable)
+    .where(and(eq(problemsTable.id, problemId), eq(problemsTable.assignmentId, attempt.assignmentId)));
+  if (!problem) return { error: 404 as const };
+  const [answer] = await db
+    .select()
+    .from(answersTable)
+    .where(and(eq(answersTable.attemptId, attemptId), eq(answersTable.problemId, problemId)));
+  return { userId, attempt, problem, answer };
+}
+
+router.get(
+  "/assignments/attempts/:attemptId/problems/:problemId/rebuttals",
+  async (req, res): Promise<void> => {
+    const attemptId = parseIdParam(req.params.attemptId);
+    const problemId = parseIdParam(req.params.problemId);
+    if (!Number.isFinite(attemptId) || !Number.isFinite(problemId)) {
+      res.status(400).json({ error: "invalid id" });
+      return;
+    }
+    const ctx = await loadRebuttalContext(attemptId, problemId);
+    if ("error" in ctx) {
+      res.status(404).json({ error: "attempt or problem not found" });
+      return;
+    }
+    const rows = await db
+      .select()
+      .from(rebuttalsTable)
+      .where(
+        and(
+          eq(rebuttalsTable.attemptId, attemptId),
+          eq(rebuttalsTable.problemId, problemId),
+          eq(rebuttalsTable.userId, ctx.userId),
+        ),
+      )
+      .orderBy(asc(rebuttalsTable.createdAt), asc(rebuttalsTable.id));
+    res.json(
+      ListRebuttalsResponse.parse({
+        items: rows.map((r) => ({
+          id: r.id,
+          userMessage: r.userMessage,
+          appResponse: r.appResponse,
+          revised: r.revised,
+          createdAt: (r.createdAt as Date).toISOString(),
+        })),
+      }),
+    );
+  },
+);
+
+router.post(
+  "/assignments/attempts/:attemptId/problems/:problemId/rebuttals",
+  async (req, res): Promise<void> => {
+    const attemptId = parseIdParam(req.params.attemptId);
+    const problemId = parseIdParam(req.params.problemId);
+    if (!Number.isFinite(attemptId) || !Number.isFinite(problemId)) {
+      res.status(400).json({ error: "invalid id" });
+      return;
+    }
+    const parsed = AddRebuttalBody.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    const message = parsed.data.message.trim();
+    if (message.length === 0) {
+      res.status(400).json({ error: "message is required" });
+      return;
+    }
+
+    const ctx = await loadRebuttalContext(attemptId, problemId);
+    if ("error" in ctx) {
+      res.status(404).json({ error: "attempt or problem not found" });
+      return;
+    }
+    // You can only argue with a reading that exists — so the attempt must be
+    // finished and the prompt must actually have been answered.
+    if (ctx.attempt.status !== "submitted") {
+      res.status(409).json({ error: "attempt not submitted" });
+      return;
+    }
+    if (!ctx.answer || (ctx.answer.answer ?? "").trim().length === 0) {
+      res.status(409).json({ error: "no answer to reconsider" });
+      return;
+    }
+
+    const prior = await db
+      .select()
+      .from(rebuttalsTable)
+      .where(
+        and(
+          eq(rebuttalsTable.attemptId, attemptId),
+          eq(rebuttalsTable.problemId, problemId),
+          eq(rebuttalsTable.userId, ctx.userId),
+        ),
+      )
+      .orderBy(asc(rebuttalsTable.createdAt), asc(rebuttalsTable.id));
+
+    const settings = await getSettings();
+    const reconsidered = await reconsiderRebuttal({
+      prompt: ctx.problem.prompt,
+      correctAnswer: ctx.problem.correctAnswer,
+      userAnswer: ctx.answer.answer,
+      originalFeedback: ctx.answer.explanation ?? "",
+      priorTurns: prior.map((t) => ({
+        userMessage: t.userMessage,
+        appResponse: t.appResponse,
+      })),
+      userMessage: message,
+      mode: settings.mode,
+      framework: activeFramework(settings),
+    });
+
+    const [saved] = await db
+      .insert(rebuttalsTable)
+      .values({
+        attemptId,
+        problemId,
+        userId: ctx.userId,
+        userMessage: message,
+        appResponse: reconsidered.response,
+        revised: reconsidered.revised,
+      })
+      .returning();
+
+    res.json(
+      AddRebuttalResponse.parse({
+        id: saved.id,
+        userMessage: saved.userMessage,
+        appResponse: saved.appResponse,
+        revised: saved.revised,
+        createdAt: (saved.createdAt as Date).toISOString(),
+      }),
+    );
+  },
+);
 
 export default router;

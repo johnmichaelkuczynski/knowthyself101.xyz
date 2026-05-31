@@ -28,6 +28,7 @@ import { MODE_OPTIONS, frameworksFor, lensStamp, type Mode } from "@/lib/lens";
 
 type ReviewItem = {
   problemId: number;
+  prompt: string;
   userAnswer: string;
   explanation: string;
   aiFlagged: boolean;
@@ -192,6 +193,11 @@ export default function AssignmentRunner() {
   }
 
   // Build a unified review list from either a just-submitted result or a loaded past attempt.
+  // Feedback is hard to read without the question it answers, so each item carries its prompt
+  // (looked up from the assignment, since the submit result doesn't echo it back).
+  const promptById = new Map<number, string>(
+    (assignment?.problems ?? []).map((p) => [p.id, p.prompt]),
+  );
   let reviewData: ReviewItem[] | null = null;
   if (result) {
     reviewData = result.perProblem.map((pr) => {
@@ -199,6 +205,7 @@ export default function AssignmentRunner() {
       const preview = previewItems?.[pr.problemId];
       return {
         problemId: pr.problemId,
+        prompt: promptById.get(pr.problemId) ?? "",
         userAnswer: pr.userAnswer ?? "",
         explanation: preview !== undefined ? preview : pr.explanation,
         aiFlagged: det?.aiFlagged ?? false,
@@ -211,6 +218,7 @@ export default function AssignmentRunner() {
       const preview = previewItems?.[p.id];
       return {
         problemId: p.id,
+        prompt: p.prompt,
         userAnswer: ans?.answer ?? "",
         explanation: preview !== undefined ? preview : (ans?.explanation ?? ""),
         aiFlagged: ans?.aiFlagged ?? false,
@@ -319,7 +327,16 @@ export default function AssignmentRunner() {
           <div className="flex flex-col gap-6">
             {reviewData.map((pr, idx) => (
               <div key={pr.problemId} className="p-6 rounded-lg border border-border bg-card">
-                <h3 className="font-medium mb-2">Reflection {idx + 1}</h3>
+                <div className="mb-4">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Reflection {idx + 1}
+                  </span>
+                  {pr.prompt && (
+                    <h3 className="font-medium mt-1 text-base leading-snug" data-testid={`text-prompt-${pr.problemId}`}>
+                      {pr.prompt}
+                    </h3>
+                  )}
+                </div>
                 <div className="mb-4">
                   <span className="text-sm font-semibold">What you wrote:</span>
                   <div className="mt-1 whitespace-pre-wrap">{pr.userAnswer || "No answer"}</div>

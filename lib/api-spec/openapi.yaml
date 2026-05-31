@@ -211,6 +211,30 @@ paths:
               schema:
                 $ref: "#/components/schemas/AttemptResult"
 
+  /assignments/attempts/{attemptId}/reanalyze:
+    post:
+      operationId: reanalyzeAttempt
+      tags: [assignments]
+      summary: Re-read a submitted attempt's answers through a chosen lens (ephemeral preview; not persisted)
+      parameters:
+        - name: attemptId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReanalyzeInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReanalyzeResult"
+
   /practice/sessions:
     post:
       operationId: startPracticeSession
@@ -617,6 +641,36 @@ components:
         correct: { type: boolean }
         userAnswer: { type: string }
         correctAnswer: { type: string }
+        explanation: { type: string }
+
+    ReanalyzeInput:
+      type: object
+      required: [mode, framework]
+      properties:
+        mode:
+          type: string
+          enum: [self_knowledge, career]
+        framework:
+          type: string
+          description: Framework id for the chosen mode, or "auto" for all of them
+    ReanalyzeResult:
+      type: object
+      required: [mode, framework, items]
+      properties:
+        mode:
+          type: string
+          enum: [self_knowledge, career]
+        framework: { type: string }
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReanalyzeItem"
+    ReanalyzeItem:
+      type: object
+      required: [problemId, correct, explanation]
+      properties:
+        problemId: { type: integer }
+        correct: { type: boolean }
         explanation: { type: string }
 
     PracticeSessionInput:

@@ -15,10 +15,13 @@ import {
   StartAssignmentAttemptResponse,
   GetAttemptResponse,
   SubmitAttemptResponse,
+  ReanalyzeAttemptBody,
+  ReanalyzeAttemptResponse,
 } from "@workspace/api-zod";
 import { gradeAnswer } from "../lib/grading";
 import { detect } from "../lib/detection";
 import { getSettings, activeFramework } from "../lib/settings";
+import { frameworksFor, type Mode } from "../lib/frameworks";
 import { getPrimaryUserId } from "../lib/users";
 
 const router: IRouter = Router();
@@ -359,6 +362,81 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
       detection,
     }),
   );
+});
+
+// Re-read a SUBMITTED attempt's answers through a chosen lens, as an ephemeral
+// "what would the app have said" preview. This re-runs the grader with the chosen
+// mode + framework and returns fresh explanations WITHOUT persisting anything:
+// the stored feedback and the user's global Lens setting are left untouched.
+router.post("/assignments/attempts/:attemptId/reanalyze", async (req, res): Promise<void> => {
+  const id = parseIdParam(req.params.attemptId);
+  if (!Number.isFinite(id)) {
+    res.status(400).json({ error: "invalid id" });
+    return;
+  }
+  const parsed = ReanalyzeAttemptBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  const mode: Mode = parsed.data.mode === "career" ? "career" : "self_knowledge";
+  const requested = parsed.data.framework || "auto";
+  // Clamp a framework that doesn't belong to the chosen mode back to "auto".
+  const framework =
+    requested === "auto" || frameworksFor(mode).some((f) => f.id === requested)
+      ? requested
+      : "auto";
+
+  const userId = await getPrimaryUserId();
+  const [attempt] = await db
+    .select()
+    .from(attemptsTable)
+    .where(and(eq(attemptsTable.id, id), eq(attemptsTable.userId, userId)));
+  if (!attempt) {
+    res.status(404).json({ error: "attempt not found" });
+    return;
+  }
+  // Re-analysis is a what-if on a FINISHED attempt; an in-progress one has no
+  // settled answers to re-read, so refuse it rather than grade a draft.
+  if (attempt.status !== "submitted") {
+    res.status(409).json({ error: "attempt not submitted" });
+    return;
+  }
+
+  const problems = await db
+    .select()
+    .from(problemsTable)
+    .where(eq(problemsTable.assignmentId, attempt.assignmentId))
+    .orderBy(asc(problemsTable.position));
+  const answers = await db
+    .select()
+    .from(answersTable)
+    .where(eq(answersTable.attemptId, id));
+  const byProblem = new Map(answers.map((a) => [a.problemId, a]));
+
+  // Grade each answered prompt through the chosen lens in parallel (read-only).
+  const items = await Promise.all(
+    problems.map(async (p) => {
+      const userAnswer = byProblem.get(p.id)?.answer ?? "";
+      if (userAnswer.trim().length === 0) {
+        return { problemId: p.id, correct: false, explanation: "" };
+      }
+      const graded = await gradeAnswer({
+        prompt: p.prompt,
+        correctAnswer: p.correctAnswer,
+        userAnswer,
+        mode,
+        framework,
+      });
+      return {
+        problemId: p.id,
+        correct: graded.correct,
+        explanation: graded.explanation,
+      };
+    }),
+  );
+
+  res.json(ReanalyzeAttemptResponse.parse({ mode, framework, items }));
 });
 
 export default router;

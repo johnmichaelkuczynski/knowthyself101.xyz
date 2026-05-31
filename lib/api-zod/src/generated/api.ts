@@ -275,6 +275,29 @@ export const SubmitAttemptResponse = zod.object({
 
 
 /**
+ * @summary Re-read a submitted attempt's answers through a chosen lens (ephemeral preview; not persisted)
+ */
+export const ReanalyzeAttemptParams = zod.object({
+  "attemptId": zod.coerce.number()
+})
+
+export const ReanalyzeAttemptBody = zod.object({
+  "mode": zod.enum(['self_knowledge', 'career']),
+  "framework": zod.string().describe('Framework id for the chosen mode, or \"auto\" for all of them')
+})
+
+export const ReanalyzeAttemptResponse = zod.object({
+  "mode": zod.enum(['self_knowledge', 'career']),
+  "framework": zod.string(),
+  "items": zod.array(zod.object({
+  "problemId": zod.number(),
+  "correct": zod.boolean(),
+  "explanation": zod.string()
+}))
+})
+
+
+/**
  * @summary Start a new practice session (infinite, adaptive)
  */
 export const startPracticeSessionBodyFocusOnWeaknessesDefault = true;

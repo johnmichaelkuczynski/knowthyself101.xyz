@@ -43,6 +43,8 @@ import type {
   PracticeSession,
   PracticeSessionInput,
   ProfileReportHistory,
+  ReanalyzeInput,
+  ReanalyzeResult,
   SettingsInput,
   Topic,
   TopicAnalytics,
@@ -889,6 +891,78 @@ export const useSubmitAttempt = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getSubmitAttemptMutationOptions(options));
+    }
+
+export const getReanalyzeAttemptUrl = (attemptId: number,) => {
+
+
+
+
+  return `/api/assignments/attempts/${attemptId}/reanalyze`
+}
+
+/**
+ * @summary Re-read a submitted attempt's answers through a chosen lens (ephemeral preview; not persisted)
+ */
+export const reanalyzeAttempt = async (attemptId: number,
+    reanalyzeInput: ReanalyzeInput, options?: RequestInit): Promise<ReanalyzeResult> => {
+
+  return customFetch<ReanalyzeResult>(getReanalyzeAttemptUrl(attemptId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      reanalyzeInput,)
+  }
+);}
+
+
+
+
+export const getReanalyzeAttemptMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reanalyzeAttempt>>, TError,{attemptId: number;data: BodyType<ReanalyzeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reanalyzeAttempt>>, TError,{attemptId: number;data: BodyType<ReanalyzeInput>}, TContext> => {
+
+const mutationKey = ['reanalyzeAttempt'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reanalyzeAttempt>>, {attemptId: number;data: BodyType<ReanalyzeInput>}> = (props) => {
+          const {attemptId,data} = props ?? {};
+
+          return  reanalyzeAttempt(attemptId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReanalyzeAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof reanalyzeAttempt>>>
+    export type ReanalyzeAttemptMutationBody = BodyType<ReanalyzeInput>
+    export type ReanalyzeAttemptMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Re-read a submitted attempt's answers through a chosen lens (ephemeral preview; not persisted)
+ */
+export const useReanalyzeAttempt = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reanalyzeAttempt>>, TError,{attemptId: number;data: BodyType<ReanalyzeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof reanalyzeAttempt>>,
+        TError,
+        {attemptId: number;data: BodyType<ReanalyzeInput>},
+        TContext
+      > => {
+      return useMutation(getReanalyzeAttemptMutationOptions(options));
     }
 
 export const getStartPracticeSessionUrl = () => {

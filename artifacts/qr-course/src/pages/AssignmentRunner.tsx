@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useParams, Link, useSearch, useLocation } from "wouter";
 import { 
@@ -7,6 +7,8 @@ import {
   useGetAttempt, 
   useSaveAnswer, 
   useSubmitAttempt,
+  useReanalyzeAttempt,
+  useGetSettings,
   AttemptResult,
   KeystrokeTrace
 } from "@workspace/api-client-react";
@@ -14,6 +16,14 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnswerInput } from "@/components/AnswerInput";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MODE_OPTIONS, frameworksFor, lensStamp, type Mode } from "@/lib/lens";
 
 type ReviewItem = {
   problemId: number;
@@ -51,6 +61,70 @@ export default function AssignmentRunner() {
   const [result, setResult] = useState<AttemptResult | null>(null);
 
   const isReview = reviewAttemptId != null && !result;
+
+  // --- Re-read through a different lens (ephemeral preview) ---
+  // On the review screen the student can re-run their already-submitted answers
+  // through any mode + framework to see what the app WOULD have said. This never
+  // overwrites the saved feedback or touches their global Lens setting.
+  const { data: settings } = useGetSettings();
+  const reanalyze = useReanalyzeAttempt();
+  const [previewMode, setPreviewMode] = useState<Mode | null>(null);
+  const [previewFramework, setPreviewFramework] = useState<string>("auto");
+  const [previewItems, setPreviewItems] = useState<Record<number, string> | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  // Monotonic token so a slow earlier response can't overwrite a newer lens choice.
+  const previewReqRef = useRef(0);
+
+  // Seed the picker from the current global lens once settings load.
+  useEffect(() => {
+    if (settings && previewMode === null) {
+      const m = settings.mode as Mode;
+      setPreviewMode(m);
+      setPreviewFramework(m === "career" ? settings.careerFramework : settings.selfFramework);
+    }
+  }, [settings, previewMode]);
+
+  const runReanalyze = (mode: Mode, framework: string) => {
+    if (!attemptId) return;
+    setPreviewError(null);
+    const token = ++previewReqRef.current;
+    reanalyze.mutate(
+      { attemptId, data: { mode, framework } },
+      {
+        onSuccess: (data) => {
+          // Ignore a response that a newer lens choice has already superseded.
+          if (token !== previewReqRef.current) return;
+          const map: Record<number, string> = {};
+          data.items.forEach((it) => {
+            map[it.problemId] = it.explanation;
+          });
+          setPreviewItems(map);
+        },
+        onError: () => {
+          if (token !== previewReqRef.current) return;
+          // Fall back to the saved reading so the feedback never mismatches the picker.
+          setPreviewItems(null);
+          setPreviewError("Couldn't re-read these reflections just now — please try again.");
+        },
+      },
+    );
+  };
+
+  const handlePreviewMode = (next: Mode) => {
+    setPreviewMode(next);
+    setPreviewFramework("auto");
+    runReanalyze(next, "auto");
+  };
+
+  const handlePreviewFramework = (next: string) => {
+    setPreviewFramework(next);
+    if (previewMode) runReanalyze(previewMode, next);
+  };
+
+  const showSavedReading = () => {
+    setPreviewItems(null);
+    setPreviewError(null);
+  };
 
   // In review mode, load the requested (submitted) attempt without starting a new one.
   useEffect(() => {
@@ -118,10 +192,11 @@ export default function AssignmentRunner() {
   if (result) {
     reviewData = result.perProblem.map((pr) => {
       const det = result.detection.find((d) => d.problemId === pr.problemId);
+      const preview = previewItems?.[pr.problemId];
       return {
         problemId: pr.problemId,
         userAnswer: pr.userAnswer ?? "",
-        explanation: pr.explanation,
+        explanation: preview !== undefined ? preview : pr.explanation,
         aiFlagged: det?.aiFlagged ?? false,
         rationale: det?.rationale ?? "",
       };
@@ -129,10 +204,11 @@ export default function AssignmentRunner() {
   } else if (isReview && attempt) {
     reviewData = assignment.problems.map((p) => {
       const ans = attempt.answers.find((a) => a.problemId === p.id);
+      const preview = previewItems?.[p.id];
       return {
         problemId: p.id,
         userAnswer: ans?.answer ?? "",
-        explanation: ans?.explanation ?? "",
+        explanation: preview !== undefined ? preview : (ans?.explanation ?? ""),
         aiFlagged: ans?.aiFlagged ?? false,
         rationale: ans?.detectionRationale ?? "",
       };
@@ -170,7 +246,72 @@ export default function AssignmentRunner() {
               </Link>
             </div>
           </div>
-          
+
+          {previewMode && (
+            <div className="rounded-lg border border-border bg-secondary/40 p-4 flex flex-col gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                  Re-read through
+                </span>
+                <Select
+                  value={previewMode}
+                  onValueChange={(v) => handlePreviewMode(v as Mode)}
+                  disabled={reanalyze.isPending}
+                >
+                  <SelectTrigger className="h-9 w-[150px] text-sm" data-testid="select-preview-mode">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MODE_OPTIONS.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={previewFramework}
+                  onValueChange={handlePreviewFramework}
+                  disabled={reanalyze.isPending}
+                >
+                  <SelectTrigger className="h-9 w-[220px] text-sm" data-testid="select-preview-framework">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {frameworksFor(previewMode).map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {reanalyze.isPending && (
+                  <span className="text-sm text-muted-foreground animate-pulse">Re-reading…</span>
+                )}
+                {previewItems && !reanalyze.isPending && (
+                  <Button
+                    variant="outline"
+                    className="h-9 text-xs"
+                    onClick={showSavedReading}
+                    data-testid="button-show-saved"
+                  >
+                    Show saved reading
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                See what these same answers reveal through another lens. This is a preview — it
+                doesn't change your saved feedback or your global Lens setting.
+              </p>
+              {previewItems && !reanalyze.isPending && (
+                <p className="text-sm" data-testid="text-preview-stamp">
+                  Previewing through <strong>{lensStamp(previewMode, previewFramework)}</strong>.
+                </p>
+              )}
+              {previewError && <p className="text-sm text-destructive">{previewError}</p>}
+            </div>
+          )}
+
           <div className="flex flex-col gap-6">
             {reviewData.map((pr, idx) => (
               <div key={pr.problemId} className="p-6 rounded-lg border border-border bg-card">

@@ -206,6 +206,40 @@ export interface AttemptResult {
   detection: DetectionResult[];
 }
 
+export type ReanalyzeInputMode = typeof ReanalyzeInputMode[keyof typeof ReanalyzeInputMode];
+
+
+export const ReanalyzeInputMode = {
+  self_knowledge: 'self_knowledge',
+  career: 'career',
+} as const;
+
+export interface ReanalyzeInput {
+  mode: ReanalyzeInputMode;
+  /** Framework id for the chosen mode, or "auto" for all of them */
+  framework: string;
+}
+
+export type ReanalyzeResultMode = typeof ReanalyzeResultMode[keyof typeof ReanalyzeResultMode];
+
+
+export const ReanalyzeResultMode = {
+  self_knowledge: 'self_knowledge',
+  career: 'career',
+} as const;
+
+export interface ReanalyzeItem {
+  problemId: number;
+  correct: boolean;
+  explanation: string;
+}
+
+export interface ReanalyzeResult {
+  mode: ReanalyzeResultMode;
+  framework: string;
+  items: ReanalyzeItem[];
+}
+
 export interface PracticeSessionInput {
   /** @nullable */
   weekNumber?: number | null;

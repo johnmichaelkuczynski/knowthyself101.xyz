@@ -23,3 +23,19 @@ because they peeked through another framework on the review page.
 - On the client, guard rapid lens switching with a monotonic request token so a slow
   earlier response can't overwrite a newer choice; on error fall back to the saved
   reading so the displayed feedback never mismatches the picker.
+
+## A single selected lens must drive the PRIMARY reading, not just bullets
+
+When a specific (non-`auto`) framework is selected, `gradeAnswer` must write the main
+`analysis`/`shortfall` text THROUGH that lens (its concepts + vocabulary) — not only
+the optional "What the lenses see" framework array.
+
+**Why:** Lens selection felt totally broken ("feedback always the same") because only
+the optional framework bullets were lens-aware, and for thin/evasive answers those
+bullets often don't fire — so switching lenses changed nothing the user could see. The
+verdict/analysis/shortfall were lens-agnostic by construction.
+
+**How to apply:** In `gradeAnswer`, for non-auto frameworks inject a clause telling the
+model to read the whole answer through the chosen lens (and to read even a dodge through
+it), and make the "no lens fired" fallback lens-aware instead of claiming no lens fired.
+Keep `auto` mode's honest "consider all, report only what genuinely fires" behavior.

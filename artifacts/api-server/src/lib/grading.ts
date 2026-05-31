@@ -1,5 +1,11 @@
 import { chatJson } from "./ai";
-import { frameworkBrief, lensStamp, MODE_LABEL, type Mode } from "./frameworks";
+import {
+  frameworkBrief,
+  frameworkDisplayLabel,
+  lensStamp,
+  MODE_LABEL,
+  type Mode,
+} from "./frameworks";
 
 // This course runs in one of two MODES — self-knowledge (default) or career — each
 // with five analytic FRAMEWORKS. There is no single factually "correct" answer, but
@@ -161,9 +167,16 @@ export async function gradeAnswer(opts: {
 
   const isAuto = framework === "auto";
   const brief = frameworkBrief(mode, framework);
+  const lensLabel = frameworkDisplayLabel(mode, framework);
   const frameworkInstruction = isAuto
     ? `You also have a set of analytic lenses for ${MODE_LABEL[mode]} work. Consider ALL of them, but report a finding ONLY for the lens/lenses that GENUINELY fire — where this specific answer carries real, identifiable signal for that lens. Do NOT force a reading: if the answer is too thin, generic, or off-topic for a lens, omit it. It is correct and expected to return an EMPTY frameworks array when nothing genuinely fires.\n\nLENSES:\n${brief}`
-    : `Analyze the answer through this single lens only. Report a finding ONLY if it genuinely fires for this specific answer; if there is no real signal for it, return an empty frameworks array and say so honestly rather than inventing a reading.\n\nLENS:\n${brief}`;
+    : `A SINGLE lens is active for this reading: ${lensLabel}.\n\nLENS:\n${brief}\n`;
+  // When the reader has picked ONE specific lens, that lens must drive the whole
+  // reading — not just an optional footnote. Otherwise switching lenses changes
+  // nothing the student can see, since `analysis`/`shortfall` would stay generic.
+  const analysisLensClause = isAuto
+    ? ""
+    : `IMPORTANT: This reading is being done specifically THROUGH THE ${lensLabel} lens. Write your \`analysis\` (and the \`shortfall\`, when it falls short) FROM WITHIN THAT LENS: use that lens's concepts and vocabulary, interpret what the answer reveals according to what that lens cares about, and make the reading recognizably different from one done through a different lens. Even a thin or evasive answer can be read through the lens — say what the lens makes of the dodge itself. Then ALSO report it in the frameworks array. `;
 
   try {
     const out = await chatJson<{
@@ -185,6 +198,7 @@ export async function gradeAnswer(opts: {
         "Also rate `depth` 0-3 (0 = no self-revelation, 3 = unguarded and specific).\n\n" +
         "Then write `analysis`: 2-4 sentences of REAL analysis addressed to the student as 'you'. Do NOT merely restate what they wrote — infer. Name what the answer reveals about their values, fears, defenses, needs, drives, or patterns, and WHY their specific wording implies it. Offer it as an informed reading, not a clinical diagnosis.\n\n" +
         "Then write `shortfall`: if the verdict is NOT 'genuine', state plainly that this answer falls short, name exactly why, and describe what a real answer would have to do. If the verdict IS 'genuine', leave shortfall as an empty string.\n\n" +
+        analysisLensClause +
         frameworkInstruction +
         "\n\nFor each lens that fires, return {id, label, finding} where `finding` is 1-2 specific sentences naming what THIS answer shows through that lens, grounded in their actual words. Use the exact lens id and a short human label. Brevity must never be penalized — a short but specific answer can fire a lens; only genuine absence of signal should leave the array empty.\n\n" +
         'Respond as strict JSON: {"verdict": "genuine"|"shallow"|"phony"|"evasive", "depth": number, "analysis": string, "shortfall": string, "frameworks": [{"id": string, "label": string, "finding": string}]}.',
@@ -210,9 +224,13 @@ export async function gradeAnswer(opts: {
         "This reads as a genuine, specific reflection — it adds a real detail to your portrait in Analytics.";
       if (frameworkBlock) {
         explanation = `${explanation}\n\n${frameworkBlock}`;
-      } else {
+      } else if (isAuto) {
         // Genuine but no lens fired — be honest about that rather than padding.
         explanation = `${explanation}\n\n_No single ${MODE_LABEL[mode]} lens fired strongly on this one — it's real, but didn't land squarely on any one pattern. More detail would give the lenses something to catch._`;
+      } else {
+        // A specific lens is active and the reading above was written through it,
+        // so don't claim "no lens fired" — that would contradict the analysis.
+        explanation = `${explanation}\n\n_Read through the ${lensLabel} lens — there isn't a strong, distinct ${lensLabel} signal here beyond the reading above; more detail would sharpen it._`;
       }
     } else {
       // Lead with what fell short, then any analysis.

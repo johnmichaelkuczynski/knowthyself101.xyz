@@ -209,5 +209,8 @@ export function frameworkDisplayLabel(mode: Mode, selection: string): string {
  */
 export function lensStamp(mode: Mode, selection: string, stance?: string): string {
   const base = `${MODE_DISPLAY[mode]} lens · ${frameworkDisplayLabel(mode, selection)}`;
-  return stance ? `${base} · ${stanceLabel(stance)}` : base;
+  // The neutral default is the absence of a temperament, so it's omitted from the
+  // stamp to keep it clean — and to stay consistent with the client's lensStamp.
+  if (!stance || normalizeStance(stance) === "neutral") return base;
+  return `${base} · ${stanceLabel(stance)}`;
 }

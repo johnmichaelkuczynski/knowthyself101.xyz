@@ -317,7 +317,8 @@ export default function AssignmentRunner() {
               </p>
               {previewItems && !reanalyze.isPending && (
                 <p className="text-sm" data-testid="text-preview-stamp">
-                  Previewing through <strong>{lensStamp(previewMode, previewFramework)}</strong>.
+                  Previewing through{" "}
+                  <strong>{lensStamp(previewMode, previewFramework, settings?.stance)}</strong>.
                 </p>
               )}
               {previewError && <p className="text-sm text-destructive">{previewError}</p>}

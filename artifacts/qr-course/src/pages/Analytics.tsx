@@ -36,7 +36,7 @@ export default function Analytics() {
     ? settings?.careerFramework
     : settings?.selfFramework;
   const lensLabel = settings
-    ? lensStamp(settings.mode as Mode, activeFrameworkId ?? "auto")
+    ? lensStamp(settings.mode as Mode, activeFrameworkId ?? "auto", settings.stance)
     : null;
 
   // A freshly generated report is held in local state for this session; it is

@@ -461,10 +461,27 @@ export const AppSettingsCareerFramework = {
   big_five: 'big_five',
 } as const;
 
+/**
+ * Temperament of the feedback — how charitable vs. severe the grader is
+ */
+export type AppSettingsStance = typeof AppSettingsStance[keyof typeof AppSettingsStance];
+
+
+export const AppSettingsStance = {
+  neutral: 'neutral',
+  looking_for_good: 'looking_for_good',
+  really_looking_for_good: 'really_looking_for_good',
+  constructively_critical: 'constructively_critical',
+  constructively_very_critical: 'constructively_very_critical',
+  pure_damnation: 'pure_damnation',
+} as const;
+
 export interface AppSettings {
   mode: AppSettingsMode;
   selfFramework: AppSettingsSelfFramework;
   careerFramework: AppSettingsCareerFramework;
+  /** Temperament of the feedback — how charitable vs. severe the grader is */
+  stance: AppSettingsStance;
 }
 
 export type SettingsInputMode = typeof SettingsInputMode[keyof typeof SettingsInputMode];
@@ -499,9 +516,22 @@ export const SettingsInputCareerFramework = {
   big_five: 'big_five',
 } as const;
 
+export type SettingsInputStance = typeof SettingsInputStance[keyof typeof SettingsInputStance];
+
+
+export const SettingsInputStance = {
+  neutral: 'neutral',
+  looking_for_good: 'looking_for_good',
+  really_looking_for_good: 'really_looking_for_good',
+  constructively_critical: 'constructively_critical',
+  constructively_very_critical: 'constructively_very_critical',
+  pure_damnation: 'pure_damnation',
+} as const;
+
 export interface SettingsInput {
   mode?: SettingsInputMode;
   selfFramework?: SettingsInputSelfFramework;
   careerFramework?: SettingsInputCareerFramework;
+  stance?: SettingsInputStance;
 }
 

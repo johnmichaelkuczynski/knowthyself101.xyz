@@ -3,7 +3,41 @@
 
 export type Mode = "self_knowledge" | "career";
 
+export type Stance =
+  | "neutral"
+  | "looking_for_good"
+  | "really_looking_for_good"
+  | "constructively_critical"
+  | "constructively_very_critical"
+  | "pure_damnation";
+
 export type LensOption = { value: string; label: string };
+
+// Temperament of the reader — an independent axis from mode/framework. Controls
+// how charitable vs. severe the feedback is, ordered from kindest to harshest.
+export const STANCE_OPTIONS: { value: Stance; label: string }[] = [
+  { value: "neutral", label: "Neutral" },
+  { value: "looking_for_good", label: "Looking for the good" },
+  { value: "really_looking_for_good", label: "Really looking for the good" },
+  { value: "constructively_critical", label: "Constructively critical" },
+  { value: "constructively_very_critical", label: "Constructively very critical" },
+  { value: "pure_damnation", label: "Pure damnation" },
+];
+
+const STANCE_LABELS: Record<Stance, string> = {
+  neutral: "Neutral",
+  looking_for_good: "Looking for the good",
+  really_looking_for_good: "Really looking for the good",
+  constructively_critical: "Constructively critical",
+  constructively_very_critical: "Constructively very critical",
+  pure_damnation: "Pure damnation",
+};
+
+/** Human label for a stance id, falling back to Neutral for unknown values. */
+export function stanceLabel(stance: string | undefined | null): string {
+  if (stance && stance in STANCE_LABELS) return STANCE_LABELS[stance as Stance];
+  return STANCE_LABELS.neutral;
+}
 
 export const MODE_OPTIONS: { value: Mode; label: string }[] = [
   { value: "self_knowledge", label: "Self-Knowledge" },
@@ -53,7 +87,13 @@ export function frameworkDisplayLabel(mode: Mode, selection: string): string {
   return f ? f.label : "all frameworks";
 }
 
-/** Short, human-readable stamp of the active lens, e.g. "Self-Knowledge lens · Attachment style". */
-export function lensStamp(mode: Mode, selection: string): string {
-  return `${MODE_DISPLAY[mode]} lens · ${frameworkDisplayLabel(mode, selection)}`;
+/**
+ * Short, human-readable stamp of the active lens, e.g.
+ * "Self-Knowledge lens · Attachment style · Constructively critical".
+ * The stance suffix is omitted for the neutral default to keep the stamp clean.
+ */
+export function lensStamp(mode: Mode, selection: string, stance?: string | null): string {
+  const base = `${MODE_DISPLAY[mode]} lens · ${frameworkDisplayLabel(mode, selection)}`;
+  if (!stance || stance === "neutral") return base;
+  return `${base} · ${stanceLabel(stance)}`;
 }

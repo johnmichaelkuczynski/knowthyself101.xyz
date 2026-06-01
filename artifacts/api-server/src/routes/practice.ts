@@ -268,6 +268,7 @@ router.post("/practice/sessions/:sessionId/grade", async (req, res): Promise<voi
     userAnswer: answer,
     mode: settings.mode,
     framework: activeFramework(settings),
+    stance: settings.stance,
   });
 
   await db.insert(practiceAttemptsTable).values({

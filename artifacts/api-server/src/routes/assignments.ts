@@ -306,6 +306,7 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
       userAnswer,
       mode: settings.mode,
       framework: activeFramework(settings),
+      stance: settings.stance,
     });
     if (graded.correct) score += 1;
     perProblem.push({
@@ -407,6 +408,10 @@ router.post("/assignments/attempts/:attemptId/reanalyze", async (req, res): Prom
     return;
   }
 
+  // The lens (mode + framework) is a per-request what-if from the picker, but the
+  // stance (temperament) is the user's global setting — re-read honors it.
+  const settings = await getSettings();
+
   const problems = await db
     .select()
     .from(problemsTable)
@@ -431,6 +436,7 @@ router.post("/assignments/attempts/:attemptId/reanalyze", async (req, res): Prom
         userAnswer,
         mode,
         framework,
+        stance: settings.stance,
       });
       return {
         problemId: p.id,
@@ -570,6 +576,7 @@ router.post(
       userMessage: message,
       mode: settings.mode,
       framework: activeFramework(settings),
+      stance: settings.stance,
     });
 
     const [saved] = await db

@@ -8,9 +8,12 @@
 import type { AppSettingsCareerFramework } from './appSettingsCareerFramework';
 import type { AppSettingsMode } from './appSettingsMode';
 import type { AppSettingsSelfFramework } from './appSettingsSelfFramework';
+import type { AppSettingsStance } from './appSettingsStance';
 
 export interface AppSettings {
   mode: AppSettingsMode;
   selfFramework: AppSettingsSelfFramework;
   careerFramework: AppSettingsCareerFramework;
+  /** Temperament of the feedback — how charitable vs. severe the grader is */
+  stance: AppSettingsStance;
 }

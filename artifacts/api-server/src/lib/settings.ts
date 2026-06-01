@@ -1,17 +1,19 @@
 import { eq } from "drizzle-orm";
 import { db, appSettingsTable } from "@workspace/db";
-import type { Mode } from "./frameworks";
+import { DEFAULT_STANCE, normalizeStance, type Mode, type Stance } from "./frameworks";
 
 export type AppSettings = {
   mode: Mode;
   selfFramework: string;
   careerFramework: string;
+  stance: Stance;
 };
 
 const DEFAULTS: AppSettings = {
   mode: "self_knowledge",
   selfFramework: "auto",
   careerFramework: "auto",
+  stance: DEFAULT_STANCE,
 };
 
 /** Ensure the single settings row (id = 1) exists; safe to call repeatedly. */
@@ -35,6 +37,7 @@ export async function getSettings(): Promise<AppSettings> {
     mode: (row.mode === "career" ? "career" : "self_knowledge") as Mode,
     selfFramework: row.selfFramework || "auto",
     careerFramework: row.careerFramework || "auto",
+    stance: normalizeStance(row.stance),
   };
 }
 
@@ -49,6 +52,7 @@ export async function updateSettings(
       mode: next.mode,
       selfFramework: next.selfFramework,
       careerFramework: next.careerFramework,
+      stance: next.stance,
       updatedAt: new Date(),
     })
     .where(eq(appSettingsTable.id, 1));

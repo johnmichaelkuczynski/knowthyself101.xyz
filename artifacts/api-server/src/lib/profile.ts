@@ -13,7 +13,7 @@ import {
 } from "@workspace/db";
 import { chatJson, TEXT_MODEL } from "./ai";
 import { type AppSettings, activeFramework } from "./settings";
-import { frameworkBrief, lensStamp, MODE_LABEL } from "./frameworks";
+import { frameworkBrief, lensStamp, MODE_LABEL, stanceDirective } from "./frameworks";
 
 export type ProfileReportResult = {
   generatedAt: string;
@@ -278,7 +278,10 @@ export async function generateProfileReport(
           "- patterns: 3-5 short, specific phrases naming recurring traits or motives clearly evidenced across answers.\n" +
           "- tensions: 2-4 short, specific phrases naming contradictions, blind spots, or evasions you can actually point to between their answers.\n" +
           "- questions: 3 specific, probing questions worth sitting with next, aimed at what they have so far avoided or left vague.\n" +
-          "If the input includes a 'previousProfile', it is your earlier portrait of this same person. Treat it as memory: build on it — keep what the new answers still support, deepen it, and revise anything the latest answers contradict or that they've grown past. Do not simply repeat it; show how the picture has developed."),
+          "If the input includes a 'previousProfile', it is your earlier portrait of this same person. Treat it as memory: build on it — keep what the new answers still support, deepen it, and revise anything the latest answers contradict or that they've grown past. Do not simply repeat it; show how the picture has developed.") +
+        "\n\n" +
+        stanceDirective(settings.stance) +
+        " Let this stance set the warmth or severity of the portrait's TONE; it must not make you invent evidence or omit what the answers actually show.",
       JSON.stringify({
         answersAnalyzed: analyzed.length,
         reflections: analyzedForLlm,
@@ -319,7 +322,7 @@ export async function generateProfileReport(
   if (practiceCount > 0)
     parts.push(`${practiceCount} practice reflection${practiceCount === 1 ? "" : "s"}`);
   const source = parts.length > 0 ? parts.join(" and ") : `${answeredCount} reflections`;
-  const stamp = lensStamp(settings.mode, activeFramework(settings));
+  const stamp = lensStamp(settings.mode, activeFramework(settings), settings.stance);
   const provenance = `\n\n— Drawn from ${source}, read through the ${stamp}. This ${
     isCareer ? "career reading" : "portrait"
   } deepens and sharpens with every honest answer you add.`;

@@ -4,6 +4,7 @@ import {
   frameworkDisplayLabel,
   lensStamp,
   MODE_LABEL,
+  stanceDirective,
   type Mode,
 } from "./frameworks";
 
@@ -40,6 +41,7 @@ export async function reconsiderRebuttal(opts: {
   userMessage: string;
   mode?: Mode;
   framework?: string;
+  stance?: string;
 }): Promise<{ response: string; revised: boolean }> {
   const message = (opts.userMessage ?? "").trim();
   const mode: Mode = opts.mode === "career" ? "career" : "self_knowledge";
@@ -56,6 +58,8 @@ export async function reconsiderRebuttal(opts: {
     const out = await chatJson<{ response: string; revised: boolean }>(
       "You are a perceptive, honest reader on a self-examination course. " +
         `The current analysis mode is ${MODE_LABEL[mode]}. ` +
+        stanceDirective(opts.stance) +
+        " Keep this stance in your tone as you reconsider.\n\n" +
         "Earlier you gave a student a reading of one of their short, first-person reflections. The student is now PUSHING BACK on that reading. " +
         "You are given the QUESTION, the student's ORIGINAL_ANSWER, a MODEL_REFLECTION (a depth reference, NOT a key), your ORIGINAL_FEEDBACK, any PRIOR_TURNS of this same back-and-forth, and the student's new PUSH_BACK.\n\n" +
         "Weigh the push-back honestly and decide:\n" +
@@ -133,15 +137,17 @@ export async function gradeAnswer(opts: {
   userAnswer: string;
   mode?: Mode;
   framework?: string;
+  stance?: string;
 }): Promise<{ correct: boolean; explanation: string }> {
   const user = (opts.userAnswer ?? "").trim();
   const modelReflection = opts.correctAnswer ?? "";
   const mode: Mode = opts.mode === "career" ? "career" : "self_knowledge";
   const framework = opts.framework || "auto";
+  const stance = opts.stance;
 
-  // Every graded answer is stamped with the lens it was read under so the
+  // Every graded answer is stamped with the lens AND stance it was read under so the
   // feedback stays legible after the fact — no matter which return path it takes.
-  const stamp = `_Read through the ${lensStamp(mode, framework)}._`;
+  const stamp = `_Read through the ${lensStamp(mode, framework, stance)}._`;
   const withStamp = (explanation: string) => `${explanation}\n\n${stamp}`;
 
   // Empty answer.
@@ -188,6 +194,8 @@ export async function gradeAnswer(opts: {
     }>(
       "You are a perceptive, honest reader on a self-examination course. " +
         `The current analysis mode is ${MODE_LABEL[mode]}. ` +
+        stanceDirective(stance) +
+        " This stance governs HOW READILY you call an answer genuine AND the tone of everything you write below — apply it throughout.\n\n" +
         "Students write SHORT, first-person reflections about their own lives. There is no factually correct answer, but there ARE genuine answers and there are bad answers, and you must tell them apart. " +
         "You are given the QUESTION, a MODEL_REFLECTION (an example of the depth a real answer reaches — NOT a key to match), and the STUDENT_ANSWER.\n\n" +
         "First, classify the STUDENT_ANSWER with a `verdict`:\n" +

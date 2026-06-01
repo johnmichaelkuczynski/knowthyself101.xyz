@@ -556,7 +556,8 @@ export const GetReportHistoryResponse = zod.array(GetReportHistoryResponseItem)
 export const GetSettingsResponse = zod.object({
   "mode": zod.enum(['self_knowledge', 'career']),
   "selfFramework": zod.enum(['auto', 'cognitive_distortions', 'defense_mechanisms', 'attachment', 'self_discrepancy', 'attribution']),
-  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five'])
+  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five']),
+  "stance": zod.enum(['neutral', 'looking_for_good', 'really_looking_for_good', 'constructively_critical', 'constructively_very_critical', 'pure_damnation']).describe('Temperament of the feedback — how charitable vs. severe the grader is')
 })
 
 
@@ -566,13 +567,15 @@ export const GetSettingsResponse = zod.object({
 export const UpdateSettingsBody = zod.object({
   "mode": zod.enum(['self_knowledge', 'career']).optional(),
   "selfFramework": zod.enum(['auto', 'cognitive_distortions', 'defense_mechanisms', 'attachment', 'self_discrepancy', 'attribution']).optional(),
-  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five']).optional()
+  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five']).optional(),
+  "stance": zod.enum(['neutral', 'looking_for_good', 'really_looking_for_good', 'constructively_critical', 'constructively_very_critical', 'pure_damnation']).optional()
 })
 
 export const UpdateSettingsResponse = zod.object({
   "mode": zod.enum(['self_knowledge', 'career']),
   "selfFramework": zod.enum(['auto', 'cognitive_distortions', 'defense_mechanisms', 'attachment', 'self_discrepancy', 'attribution']),
-  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five'])
+  "careerFramework": zod.enum(['auto', 'riasec', 'onet', 'strong', 'career_anchors', 'big_five']),
+  "stance": zod.enum(['neutral', 'looking_for_good', 'really_looking_for_good', 'constructively_critical', 'constructively_very_critical', 'pure_damnation']).describe('Temperament of the feedback — how charitable vs. severe the grader is')
 })
 
 

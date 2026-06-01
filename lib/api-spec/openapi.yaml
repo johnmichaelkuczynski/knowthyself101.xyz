@@ -967,7 +967,7 @@ components:
 
     AppSettings:
       type: object
-      required: [mode, selfFramework, careerFramework]
+      required: [mode, selfFramework, careerFramework, stance]
       properties:
         mode:
           type: string
@@ -987,6 +987,18 @@ components:
           type: string
           enum:
             [auto, riasec, onet, strong, career_anchors, big_five]
+        stance:
+          type: string
+          description: Temperament of the feedback — how charitable vs. severe the grader is
+          enum:
+            [
+              neutral,
+              looking_for_good,
+              really_looking_for_good,
+              constructively_critical,
+              constructively_very_critical,
+              pure_damnation,
+            ]
 
     SettingsInput:
       type: object
@@ -1009,3 +1021,14 @@ components:
           type: string
           enum:
             [auto, riasec, onet, strong, career_anchors, big_five]
+        stance:
+          type: string
+          enum:
+            [
+              neutral,
+              looking_for_good,
+              really_looking_for_good,
+              constructively_critical,
+              constructively_very_critical,
+              pure_damnation,
+            ]

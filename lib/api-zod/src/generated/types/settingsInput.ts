@@ -8,9 +8,11 @@
 import type { SettingsInputCareerFramework } from './settingsInputCareerFramework';
 import type { SettingsInputMode } from './settingsInputMode';
 import type { SettingsInputSelfFramework } from './settingsInputSelfFramework';
+import type { SettingsInputStance } from './settingsInputStance';
 
 export interface SettingsInput {
   mode?: SettingsInputMode;
   selfFramework?: SettingsInputSelfFramework;
   careerFramework?: SettingsInputCareerFramework;
+  stance?: SettingsInputStance;
 }

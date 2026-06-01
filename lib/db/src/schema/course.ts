@@ -162,6 +162,10 @@ export const appSettingsTable = pgTable("app_settings", {
   mode: text("mode").notNull().default("self_knowledge"), // self_knowledge | career
   selfFramework: text("self_framework").notNull().default("auto"),
   careerFramework: text("career_framework").notNull().default("auto"),
+  // Temperament of the feedback — how charitable vs. severe the grader is.
+  // neutral | looking_for_good | really_looking_for_good |
+  // constructively_critical | constructively_very_critical | pure_damnation
+  stance: text("stance").notNull().default("neutral"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

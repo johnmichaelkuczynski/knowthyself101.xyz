@@ -11,6 +11,7 @@ import type {
   SettingsInputMode,
   SettingsInputSelfFramework,
   SettingsInputCareerFramework,
+  SettingsInputStance,
 } from "@workspace/api-client-react";
 import {
   Select,
@@ -19,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MODE_OPTIONS, frameworksFor, type Mode } from "@/lib/lens";
+import { MODE_OPTIONS, frameworksFor, STANCE_OPTIONS, type Mode, type Stance } from "@/lib/lens";
 
 export function ModeSwitcher() {
   const qc = useQueryClient();
@@ -42,6 +43,7 @@ export function ModeSwitcher() {
   const mode = settings.mode as Mode;
   const frameworks = frameworksFor(mode);
   const framework = mode === "career" ? settings.careerFramework : settings.selfFramework;
+  const stance = (settings.stance ?? "neutral") as Stance;
 
   const setMode = (next: Mode) => {
     if (next === mode) return;
@@ -56,6 +58,11 @@ export function ModeSwitcher() {
           ? { careerFramework: next as SettingsInputCareerFramework }
           : { selfFramework: next as SettingsInputSelfFramework },
     });
+  };
+
+  const setStance = (next: Stance) => {
+    if (next === stance) return;
+    update.mutate({ data: { stance: next as SettingsInputStance } });
   };
 
   return (
@@ -90,6 +97,22 @@ export function ModeSwitcher() {
         <SelectContent>
           {frameworks.map((o) => (
             <SelectItem key={o.value} value={o.value} data-testid={`framework-${o.value}`}>
+              {o.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Select value={stance} onValueChange={(v) => setStance(v as Stance)}>
+        <SelectTrigger
+          className="h-9 w-[230px] text-sm"
+          data-testid="select-stance"
+          title="The reader's temperament — from charitable to severe — independent of the lens"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {STANCE_OPTIONS.map((o) => (
+            <SelectItem key={o.value} value={o.value} data-testid={`stance-${o.value}`}>
               {o.label}
             </SelectItem>
           ))}

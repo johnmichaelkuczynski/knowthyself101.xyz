@@ -16,14 +16,14 @@ import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { AnswerInput } from "@/components/AnswerInput";
 import { StarterQuestionCard } from "@/components/StarterQuestionCard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, Loader2 } from "lucide-react";
 
 type ChatMsg = { role: "user" | "tutor"; text: string };
 
 export default function LectureView() {
   const params = useParams();
   const lectureId = Number(params.lectureId);
-  const { data: lecture, isLoading } = useGetLecture(lectureId);
+  const { data: lecture, isLoading, refetch } = useGetLecture(lectureId);
 
   // shared selected-text state (used by both Tutor and Practice)
   const [selectedText, setSelectedText] = useState("");
@@ -52,6 +52,13 @@ export default function LectureView() {
 
   const [tab, setTab] = useState<"tutor" | "practice">("tutor");
   const [level, setLevel] = useState<"short" | "medium" | "long">("short");
+  const [generatingLevel, setGeneratingLevel] = useState<"medium" | "long" | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
+  // Hard concurrency guard: blocks overlapping generations even before React
+  // commits the `generatingLevel` state, and tags each request so a stale
+  // completion (e.g. after navigating to another lecture) can't mutate the UI.
+  const genRequestRef = useRef(0);
+  const genInFlightRef = useRef(false);
 
   const availableLevels = useMemo(() => {
     const out: Array<"short" | "medium" | "long"> = ["short"];
@@ -66,6 +73,54 @@ export default function LectureView() {
       : level === "medium" && lecture?.bodyMedium
         ? lecture.bodyMedium
         : (lecture?.body ?? "");
+
+  // Switch depth — and, when the medium/long version of THIS lecture doesn't
+  // exist yet, write it on the spot. Only ever touches the current lecture.
+  async function selectLevel(lvl: "short" | "medium" | "long") {
+    setGenError(null);
+    if (lvl === "short" || availableLevels.includes(lvl)) {
+      setLevel(lvl);
+      return;
+    }
+    // Hard guard against rapid double-clicks racing ahead of the rendered
+    // `busy` state — only one generation may be in flight at a time.
+    if (genInFlightRef.current) return;
+    genInFlightRef.current = true;
+    const token = ++genRequestRef.current;
+    const startedLecture = lectureId;
+    setGeneratingLevel(lvl);
+    try {
+      const res = await fetch(
+        `/api/diagnostics/expand-lectures?level=${lvl}&id=${lectureId}`,
+        { method: "POST" },
+      );
+      if (!res.ok) {
+        let detail = `HTTP ${res.status}`;
+        try {
+          const body = (await res.json()) as { error?: string };
+          if (body.error) detail = body.error;
+        } catch {
+          /* non-JSON error body; keep status */
+        }
+        throw new Error(detail);
+      }
+      const data = (await res.json()) as { updated?: number };
+      if (!data.updated) {
+        throw new Error("the writer came up short — give it another try");
+      }
+      await refetch();
+      // Ignore a completion that the user has since superseded or navigated away from.
+      if (token !== genRequestRef.current || startedLecture !== lectureId) return;
+      setLevel(lvl);
+    } catch (e) {
+      if (token === genRequestRef.current && startedLecture === lectureId) {
+        setGenError(`Couldn't write the ${lvl} version: ${(e as Error).message}`);
+      }
+    } finally {
+      genInFlightRef.current = false;
+      if (token === genRequestRef.current) setGeneratingLevel(null);
+    }
+  }
 
   return (
     <Layout>
@@ -101,39 +156,65 @@ export default function LectureView() {
                   </div>
                   <div className="inline-flex rounded-md border border-border overflow-hidden text-xs">
                     {(["short", "medium", "long"] as const).map((lvl) => {
-                      const enabled = availableLevels.includes(lvl);
+                      const ready = availableLevels.includes(lvl);
                       const active = level === lvl;
+                      const isGenerating = generatingLevel === lvl;
+                      const busy = generatingLevel !== null;
                       return (
                         <button
                           key={lvl}
-                          onClick={() => enabled && setLevel(lvl)}
-                          disabled={!enabled}
+                          onClick={() => !busy && selectLevel(lvl)}
+                          disabled={busy}
                           title={
-                            enabled
+                            ready
                               ? `${lvl[0].toUpperCase() + lvl.slice(1)} version`
-                              : `${lvl[0].toUpperCase() + lvl.slice(1)} version not generated yet — click "Generate medium + long lectures" in the top bar`
+                              : `Write the ${lvl} version of this lecture now`
                           }
-                          className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors ${
+                          className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors inline-flex items-center gap-1 ${
                             active
                               ? "bg-primary text-primary-foreground"
-                              : enabled
-                                ? "bg-background hover:bg-secondary text-foreground"
-                                : "bg-background/50 text-muted-foreground/50 cursor-not-allowed"
-                          }`}
+                              : "bg-background hover:bg-secondary text-foreground"
+                          } ${busy && !isGenerating ? "opacity-50" : ""} ${busy ? "cursor-wait" : "cursor-pointer"}`}
                           data-testid={`button-level-${lvl}`}
                         >
-                          {lvl}
+                          {isGenerating ? (
+                            <>
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              Writing…
+                            </>
+                          ) : (
+                            <>
+                              {lvl}
+                              {!ready && <Sparkles className="w-3 h-3 opacity-60" />}
+                            </>
+                          )}
                         </button>
                       );
                     })}
                   </div>
                 </div>
               </header>
+              {genError && (
+                <div className="mb-4 text-sm text-destructive">{genError}</div>
+              )}
               <div className="bg-card border shadow-sm rounded-lg p-6 md:p-8" ref={articleRef}>
-                <MarkdownRenderer content={activeBody} />
-                <div className="mt-6 pt-4 border-t border-dashed border-border text-xs text-muted-foreground italic">
-                  Tip: highlight any passage above to reflect on it with the guide, or to generate practice prompts specifically on what you selected.
-                </div>
+                {generatingLevel ? (
+                  <div className="flex flex-col items-center gap-3 py-16 text-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    <div className="text-sm text-muted-foreground max-w-sm">
+                      Writing the <strong>{generatingLevel}</strong> version of{" "}
+                      <em>this</em> lecture — just this one, with more examples and
+                      explanation. A few seconds…
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <MarkdownRenderer content={activeBody} />
+                    <div className="mt-6 pt-4 border-t border-dashed border-border text-xs text-muted-foreground italic">
+                      Tip: highlight any passage above to reflect on it with the guide, or to generate practice prompts specifically on what you selected.
+                    </div>
+                  </>
+                )}
               </div>
             </article>
           ) : (

@@ -1,3 +1,4 @@
 - [Ephemeral lens re-analysis](ephemeral-reanalysis.md) — re-reading submitted answers through another lens is a read-only, submitted-only endpoint; never the global ModeSwitcher.
 - [Push-back / rebuttal feature](rebuttal-feature.md) — persisted counter-responses keyed by attempt+problem (NOT problemId alone, or retakes cross-contaminate); feeds the self-portrait.
 - [Stance (temperament) axis](stance-axis.md) — global charity-vs-severity axis, independent of mode/framework; lensStamp must stay synced server/client (neutral suppressed).
+- [Per-lecture depth generation](per-lecture-depth-generation.md) — depth toggle writes medium/long for the CURRENT lecture on the spot (expand-lectures?id=); never expose a global "regenerate all" action.

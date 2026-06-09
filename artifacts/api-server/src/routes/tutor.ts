@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import { db, lecturesTable } from "@workspace/db";
 import { AskTutorBody, AskTutorResponse } from "@workspace/api-zod";
 import { chatText, chatJson } from "../lib/ai";
+import { getPrimaryUserId } from "../lib/users";
+import { getLearnedUserContext, renderLearnedContext } from "../lib/learnedContext";
 
 const router: IRouter = Router();
 
@@ -21,6 +23,22 @@ router.get("/tutor/suggestions/:lectureId", async (req, res): Promise<void> => {
     return;
   }
 
+  // What the app has LEARNED about this reader so far, so some prompts can build
+  // on what they already revealed rather than treating them as a stranger.
+  let learnedBlock = "";
+  try {
+    const userId = await getPrimaryUserId();
+    const learned = renderLearnedContext(await getLearnedUserContext(userId));
+    if (learned) {
+      learnedBlock =
+        `\n\nMEMORY OF THIS READER — things they have ALREADY revealed in earlier answers on this course (their own words), plus the self-portrait drawn from them so far:\n"""\n${learned}\n"""\n` +
+        `USE THIS MEMORY: at least 2 of the 6 prompts MUST build directly on something specific this reader already revealed above — name the concrete thing back to them (the person, scene, feeling, or words they mentioned) and push it ONE layer deeper or connect it to this lecture. These memory-based prompts must STILL obey every rule above (begin with an allowed verb, demand a concrete autobiographical specific). The remaining prompts stay anchored in this lecture. Never quote the portrait as if it were fact about them — treat it as a hunch to test against their actual memory. If a thread from memory genuinely fits this lecture, prefer it.`;
+    }
+  } catch {
+    // Memory is best-effort enrichment; never block question generation on it.
+    learnedBlock = "";
+  }
+
   try {
     const out = await chatJson<{ questions: string[] }>(
       'You are a warm, perceptive guide on a self-knowledge course. Reply as strict JSON of the form {"questions": string[]} with NO other keys.',
@@ -29,7 +47,9 @@ router.get("/tutor/suggestions/:lectureId", async (req, res): Promise<void> => {
         `WHY THIS RULE EXISTS: abstract questions ("Why do I remember so little?", "How would I know if this still shapes me?", "What's the difference between X and Y?") let the reader patter out psychology they have read instead of excavating their own existence. We forbid them entirely. Every prompt must demand a specific, retrievable fact of the reader's real past or present: a particular memory, a named person, an actual scene, a place, an age, a choice, a conversation, or an exact thing someone said or did. If a stranger who never lived this life could answer it, or if it can be answered by quoting theory or restating the lecture, it is WRONG.\n\n` +
         `GOOD (do this): "Describe the earliest scene you can actually picture — who is in it, where are you, how old are you?" / "Name the person whose approval you were chasing as a child, and the exact thing you did to win it." / "Recall the last time you felt this, and write down what happened and who was there." / "Write down one sentence someone actually said to you that you still hear today."\n\n` +
         `BAD (never do this): "Why do I remember only a few early scenes?" / "How would I know if that lesson still shapes my choices?" / "Where could that show up in my relationships today?" — all abstract, all banned.\n\n` +
-        `Address the reader as "you". Anchor each of the 6 prompts in a DIFFERENT idea from the reading (cover the whole lecture, not just the opening), but every answer must be a specific piece of the reader's own existence. Each prompt: one sentence, under ~24 words, plain language, no jargon.\n\nLECTURE TITLE: ${lecture.title}\n\nLECTURE BODY:\n"""\n${lecture.body}\n"""`,
+        `Address the reader as "you". Anchor each of the 6 prompts in a DIFFERENT idea from the reading (cover the whole lecture, not just the opening), but every answer must be a specific piece of the reader's own existence. Each prompt: one sentence, under ~24 words, plain language, no jargon.` +
+        learnedBlock +
+        `\n\nLECTURE TITLE: ${lecture.title}\n\nLECTURE BODY:\n"""\n${lecture.body}\n"""`,
     );
     const all = Array.isArray(out?.questions)
       ? out.questions.filter((q) => typeof q === "string" && q.trim().length > 0)

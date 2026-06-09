@@ -19,6 +19,7 @@ import { chatJson } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
 import { getSettings, activeFramework } from "../lib/settings";
 import { getPrimaryUserId } from "../lib/users";
+import { getLearnedUserContext, renderLearnedContext } from "../lib/learnedContext";
 
 const router: IRouter = Router();
 
@@ -177,6 +178,20 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
       : difficulty <= 4.1
       ? "deep and a little vulnerable"
       : "deeply searching and tender";
+  // What the app has learned about this person already, so the prompt can build
+  // on a thread they've revealed rather than starting cold. Best-effort.
+  let learnedBlock = "";
+  try {
+    const learned = renderLearnedContext(await getLearnedUserContext(userId));
+    if (learned) {
+      learnedBlock =
+        ` You also have MEMORY of what this person has already revealed in earlier answers (their own words) and the self-portrait drawn from them:\n"""\n${learned}\n"""\n` +
+        `When a thread from that memory genuinely connects to "${topic.title}", prefer to build this prompt on it — name the specific thing they revealed and push it one layer deeper. Otherwise stay on the topic. Treat the portrait as a hunch to test, never as established fact. Still demand a concrete, self-revealing answer about their own life.`;
+    }
+  } catch {
+    learnedBlock = "";
+  }
+
   let generated: { prompt: string; correctAnswer: string; explanation: string };
   try {
     generated = await chatJson<{
@@ -188,7 +203,8 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
         1,
       )}/5). It must invite a SHORT, honest, first-person answer (a sentence or two) about the person's own life — there is no single correct answer, but a real answer must be specific and self-revealing. ` +
         `Return: "prompt" (the reflective question, plain language, no jargon), "correctAnswer" (a short, plausible first-person MODEL REFLECTION showing the kind of depth a sincere answer reaches — this is a reference, never shown to the user as correct), and "explanation" (one sentence on what this question tends to reveal). ` +
-        `Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Avoid these recent prompts: ${JSON.stringify(
+        learnedBlock +
+        ` Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Avoid these recent prompts: ${JSON.stringify(
           lastProblems.map((p) => p.prompt),
         )}.`,
       userRequest || `Generate a new ${depthLabel} reflective prompt on ${topic.title}.`,

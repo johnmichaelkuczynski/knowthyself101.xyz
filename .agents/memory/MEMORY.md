@@ -3,3 +3,4 @@
 - [Stance (temperament) axis](stance-axis.md) — global charity-vs-severity axis, independent of mode/framework; lensStamp must stay synced server/client (neutral suppressed).
 - [Per-lecture depth generation](per-lecture-depth-generation.md) — depth toggle writes medium/long for the CURRENT lecture on the spot (expand-lectures?id=); never expose a global "regenerate all" action.
 - [AI generation model choice](ai-generation-model-choice.md) — FAST_MODEL (gpt-5-mini) ignores hard structural/format constraints; use TEXT_MODEL (gpt-5.4) for instruction-heavy gen + a server-side backstop filter.
+- [Learned-user-context memory](learned-user-context.md) — lib/learnedContext.ts injects user's earlier answers + portrait into tutor/practice generators so later questions embody earlier answers (userId-scoped, best-effort).
